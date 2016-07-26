@@ -1,0 +1,4 @@
+[{<<"flactags">>,
+  {git,"git://github.com/black13ua/flactags.git",
+       {ref,"78a7f0459598da030908dade6655e44a50cc0ebd"}},
+  0}].
