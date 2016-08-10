@@ -1,14 +1,15 @@
 {application, wmb,
  [{description, "An OTP application"},
   {vsn, "0.1.0"},
-  {registered, []},
+  {registered, [wmb_sup]},
   {mod, { wmb_app, []}},
   {applications,
    [kernel,
-    stdlib
+    stdlib,
+    cowboy
    ]},
   {env,[]},
-  {modules, []},
+  {modules, [wmb_sup]},
 
   {maintainers, []},
   {licenses, []},

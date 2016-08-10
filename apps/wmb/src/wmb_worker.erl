@@ -6,7 +6,7 @@
 %%% @end
 %%% Created : $fulldate
 %%%-------------------------------------------------------------------
--module(wmb_srv).
+-module(wmb_worker).
 
 -behaviour(gen_server).
 
@@ -22,6 +22,7 @@
          code_change/3]).
 
 %% Internal Functions
+-export([parse_file/1]).
 
 -define(SERVER, ?MODULE).
 
@@ -57,8 +58,6 @@ start_link() ->
 %% @end
 %%--------------------------------------------------------------------
 init([]) ->
-    self() ! read_all,
-    ets:new(metadata_flac, [public, bag, named_table]),
     {ok, #state{}}.
 
 %%--------------------------------------------------------------------
@@ -75,6 +74,21 @@ init([]) ->
 %%                                   {stop, Reason, State}
 %% @end
 %%--------------------------------------------------------------------
+handle_call({parse, File}, _From, State) ->
+    FileMetadata = flactags:get_tags(File),
+    FileMetadataBlock4 = maps:get(4, FileMetadata),
+    io:format("~p~n: ", [{File, FileMetadataBlock4}]),
+    Album = maps:get(<<"ALBUM">>, FileMetadataBlock4, "Undefined_Album"),
+    Artist = maps:get(<<"ARTIST">>, FileMetadataBlock4, "Undefined_Artist"),
+    Genre = maps:get(<<"GENRE">>, FileMetadataBlock4, "Undefined_Genre"),
+    Date = maps:get(<<"DATE">>, FileMetadataBlock4, "Undefined_Date"),
+    Title = maps:get(<<"TITLE">>, FileMetadataBlock4, "Undefined_Title"),
+    ets:insert(metadata_flac, [{file, File}, {artist, Artist}, {album, Album}, {genre, Genre}, {date, Date}, {title, Title}]),
+    %io:format("~p~n ETS Insert: ", [{File, Artist, Album, Genre}]),
+    %EtsList = ets:tab2list(metadata_flac),
+    %EtsInfo = ets:info(metadata_flac),
+    %io:format("~p~n~n ETS List/Info: ", [[EtsList, EtsInfo]]),
+    {reply, FileMetadata, State};
 handle_call(_Request, _From, State) ->
     Reply = ok,
     {reply, Reply, State}.
@@ -102,14 +116,6 @@ handle_cast(_Msg, State) ->
 %%                                   {stop, Reason, State}
 %% @end
 %%--------------------------------------------------------------------
-handle_info(read_all, State) ->
-    {ok, FilesRoot} = application:get_env(wmb, files_root),
-    {ok, FilesPattern} = application:get_env(wmb, files_pattern),
-    Res = filelib:wildcard(lists:concat([FilesRoot, '/', FilesPattern])),
-    %Res = filelib:wildcard("/home/black/my/mtest/**/*.flac"),
-    io:format("~p~n: ", [Res]),
-    [wmb_worker:parse_file(X) || X <- Res],
-    {noreply, State};
 handle_info(_Info, State) ->
     {noreply, State}.
 
@@ -141,4 +147,6 @@ code_change(_OldVsn, State, _Extra) ->
 %%%===================================================================
 %%% Internal functions
 %%%===================================================================
+parse_file(File) ->
+    gen_server:call(?SERVER, {parse, File}).
 

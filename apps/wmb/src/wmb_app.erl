@@ -15,6 +15,19 @@
 %%====================================================================
 
 start(_StartType, _StartArgs) ->
+    %% Start Cowboy
+    %ok = application:start(ranch),
+    %ok = application:start(cowlib),
+    %ok = application:start(cowboy),
+	Dispatch = cowboy_router:compile([
+		{'_', [
+			{"/", toppage_handler, []}
+		]}
+	]),
+	{ok, _} = cowboy:start_http(http, 100, [{port, 8080}], [
+		{env, [{dispatch, Dispatch}]}
+	]),
+    %%
     wmb_sup:start_link().
 
 %%--------------------------------------------------------------------
