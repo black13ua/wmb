@@ -8,7 +8,7 @@
   1},
  {<<"erlydtl">>,
   {git,"git://github.com/erlydtl/erlydtl.git",
-       {ref,"87acc295c486bab3a638b8181276e05dac56d462"}},
+       {ref,"0e926d1c3a111c52b29e6f752a69e058d04dce2b"}},
   0},
  {<<"flactags">>,
   {git,"git://github.com/black13ua/flactags.git",

@@ -59,6 +59,8 @@ start_link() ->
 init([]) ->
     self() ! read_all,
     ets:new(metadata_flac, [public, bag, named_table]),
+    ets:new(albums, [public, bag, named_table]),
+    ets:new(tracks, [public, bag, named_table]),
     {ok, #state{}}.
 
 %%--------------------------------------------------------------------

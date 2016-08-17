@@ -83,15 +83,28 @@ handle_call({parse, File}, _From, State) ->
     Genre = maps:get(<<"GENRE">>, FileMetadataBlock4, "Undefined_Genre"),
     Date = maps:get(<<"DATE">>, FileMetadataBlock4, "Undefined_Date"),
     Title = maps:get(<<"TITLE">>, FileMetadataBlock4, "Undefined_Title"),
-    ets:insert(metadata_flac, [{file, File}, {artist, Artist}, {album, Album}, {genre, Genre}, {date, Date}, {title, Title}]),
-    %io:format("~p~n ETS Insert: ", [{File, Artist, Album, Genre}]),
-    %EtsList = ets:tab2list(metadata_flac),
-    %EtsInfo = ets:info(metadata_flac),
-    %io:format("~p~n~n ETS List/Info: ", [[EtsList, EtsInfo]]),
+
+    case get_album_id(Artist, Album, Date, Genre) of
+        undefined ->
+            AlbumID = erlang:unique_integer([positive, monotonic]),
+            ets:insert(albums, {{{artist, Artist}, {album, Album}, {date, Date}, {genre, Genre}}, {album_id, AlbumID}}),
+            ets:insert(tracks, {{album_id, AlbumID}, {{file, File}, {title, Title}}});
+        ExistedAlbumID ->
+            ets:insert(tracks, {{album_id, ExistedAlbumID}, {{file, File}, {title, Title}}})
+    end,
+    
     {reply, FileMetadata, State};
 handle_call(_Request, _From, State) ->
     Reply = ok,
     {reply, Reply, State}.
+
+get_album_id(Artist, Album, Date, Genre) ->
+    case ets:lookup(albums, {{artist, Artist}, {album, Album}, {date, Date}, {genre, Genre}}) of
+        [] -> undefined;
+        [{_, {album_id, AlbumID}}|_] -> AlbumID
+    end.
+
+
 
 %%--------------------------------------------------------------------
 %% @private

@@ -21,7 +21,8 @@ start(_StartType, _StartArgs) ->
     %ok = application:start(cowboy),
 	Dispatch = cowboy_router:compile([
 		{'_', [
-			{"/", toppage_handler, []}
+			{"/",           toppage_handler, []},
+			{"/welcome",    welcome_handler, []}
 		]}
 	]),
 	{ok, _} = cowboy:start_http(http, 100, [{port, 8080}], [
