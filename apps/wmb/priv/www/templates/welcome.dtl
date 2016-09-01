@@ -1,9 +1,41 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>
+        Some Title
+    </title>
+</head>
+<body>
+
+<div>
+<p>
 Welcome back, {{ name }}!
-
+</p>
+<p>
 You have {{ friends|length }} friends: {{ friends|join:", " }}
-
-Have some primes:
-{# this is exciting #}
-{% for i in primes %}
-   {{ i }}
+</p>
+Have some albums:<br>
+{% comment %}
+{% for album in albums %}
+{{ album.genre }} <br>
 {% endfor %}
+{% endcomment %}
+
+
+{# this is exciting #}
+{% for album in albums %}
+   {{ album.artist }}
+    - {{ album.album }}
+   [{{ album.date }}] <br>
+
+    {% for track in album.tracks %}
+        {{ track.title }}, File: {{ track.file }} <br>
+    {% endfor %}
+    <br>
+{% endfor %}
+
+
+</div>
+
+</body>
+</html>

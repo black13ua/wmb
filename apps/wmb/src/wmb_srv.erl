@@ -58,9 +58,10 @@ start_link() ->
 %%--------------------------------------------------------------------
 init([]) ->
     self() ! read_all,
-    ets:new(metadata_flac, [public, bag, named_table]),
-    ets:new(albums, [public, bag, named_table]),
-    ets:new(tracks, [public, bag, named_table]),
+    ets:new(wmb_albums, [public, bag, named_table]),
+    ets:new(wmb_tracks, [public, bag, named_table]),
+    ets:new(wmb_genres, [public, bag, named_table]),
+    ets:new(wmb_paths,  [public, bag, named_table]),
     {ok, #state{}}.
 
 %%--------------------------------------------------------------------
@@ -110,7 +111,7 @@ handle_info(read_all, State) ->
     Res = filelib:wildcard(lists:concat([FilesRoot, '/', FilesPattern])),
     %Res = filelib:wildcard("/home/black/my/mtest/**/*.flac"),
     io:format("~p~n: ", [Res]),
-    [wmb_worker:parse_file(X) || X <- Res],
+    [wmb_digger:parse_file(X) || X <- Res],
     {noreply, State};
 handle_info(_Info, State) ->
     {noreply, State}.

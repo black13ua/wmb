@@ -25,7 +25,7 @@ start(_StartType, _StartArgs) ->
 			{"/welcome",    welcome_handler, []}
 		]}
 	]),
-	{ok, _} = cowboy:start_http(http, 100, [{port, 8080}], [
+	{ok, _} = cowboy:start_http(http, 100, [{ip,{0,0,0,0}},{port, 8080}], [
 		{env, [{dispatch, Dispatch}]}
 	]),
     %%

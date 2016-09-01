@@ -6,7 +6,7 @@
 %%% @end
 %%% Created : $fulldate
 %%%-------------------------------------------------------------------
--module(wmb_worker).
+-module(wmb_digger).
 
 -behaviour(gen_server).
 
@@ -75,22 +75,24 @@ init([]) ->
 %% @end
 %%--------------------------------------------------------------------
 handle_call({parse, File}, _From, State) ->
+    AlbumPath = filename:dirname(File),
     FileMetadata = flactags:get_tags(File),
     FileMetadataBlock4 = maps:get(4, FileMetadata),
-    io:format("~p~n: ", [{File, FileMetadataBlock4}]),
-    Album = maps:get(<<"ALBUM">>, FileMetadataBlock4, "Undefined_Album"),
-    Artist = maps:get(<<"ARTIST">>, FileMetadataBlock4, "Undefined_Artist"),
-    Genre = maps:get(<<"GENRE">>, FileMetadataBlock4, "Undefined_Genre"),
-    Date = maps:get(<<"DATE">>, FileMetadataBlock4, "Undefined_Date"),
-    Title = maps:get(<<"TITLE">>, FileMetadataBlock4, "Undefined_Title"),
-
+    io:format("~p~n: ", [{AlbumPath, File, FileMetadataBlock4}]),
+    Album  = maps:get(<<"ALBUM">>,  FileMetadataBlock4, "Undef_Album"),
+    Artist = maps:get(<<"ARTIST">>, FileMetadataBlock4, "Undef_Artist"),
+    Genre  = maps:get(<<"GENRE">>,  FileMetadataBlock4, "Undef_Genre"),
+    Date   = maps:get(<<"DATE">>,   FileMetadataBlock4, "Undef_Date"),
+    Title  = maps:get(<<"TITLE">>,  FileMetadataBlock4, "Undef_Title"),
     case get_album_id(Artist, Album, Date, Genre) of
         undefined ->
             AlbumID = erlang:unique_integer([positive, monotonic]),
-            ets:insert(albums, {{{artist, Artist}, {album, Album}, {date, Date}, {genre, Genre}}, {album_id, AlbumID}}),
-            ets:insert(tracks, {{album_id, AlbumID}, {{file, File}, {title, Title}}});
+            ets:insert(wmb_albums, {{{artist, Artist}, {album, Album}, {date, Date}}, {album_id, AlbumID}}),
+            ets:insert(wmb_tracks, {{album_id, AlbumID}, {{file, File}, {title, Title}}}),
+            ets:insert(wmb_genres, {{album_id, AlbumID}, {genre, Genre}}),
+            ets:insert(wmb_paths,  {{album_id, AlbumID}, {path, AlbumPath}});
         ExistedAlbumID ->
-            ets:insert(tracks, {{album_id, ExistedAlbumID}, {{file, File}, {title, Title}}})
+            ets:insert(wmb_tracks, {{album_id, ExistedAlbumID}, {{file, File}, {title, Title}}})
     end,
     
     {reply, FileMetadata, State};
@@ -99,9 +101,11 @@ handle_call(_Request, _From, State) ->
     {reply, Reply, State}.
 
 get_album_id(Artist, Album, Date, Genre) ->
-    case ets:lookup(albums, {{artist, Artist}, {album, Album}, {date, Date}, {genre, Genre}}) of
-        [] -> undefined;
-        [{_, {album_id, AlbumID}}|_] -> AlbumID
+    case ets:lookup(wmb_albums, {{artist, Artist}, {album, Album}, {date, Date}}) of
+        [] ->
+            undefined;
+        [{_, {album_id, AlbumID}}|_] ->
+            AlbumID
     end.
 
 
