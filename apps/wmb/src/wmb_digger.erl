@@ -24,6 +24,8 @@
 %% Internal Functions
 -export([parse_file/1]).
 
+-include("ets_names.hrl").
+
 -define(SERVER, ?MODULE).
 
 -record(state, {}).
@@ -87,12 +89,17 @@ handle_call({parse, File}, _From, State) ->
     case get_album_id(Artist, Album, Date, Genre) of
         undefined ->
             AlbumID = erlang:unique_integer([positive, monotonic]),
-            ets:insert(wmb_albums, {{{artist, Artist}, {album, Album}, {date, Date}}, {album_id, AlbumID}}),
-            ets:insert(wmb_tracks, {{album_id, AlbumID}, {{file, File}, {title, Title}}}),
-            ets:insert(wmb_genres, {{album_id, AlbumID}, {genre, Genre}}),
-            ets:insert(wmb_paths,  {{album_id, AlbumID}, {path, AlbumPath}});
+            ets:insert(?ETS_ALBUMS, {{{artist, Artist}, {album, Album}, {date, Date}}, {album_id, AlbumID}}),
+            ets:insert(?ETS_TRACKS, {{album_id, AlbumID}, {{file, File}, {title, Title}}}),
+            ets:insert(?ETS_GENRES, {{album_id, AlbumID}, {genre, Genre}}),
+            ets:insert(?ETS_PATHS,  {{album_id, AlbumID}, {path, AlbumPath}}),
+            {ok, PossibleCoversList} = application:get_env(wmb, possible_covers_list),
+            {ok, AlbumFilesList} = file:list_dir(AlbumPath),
+            {_, AlbumCover} = find_album_cover(AlbumFilesList, PossibleCoversList),
+            ets:insert(?ETS_COVERS, {{album_id, AlbumID}, {cover, AlbumCover}}),
+            io:format("Album Cover is: ~p~n", [AlbumCover]);
         ExistedAlbumID ->
-            ets:insert(wmb_tracks, {{album_id, ExistedAlbumID}, {{file, File}, {title, Title}}})
+            ets:insert(?ETS_TRACKS, {{album_id, ExistedAlbumID}, {{file, File}, {title, Title}}})
     end,
     
     {reply, FileMetadata, State};
@@ -101,12 +108,22 @@ handle_call(_Request, _From, State) ->
     {reply, Reply, State}.
 
 get_album_id(Artist, Album, Date, Genre) ->
-    case ets:lookup(wmb_albums, {{artist, Artist}, {album, Album}, {date, Date}}) of
+    case ets:lookup(?ETS_ALBUMS, {{artist, Artist}, {album, Album}, {date, Date}}) of
         [] ->
             undefined;
         [{_, {album_id, AlbumID}}|_] ->
             AlbumID
     end.
+
+find_album_cover(AlbumFilesList, [PossibleCover|RestPossibleCovers]) ->
+    case lists:member(PossibleCover, AlbumFilesList) of
+        true ->
+            {ok, PossibleCover};
+        false ->
+            find_album_cover(AlbumFilesList, RestPossibleCovers)
+    end;
+find_album_cover(AlbumFilesList, []) ->
+    {error, cover_not_found}.
 
 
 

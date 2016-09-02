@@ -22,6 +22,7 @@
          code_change/3]).
 
 %% Internal Functions
+-include("ets_names.hrl").
 
 -define(SERVER, ?MODULE).
 
@@ -58,10 +59,11 @@ start_link() ->
 %%--------------------------------------------------------------------
 init([]) ->
     self() ! read_all,
-    ets:new(wmb_albums, [public, bag, named_table]),
-    ets:new(wmb_tracks, [public, bag, named_table]),
-    ets:new(wmb_genres, [public, bag, named_table]),
-    ets:new(wmb_paths,  [public, bag, named_table]),
+    ets:new(?ETS_ALBUMS, [public, bag, named_table]),
+    ets:new(?ETS_COVERS, [public, bag, named_table]),
+    ets:new(?ETS_GENRES, [public, bag, named_table]),
+    ets:new(?ETS_PATHS,  [public, bag, named_table]),
+    ets:new(?ETS_TRACKS, [public, bag, named_table]),
     {ok, #state{}}.
 
 %%--------------------------------------------------------------------

@@ -26,10 +26,13 @@ Have some albums:<br>
 {% for album in albums %}
    {{ album.artist }}
     - {{ album.album }}
-   [{{ album.date }}] <br>
-
+   [{{ album.date }}]
+   <br>
+   Cover: "{{ album.path }}/{{ album.cover }}"
+   <br>
     {% for track in album.tracks %}
-        {{ track.title }}, File: {{ track.file }} <br>
+        {{ track.title }}, File: {{ track.file }}
+        <br>
     {% endfor %}
     <br>
 {% endfor %}
