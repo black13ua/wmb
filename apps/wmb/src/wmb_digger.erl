@@ -76,25 +76,28 @@ init([]) ->
 %%                                   {stop, Reason, State}
 %% @end
 %%--------------------------------------------------------------------
-handle_call({parse, File}, _From, State) ->
-    AlbumPath = filename:dirname(File),
-    FileMetadata = flactags:get_tags(File),
-    FileMetadataBlock4 = maps:get(4, FileMetadata),
-    io:format("~p~n: ", [{AlbumPath, File, FileMetadataBlock4}]),
-    Album  = maps:get(<<"ALBUM">>,  FileMetadataBlock4, "Undef_Album"),
-    Artist = maps:get(<<"ARTIST">>, FileMetadataBlock4, "Undef_Artist"),
-    Genre  = maps:get(<<"GENRE">>,  FileMetadataBlock4, "Undef_Genre"),
-    Date   = maps:get(<<"DATE">>,   FileMetadataBlock4, "Undef_Date"),
-    Title  = maps:get(<<"TITLE">>,  FileMetadataBlock4, "Undef_Title"),
+handle_call({parse, File, FileID3Tags}, _From, State) ->
+    {ok, FilesRoot} = application:get_env(wmb, files_root),
+    FilePathFull = lists:concat([FilesRoot, "/", File]),
+    AlbumPathRel = filename:dirname(File),
+    AlbumPathFull = filename:dirname(FilePathFull),
+    io:format("~p~n: ", [{AlbumPathFull, File, FileID3Tags}]),
+
+    Album  = maps:get(<<"ALBUM">>,  FileID3Tags, "Undef_Album"),
+    Artist = maps:get(<<"ARTIST">>, FileID3Tags, "Undef_Artist"),
+    Genre  = maps:get(<<"GENRE">>,  FileID3Tags, "Undef_Genre"),
+    Date   = maps:get(<<"DATE">>,   FileID3Tags, "Undef_Date"),
+    Title  = maps:get(<<"TITLE">>,  FileID3Tags, "Undef_Title"),
+
     case get_album_id(Artist, Album, Date, Genre) of
         undefined ->
             AlbumID = erlang:unique_integer([positive, monotonic]),
             ets:insert(?ETS_ALBUMS, {{{artist, Artist}, {album, Album}, {date, Date}}, {album_id, AlbumID}}),
             ets:insert(?ETS_TRACKS, {{album_id, AlbumID}, {{file, File}, {title, Title}}}),
             ets:insert(?ETS_GENRES, {{album_id, AlbumID}, {genre, Genre}}),
-            ets:insert(?ETS_PATHS,  {{album_id, AlbumID}, {path, AlbumPath}}),
+            ets:insert(?ETS_PATHS,  {{album_id, AlbumID}, {path, AlbumPathRel}}),
             {ok, PossibleCoversList} = application:get_env(wmb, possible_covers_list),
-            {ok, AlbumFilesList} = file:list_dir(AlbumPath),
+            {ok, AlbumFilesList} = file:list_dir(AlbumPathFull),
             {_, AlbumCover} = find_album_cover(AlbumFilesList, PossibleCoversList),
             ets:insert(?ETS_COVERS, {{album_id, AlbumID}, {cover, AlbumCover}}),
             io:format("Album Cover is: ~p~n", [AlbumCover]);
@@ -102,7 +105,7 @@ handle_call({parse, File}, _From, State) ->
             ets:insert(?ETS_TRACKS, {{album_id, ExistedAlbumID}, {{file, File}, {title, Title}}})
     end,
     
-    {reply, FileMetadata, State};
+    {reply, FileID3Tags, State};
 handle_call(_Request, _From, State) ->
     Reply = ok,
     {reply, Reply, State}.
@@ -182,5 +185,12 @@ code_change(_OldVsn, State, _Extra) ->
 %%% Internal functions
 %%%===================================================================
 parse_file(File) ->
-    gen_server:call(?SERVER, {parse, File}).
-
+    {ok, FilesRoot} = application:get_env(wmb, files_root),
+    FilePathFull = lists:concat([FilesRoot, "/", File]),
+    case flactags:get_tags(FilePathFull) of
+        {ok, FileMetadata} ->
+            FileID3Tags = maps:get(4, FileMetadata),
+            gen_server:call(?SERVER, {parse, File, FileID3Tags});
+        {error, Error} ->
+            ets:insert(?ETS_ERRORS, {{file, File}, {error, Error}})
+    end.

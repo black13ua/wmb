@@ -12,7 +12,9 @@ init(_Type, Req, []) ->
 
 handle(Req, State) ->
     {ok, Res2} = albums_merger:get_albums(tpl),
+    P1 = cowboy_req:qs(Req),
     io:format("Res2: ~p~n", [Res2]),
+    io:format("Req: ~p~n", [P1]),
     {ok, Body} = welcome_dtl:render([
                     {name, "Johnny"},
                     {friends, [<<"Frankie Lee">>, <<"Judas Priest">>]},

@@ -16,13 +16,12 @@
 
 start(_StartType, _StartArgs) ->
     %% Start Cowboy
-    %ok = application:start(ranch),
-    %ok = application:start(cowlib),
-    %ok = application:start(cowboy),
+    {ok, FilesRoot} = application:get_env(wmb, files_root),
 	Dispatch = cowboy_router:compile([
 		{'_', [
-			{"/",           toppage_handler, []},
-			{"/welcome",    welcome_handler, []}
+			{"/",              toppage_handler, []},
+			{"/welcome",       welcome_handler, []},
+            {"/covers/[...]",  cowboy_static,   {dir, FilesRoot}}
 		]}
 	]),
 	{ok, _} = cowboy:start_http(http, 100, [{ip,{0,0,0,0}},{port, 8080}], [

@@ -64,6 +64,7 @@ init([]) ->
     ets:new(?ETS_GENRES, [public, bag, named_table]),
     ets:new(?ETS_PATHS,  [public, bag, named_table]),
     ets:new(?ETS_TRACKS, [public, bag, named_table]),
+    ets:new(?ETS_ERRORS, [public, bag, named_table]),
     {ok, #state{}}.
 
 %%--------------------------------------------------------------------
@@ -110,9 +111,8 @@ handle_cast(_Msg, State) ->
 handle_info(read_all, State) ->
     {ok, FilesRoot} = application:get_env(wmb, files_root),
     {ok, FilesPattern} = application:get_env(wmb, files_pattern),
-    Res = filelib:wildcard(lists:concat([FilesRoot, '/', FilesPattern])),
-    %Res = filelib:wildcard("/home/black/my/mtest/**/*.flac"),
-    io:format("~p~n: ", [Res]),
+    Res = filelib:wildcard(FilesPattern, FilesRoot),
+    io:format("All Files: ~p~n: ", [Res]),
     [wmb_digger:parse_file(X) || X <- Res],
     {noreply, State};
 handle_info(_Info, State) ->

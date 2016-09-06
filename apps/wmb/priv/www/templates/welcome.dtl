@@ -14,7 +14,8 @@ Welcome back, {{ name }}!
 <p>
 You have {{ friends|length }} friends: {{ friends|join:", " }}
 </p>
-Have some albums:<br>
+Have some albums:
+<br>
 {% comment %}
 {% for album in albums %}
 {{ album.genre }} <br>
@@ -23,20 +24,50 @@ Have some albums:<br>
 
 
 {# this is exciting #}
+<table bgcolor="#dadada" width="60%" border="1">
+
+
+
 {% for album in albums %}
-   {{ album.artist }}
-    - {{ album.album }}
-   [{{ album.date }}]
-   <br>
-   Cover: "{{ album.path }}/{{ album.cover }}"
-   <br>
-    {% for track in album.tracks %}
-        {{ track.title }}, File: {{ track.file }}
-        <br>
-    {% endfor %}
-    <br>
+{% set trackscount = album.tracks|length %}
+  <tr>
+  <td>
+
+
+
+      <table border="1" width=100%>
+
+          <tr>
+              <td colspan="3">
+              {{ album.artist }} - [{{ album.date }}] {{ album.album }}
+              </td>
+          </tr>
+
+          <tr>
+             <td rowspan="4" colspan="{{ trackscount }}" valign=top width=300>
+             <img src="/covers/{{ album.path }}/{{ album.cover }}" style="align:left;width:300px;height:300px;">
+             </td>
+          </tr>
+
+          <tr align=left valign=top>
+             <td>
+                 <table bgcolor="#dada00" border="1">
+                     {% for track in album.tracks %}
+                     <tr><td>{{ track.title }}</td> </tr>
+                     {% endfor %}
+                 </table>
+             </td>
+          </tr>
+
+      </table>
+
+
+
+  </td>
+  </tr>
 {% endfor %}
 
+</table>
 
 </div>
 
