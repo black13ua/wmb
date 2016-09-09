@@ -1,22 +1,24 @@
 -module(albums_merger).
--export([get_albums/1, get_albums/2]).
+-export([get_albums/1, get_albums/3]).
 
 -include("ets_names.hrl").
 
 -define(DEFAULT_ITEMS, 10).
+-define(DEFAULT_SKIP,  1).
 
 
 get_albums(Format) ->
-    get_albums(Format, ?DEFAULT_ITEMS).
+    get_albums(Format, ?DEFAULT_SKIP, ?DEFAULT_ITEMS).
 
 % Format can be json or tpl
-get_albums(Format, Items) ->
-    FirstAlbumTuple = ets:first(?ETS_ALBUMS),
+get_albums(Format, Skip, Items) ->
+    %%FirstAlbumTuple = ets:first(?ETS_ALBUMS),
+    FirstAlbumTuple = wmb_helpers:skip_ets_elements(Skip, ?ETS_ALBUMS),
     case Format of
         json ->
             io:format("JSON Format Selected: ~p~n", [[Format, Items]]); 
         tpl ->
-            io:format("TPL Format Selected: ~p~n", [[Format, Items]]),
+            io:format("TPL Format Selected: ~p~n", [[Format, Skip, Items]]),
             Result = get_tpl(FirstAlbumTuple, Items, []),
             Result;
         _ -> 
@@ -24,13 +26,17 @@ get_albums(Format, Items) ->
     end.
 
 
-get_tpl(AlbumTuple, 0, ResultAcc) ->
+get_tpl(AlbumTuple, 1, ResultAcc) ->
     {ok, ResultFromEts} = ets_lookup_album(AlbumTuple),
-    {ok, [ResultFromEts | ResultAcc]};
+    {ok, lists:reverse([ResultFromEts | ResultAcc])};
 get_tpl(AlbumTuple, Items, ResultAcc) ->
     {ok, ResultFromEts} = ets_lookup_album(AlbumTuple),
-    AlbumTupleNext = ets:next(?ETS_ALBUMS, AlbumTuple),
-    get_tpl(AlbumTupleNext, Items - 1, [ResultFromEts | ResultAcc]).
+    case ets:next(?ETS_ALBUMS, AlbumTuple) of
+        '$end_of_table' ->
+            {ok, lists:reverse([ResultFromEts | ResultAcc])};
+        AlbumTupleNext ->
+            get_tpl(AlbumTupleNext, Items - 1, [ResultFromEts | ResultAcc])
+    end.
 
 ets_lookup_album(AlbumTuple) ->
     [{AlbumTuple, AlbumID}|_] = ets:lookup(?ETS_ALBUMS, AlbumTuple),

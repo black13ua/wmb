@@ -7,14 +7,13 @@
 </head>
 <body>
 
-<div>
-<p>
-Welcome back, {{ name }}!
+<div align=center>
+
 </p>
 <p>
 You have {{ friends|length }} friends: {{ friends|join:", " }}
 </p>
-Have some albums:
+I have some albums:
 <br>
 {% comment %}
 {% for album in albums %}
@@ -24,7 +23,7 @@ Have some albums:
 
 
 {# this is exciting #}
-<table bgcolor="#dadada" width="60%" border="1">
+<table bgcolor="#DCDCDC" width="60%" border="1">
 
 
 
@@ -51,7 +50,7 @@ Have some albums:
 
           <tr align=left valign=top>
              <td>
-                 <table bgcolor="#dada00" border="1">
+                 <table bgcolor="#F0F8FF" border="1" width=100%>
                      {% for track in album.tracks %}
                      <tr><td>{{ track.title }}</td> </tr>
                      {% endfor %}
@@ -68,6 +67,18 @@ Have some albums:
 {% endfor %}
 
 </table>
+
+{% for page in pages_list %}
+    {% if page == current_page %}
+        {{ page }}
+    {% else %}
+        <a href="?page={{ page }}&limit={{ limit_on_page }}">{{ page }}</a>
+    {% endif %}
+{% endfor %}
+
+
+<br>
+Stats: Albums - {{ albums_count }}, Pages - {{ pages_count }}, LimitOnPage - {{ limit_on_page }}
 
 </div>
 
