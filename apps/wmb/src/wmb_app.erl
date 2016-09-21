@@ -19,9 +19,9 @@ start(_StartType, _StartArgs) ->
     {ok, FilesRoot} = application:get_env(wmb, files_root),
 	Dispatch = cowboy_router:compile([
 		{'_', [
-			{"/",              toppage_handler, []},
-			{"/welcome",       welcome_handler, []},
-            {"/covers/[...]",  cowboy_static,   {dir, FilesRoot}}
+			{"/",            toppage_handler, []},
+			{"/welcome",     welcome_handler, []},
+                        {"/files/[...]", cowboy_static,   {dir, FilesRoot}}
 		]}
 	]),
 	{ok, _} = cowboy:start_http(http, 100, [{ip,{0,0,0,0}},{port, 8080}], [

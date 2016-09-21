@@ -24,12 +24,6 @@ skip_ets_elements(Skip, Ets) ->
 skip_ets_elements(0, Ets, Key) ->
     Key;
 skip_ets_elements(Skip, Ets, Key) ->
-    case ets:next(Ets, Key) of
-        '$end_of_table' ->
-            Key;
-        Next ->
-            skip_ets_elements(Skip - 1, Ets, Next)
-    end.
+    Next = ets:next(Ets, Key),
+    skip_ets_elements(Skip - 1, Ets, Next).
 
-
-%    First = ets:first(Ets),
