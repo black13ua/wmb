@@ -1,0 +1,25 @@
+img.album_cover {
+    align:left;
+    width:300px;
+    height:300px;
+}
+
+table.album {
+    background-color: white;
+    width: 100%;
+}
+
+table.main {
+    background-color: #DCDCDC;
+    border-collapse: collapse;
+    width: 60%;
+}
+
+table.tracks {
+    background-color: #F0F8FF;
+    width: 100%;
+}
+
+table, td, th {
+    border: 1px solid black;
+}

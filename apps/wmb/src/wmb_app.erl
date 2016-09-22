@@ -17,16 +17,17 @@
 start(_StartType, _StartArgs) ->
     %% Start Cowboy
     {ok, FilesRoot} = application:get_env(wmb, files_root),
-	Dispatch = cowboy_router:compile([
-		{'_', [
-			{"/",            toppage_handler, []},
-			{"/welcome",     welcome_handler, []},
-                        {"/files/[...]", cowboy_static,   {dir, FilesRoot}}
-		]}
-	]),
-	{ok, _} = cowboy:start_http(http, 100, [{ip,{0,0,0,0}},{port, 8080}], [
-		{env, [{dispatch, Dispatch}]}
-	]),
+    Dispatch = cowboy_router:compile([
+        {'_', [
+            {"/",             toppage_handler, []},
+            {"/welcome",      welcome_handler, []},
+            {"/files/[...]",  cowboy_static, {dir, FilesRoot}},
+            {"/static/[...]", cowboy_static, {priv_dir, wmb, "www/static"}}
+        ]}
+    ]),
+    {ok, _} = cowboy:start_http(http, 100, [{ip,{0,0,0,0}},{port, 8080}], [
+        {env, [{dispatch, Dispatch}]}
+    ]),
     %%
     wmb_sup:start_link().
 
