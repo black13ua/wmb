@@ -27,7 +27,7 @@ I have some albums:
               </td>
           </tr>
           <tr>
-             <td rowspan="4" valign=top width=300>
+             <td rowspan="4" valign="top" width="250">
              <img class="album_cover" src="/files/{{ album.path }}/{{ album.cover }}">
              </td>
           </tr>

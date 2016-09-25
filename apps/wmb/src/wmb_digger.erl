@@ -77,20 +77,18 @@ init([]) ->
 %% @end
 %%--------------------------------------------------------------------
 handle_call({parse, File, FileID3Tags}, _From, State) ->
-    {ok, FilesRoot} = application:get_env(wmb, files_root),
-    FilePathFull = lists:concat([FilesRoot, "/", File]),
-    AlbumPathRel = filename:dirname(File),
-    AlbumPathFull = filename:dirname(FilePathFull),
-    io:format("~p~n: ", [{AlbumPathFull, File, FileID3Tags}]),
-
     Album  = maps:get(<<"ALBUM">>,  FileID3Tags, "Undef_Album"),
     Artist = maps:get(<<"ARTIST">>, FileID3Tags, "Undef_Artist"),
     Genre  = maps:get(<<"GENRE">>,  FileID3Tags, "Undef_Genre"),
     Date   = maps:get(<<"DATE">>,   FileID3Tags, "Undef_Date"),
     Title  = maps:get(<<"TITLE">>,  FileID3Tags, "Undef_Title"),
-
     case get_album_id(Artist, Album, Date, Genre) of
         undefined ->
+            {ok, FilesRoot} = application:get_env(wmb, files_root),
+            FilePathFull = lists:concat([FilesRoot, "/", File]),
+            AlbumPathRel = filename:dirname(File),
+            AlbumPathFull = filename:dirname(FilePathFull),
+            io:format("~p~n: ", [{AlbumPathFull, File, FileID3Tags}]),
             AlbumID = erlang:unique_integer([positive, monotonic]),
             ets:insert(?ETS_ALBUMS, {{{artist, Artist}, {album, Album}, {date, Date}}, {album_id, AlbumID}}),
             ets:insert(?ETS_TRACKS, {{album_id, AlbumID}, {{file, File}, {title, Title}}}),
@@ -104,31 +102,10 @@ handle_call({parse, File, FileID3Tags}, _From, State) ->
         ExistedAlbumID ->
             ets:insert(?ETS_TRACKS, {{album_id, ExistedAlbumID}, {{file, File}, {title, Title}}})
     end,
-    
     {reply, FileID3Tags, State};
 handle_call(_Request, _From, State) ->
     Reply = ok,
     {reply, Reply, State}.
-
-get_album_id(Artist, Album, Date, Genre) ->
-    case ets:lookup(?ETS_ALBUMS, {{artist, Artist}, {album, Album}, {date, Date}}) of
-        [] ->
-            undefined;
-        [{_, {album_id, AlbumID}}|_] ->
-            AlbumID
-    end.
-
-find_album_cover(AlbumFilesList, [PossibleCover|RestPossibleCovers]) ->
-    case lists:member(PossibleCover, AlbumFilesList) of
-        true ->
-            {ok, PossibleCover};
-        false ->
-            find_album_cover(AlbumFilesList, RestPossibleCovers)
-    end;
-find_album_cover(AlbumFilesList, []) ->
-    {error, cover_not_found}.
-
-
 
 %%--------------------------------------------------------------------
 %% @private
@@ -182,7 +159,7 @@ code_change(_OldVsn, State, _Extra) ->
         {ok, State}.
 
 %%%===================================================================
-%%% Internal functions
+%%% Exported functions
 %%%===================================================================
 parse_file(File) ->
     {ok, FilesRoot} = application:get_env(wmb, files_root),
@@ -194,3 +171,24 @@ parse_file(File) ->
         {error, Error} ->
             ets:insert(?ETS_ERRORS, {{file, File}, {error, Error}})
     end.
+
+%%%===================================================================
+%%% Internal functions
+%%%===================================================================
+get_album_id(Artist, Album, Date, Genre) ->
+    case ets:lookup(?ETS_ALBUMS, {{artist, Artist}, {album, Album}, {date, Date}}) of
+        [] ->
+            undefined;
+        [{_, {album_id, AlbumID}}|_] ->
+            AlbumID
+    end.
+
+find_album_cover(AlbumFilesList, [PossibleCover|RestPossibleCovers]) ->
+    case lists:member(PossibleCover, AlbumFilesList) of
+        true ->
+            {ok, PossibleCover};
+        false ->
+            find_album_cover(AlbumFilesList, RestPossibleCovers)
+    end;
+find_album_cover(AlbumFilesList, []) ->
+    {error, cover_not_found}.

@@ -12,7 +12,7 @@
   0},
  {<<"flactags">>,
   {git,"git://github.com/black13ua/flactags.git",
-       {ref,"a6b2e9438cb8dd38ff28acdb6e62ab3ce930e158"}},
+       {ref,"c8a0b229199d3ccee121ad412f2db8a242aa7f49"}},
   0},
  {<<"ranch">>,
   {git,"https://github.com/ninenines/ranch.git",
