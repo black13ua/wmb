@@ -60,6 +60,7 @@ start_link() ->
 init([]) ->
     self() ! read_all,
     ets:new(?ETS_ALBUMS, [public, bag, named_table]),
+    ets:new(?ETS_ARTISTS, [public, bag, named_table]),
     ets:new(?ETS_COVERS, [public, bag, named_table]),
     ets:new(?ETS_GENRES, [public, bag, named_table]),
     ets:new(?ETS_PATHS,  [public, bag, named_table]),

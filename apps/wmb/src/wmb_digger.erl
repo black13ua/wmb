@@ -79,6 +79,7 @@ init([]) ->
 handle_call({parse, File, FileID3Tags}, _From, State) ->
     Album  = maps:get(<<"ALBUM">>,  FileID3Tags, "Undef_Album"),
     Artist = maps:get(<<"ARTIST">>, FileID3Tags, "Undef_Artist"),
+    AlbumArtist = maps:get(<<"ALBUMARTIST">>, FileID3Tags, "Undef_Artist"),
     Genre  = maps:get(<<"GENRE">>,  FileID3Tags, "Undef_Genre"),
     Date   = maps:get(<<"DATE">>,   FileID3Tags, "Undef_Date"),
     Title  = maps:get(<<"TITLE">>,  FileID3Tags, "Undef_Title"),
@@ -90,10 +91,11 @@ handle_call({parse, File, FileID3Tags}, _From, State) ->
             AlbumPathFull = filename:dirname(FilePathFull),
             io:format("~p~n: ", [{AlbumPathFull, File, FileID3Tags}]),
             AlbumID = erlang:unique_integer([positive, monotonic]),
-            ets:insert(?ETS_ALBUMS, {{{artist, Artist}, {album, Album}, {date, Date}}, {album_id, AlbumID}}),
-            ets:insert(?ETS_TRACKS, {{album_id, AlbumID}, {{file, File}, {title, Title}}}),
-            ets:insert(?ETS_GENRES, {{album_id, AlbumID}, {genre, Genre}}),
-            ets:insert(?ETS_PATHS,  {{album_id, AlbumID}, {path, AlbumPathRel}}),
+            ets:insert(?ETS_ALBUMS,  {{{album, Album}, {date, Date}}, {album_id, AlbumID}}),
+            ets:insert(?ETS_ARTISTS, {{album_id, AlbumID}, {artist, AlbumArtist}}),
+            ets:insert(?ETS_TRACKS,  {{album_id, AlbumID}, {{file, File}, {title, Title}}}),
+            ets:insert(?ETS_GENRES,  {{album_id, AlbumID}, {genre, Genre}}),
+            ets:insert(?ETS_PATHS,   {{album_id, AlbumID}, {path, AlbumPathRel}}),
             {ok, PossibleCoversList} = application:get_env(wmb, possible_covers_list),
             {ok, AlbumFilesList} = file:list_dir(AlbumPathFull),
             {_, AlbumCover} = find_album_cover(AlbumFilesList, PossibleCoversList),
@@ -176,7 +178,7 @@ parse_file(File) ->
 %%% Internal functions
 %%%===================================================================
 get_album_id(Artist, Album, Date, Genre) ->
-    case ets:lookup(?ETS_ALBUMS, {{artist, Artist}, {album, Album}, {date, Date}}) of
+    case ets:lookup(?ETS_ALBUMS, {{album, Album}, {date, Date}}) of
         [] ->
             undefined;
         [{_, {album_id, AlbumID}}|_] ->

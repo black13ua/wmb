@@ -12,7 +12,6 @@ get_albums(Format) ->
 
 % Format can be json or tpl
 get_albums(Format, Skip, Items) ->
-    %%FirstAlbumTuple = ets:first(?ETS_ALBUMS),
     FirstAlbumTuple = wmb_helpers:skip_ets_elements(Skip, ?ETS_ALBUMS),
     case Format of
         json ->
@@ -40,11 +39,13 @@ get_tpl(AlbumTuple, Items, ResultAcc) ->
 
 ets_lookup_album(AlbumTuple) ->
     [{AlbumTuple, AlbumID}|_] = ets:lookup(?ETS_ALBUMS, AlbumTuple),
-    [{AlbumID, GenreTuple}] = ets:lookup(?ETS_GENRES, AlbumID),
+    [{AlbumID, AlbumArtist}] = ets:lookup(?ETS_ARTISTS, AlbumID),
     [{AlbumID, CoverTuple}] = ets:lookup(?ETS_COVERS, AlbumID),
+    [{AlbumID, GenreTuple}] = ets:lookup(?ETS_GENRES, AlbumID),
+
     [{AlbumID, PathTuple}] = ets:lookup(?ETS_PATHS, AlbumID),
     TracksList = ets:match(?ETS_TRACKS, {AlbumID, {'$2', '$1'}}),
     AlbumList = erlang:tuple_to_list(AlbumTuple),
-    AlbumResult = [CoverTuple, GenreTuple, PathTuple, {tracks, TracksList} | AlbumList],
+    AlbumResult = [AlbumArtist, CoverTuple, GenreTuple, PathTuple, {tracks, TracksList} | AlbumList],
     {ok, AlbumResult}.
 
