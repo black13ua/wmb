@@ -36,7 +36,7 @@ I have some albums:
                  <table class="tracks">
                      {% for track in album.tracks %}
                      <tr><td width="95%">{{ track.title }}</td>
-                         <td width="5%"><a href="/files/{{ track.file }}">File</a></td></tr>
+                         <td width="5%"><a href="/files/{{ track.file|urlencode }}">File</a></td></tr>
                      {% endfor %}
                  </table>
              </td>
