@@ -11,9 +11,8 @@
 <div align="center">
 
 <p>
-You have {{ friends|length }} friends: {{ friends|join:", " }}
-</p>
-I have some albums:
+You have {{ genres_list|length }} Genres: {{ genres_list|join:", " }}
+
 <br>
 
 <table class="main">

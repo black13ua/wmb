@@ -20,6 +20,7 @@ handle(Req, State) ->
     PagesCount = wmb_helpers:ceiling(AlbumsCount / erlang:binary_to_integer(LimitOnPage)),
     PagesList = lists:seq(1, PagesCount),
     SkipAlbums = erlang:binary_to_integer(CurrentPage) * erlang:binary_to_integer(LimitOnPage) - erlang:binary_to_integer(LimitOnPage),
+    GenresList = lists:usort(lists:flatten(ets:match(?ETS_GENRES, {'_',{genre,'$2'}}))),
     %%
     
     {ok, Res2} = albums_merger:get_albums(tpl, SkipAlbums, erlang:binary_to_integer(LimitOnPage)),
@@ -32,7 +33,7 @@ handle(Req, State) ->
                     {pages_list, PagesList},
                     {limit_on_page, LimitOnPage},
                     {current_page, CurrentPage},
-                    {friends, [<<"Frankie Lee">>, <<"Judas Priest">>]},
+                    {genres_list, GenresList},
                     {albums, Res2} 
                  ]),
 	{ok, Req2} = cowboy_req:reply(
