@@ -21,6 +21,7 @@ handle(Req, State) ->
     PagesList = lists:seq(1, PagesCount),
     SkipAlbums = erlang:binary_to_integer(CurrentPage) * erlang:binary_to_integer(LimitOnPage) - erlang:binary_to_integer(LimitOnPage),
     GenresList = lists:usort(lists:flatten(ets:match(?ETS_GENRES, {'_',{genre,'$2'}}))),
+    DatesList = lists:usort(lists:flatten(ets:match(wmb_albums, {{{album, '_'}, {date, '$1'}}, {album_id, '_'}}))),
     %%
     
     {ok, Res2} = albums_merger:get_albums(tpl, SkipAlbums, erlang:binary_to_integer(LimitOnPage)),
@@ -34,6 +35,7 @@ handle(Req, State) ->
                     {limit_on_page, LimitOnPage},
                     {current_page, CurrentPage},
                     {genres_list, GenresList},
+                    {dates_list, DatesList},
                     {albums, Res2} 
                  ]),
 	{ok, Req2} = cowboy_req:reply(

@@ -11,8 +11,11 @@
 <div align="center">
 
 <p>
-You have {{ genres_list|length }} Genres: {{ genres_list|join:", " }}
-
+We have:
+<br>
+ {{ genres_list|length }} Genres: {{ genres_list|join:", " }}
+<br>
+ {{ dates_list|length }} Dates: {{ dates_list|join:", " }}
 <br>
 
 <table class="main">
