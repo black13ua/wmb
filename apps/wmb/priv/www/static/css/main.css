@@ -20,6 +20,22 @@ table.tracks {
     width: 100%;
 }
 
+table.tracks button.play-button {
+    background: #ff8080;
+}
+
+table.tracks button.play-button.active {
+    background: #990000;
+}
+
+table.tracks button.add-button {
+    background: #80ffff;
+}
+
+table.tracks button.add-button.active {
+    background: #006666;
+}
+
 table, td, th {
     border: 1px solid black;
 }
