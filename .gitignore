@@ -10,6 +10,7 @@ _*
 .eunit
 .rebar
 .rebar3
+rebar.lock
 deps
 ebin
 erl_crash.dump

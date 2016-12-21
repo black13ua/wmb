@@ -20,6 +20,7 @@ start(_StartType, _StartArgs) ->
     Dispatch = cowboy_router:compile([
         {'_', [
             {"/",             toppage_handler, []},
+            {"/api/[...]",    api_handler,     []},
             {"/welcome",      welcome_handler, []},
             {"/files/[...]",  cowboy_static, {dir, FilesRoot}},
             {"/static/[...]", cowboy_static, {priv_dir, wmb, "www/static"}}

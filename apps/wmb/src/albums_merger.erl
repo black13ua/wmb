@@ -43,7 +43,7 @@ ets_lookup_album(AlbumTuple) ->
     [{AlbumID, CoverTuple}] = ets:lookup(?ETS_COVERS, AlbumID),
     [{AlbumID, GenreTuple}] = ets:lookup(?ETS_GENRES, AlbumID),
     [{AlbumID, PathTuple}] = ets:lookup(?ETS_PATHS, AlbumID),
-    TracksList = ets:match(?ETS_TRACKS, {AlbumID, {'$2', '$1'}}),
+    TracksList = ets:match(?ETS_TRACKS, {AlbumID, {'$2', '$1', '_'}}),
     AlbumList = erlang:tuple_to_list(AlbumTuple),
     AlbumResult = [AlbumArtist, CoverTuple, GenreTuple, PathTuple, {tracks, TracksList} | AlbumList],
     {ok, AlbumResult}.

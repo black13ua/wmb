@@ -83,6 +83,7 @@ handle_call({parse, File, FileID3Tags}, _From, State) ->
     Genre  = maps:get(<<"GENRE">>,  FileID3Tags, <<"Undef_Genre">>),
     Date   = maps:get(<<"DATE">>,   FileID3Tags, <<"Undef_Date">>),
     Title  = maps:get(<<"TITLE">>,  FileID3Tags, <<"Undef_Title">>),
+    TrackID = erlang:unique_integer([positive, monotonic]),
     case get_album_id(Artist, Album, Date, Genre) of
         undefined ->
             {ok, FilesRoot} = application:get_env(wmb, files_root),
@@ -93,7 +94,7 @@ handle_call({parse, File, FileID3Tags}, _From, State) ->
             AlbumID = erlang:unique_integer([positive, monotonic]),
             ets:insert(?ETS_ALBUMS,  {{{album, Album}, {date, Date}}, {album_id, AlbumID}}),
             ets:insert(?ETS_ARTISTS, {{album_id, AlbumID}, {artist, AlbumArtist}}),
-            ets:insert(?ETS_TRACKS,  {{album_id, AlbumID}, {{file, File}, {title, Title}}}),
+            ets:insert(?ETS_TRACKS,  {{album_id, AlbumID}, {{file, File}, {title, Title}, {track_id, TrackID}}}),
             ets:insert(?ETS_GENRES,  {{album_id, AlbumID}, {genre, Genre}}),
             ets:insert(?ETS_PATHS,   {{album_id, AlbumID}, {path, AlbumPathRel}}),
             {ok, PossibleCoversList} = application:get_env(wmb, possible_covers_list),
@@ -102,7 +103,7 @@ handle_call({parse, File, FileID3Tags}, _From, State) ->
             ets:insert(?ETS_COVERS, {{album_id, AlbumID}, {cover, AlbumCover}}),
             io:format("Album Cover is: ~p~n", [AlbumCover]);
         ExistedAlbumID ->
-            ets:insert(?ETS_TRACKS, {{album_id, ExistedAlbumID}, {{file, File}, {title, Title}}})
+            ets:insert(?ETS_TRACKS, {{album_id, ExistedAlbumID}, {{file, File}, {title, Title}, {track_id, TrackID}}})
     end,
     {reply, FileID3Tags, State};
 handle_call(_Request, _From, State) ->
