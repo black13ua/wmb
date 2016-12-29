@@ -1,6 +1,6 @@
 console.info('Hello once again!');
 var playerAPI = {};
-
+var pathToFilesApi = '/api/tracks/'
 var playlist = [
     {
         name : "Message In a Bottle",
@@ -11,21 +11,28 @@ var playlist = [
     }
 ];
 
-function addTrackToPlaylist(name, url, artist, album, picture) {
-    if (!playerAPI) return;
-    var songObj = {
-        name: name,
-        url: url,
-        artist: artist,
-        album: album,
-        picture: picture
-    };
-    playerAPI.addSong = songObj;
+function addTrackToPlaylist(id) {
+    var fullPath = pathToFilesApi + id;
+    $.get(fullPath)
+        .done(function(data) {
+            if (!playerAPI) return;
+            playerAPI.addSong = {
+                _id: id,
+                name: data.artist + ' - ' + data.title,
+                url: encodeURI(data.file),
+                artist: data.artist,
+                album: data.album,
+                picture: data.cover
+            };
+        })
+        .fail(function(error) {
+            console.warn('NO_TRACK');
+        });
 }
 
-function removeTrackFromPlaylist(url) {
+function removeTrackFromPlaylist(id) {
     if (!playerAPI) return;
-    var songToRemove = playerAPI.playlist.find(function(song){ return song.url === url});
+    var songToRemove = playerAPI.playlist.find(function(song){ return song._id === id});
     var indexOfSong = playerAPI.playlist.indexOf(songToRemove);
     if (indexOfSong < 0) {
         console.warn('NOTHING_TO_REMOVE');
@@ -84,17 +91,13 @@ function reactingOnClicks(event) {
 
 function handleActiveClass(target) { 
     var isAlreadyActive = Array.prototype.join.call(target.classList, '').match(/active/gi); 
-    var artist = target.dataset.artist;
-    var name = target.dataset.name;
-    var picture = target.dataset.picture;
-    var album = target.dataset.album;
-    var url = target.dataset.url;
+    var id = +target.dataset.id;
     if (isAlreadyActive) { 
         target.classList.remove('active'); 
-        removeTrackFromPlaylist(url);
+        removeTrackFromPlaylist(id);
     } else { 
         target.classList.add('active'); 
-        addTrackToPlaylist(name, url, artist, album, picture);
+        addTrackToPlaylist(id);
     } 
 };
 

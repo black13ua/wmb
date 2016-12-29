@@ -42,11 +42,7 @@ We have:
                      {% for track in album.tracks %}
                      <tr><td width="85%">{{ track.title }}</td>
                          <td width="5%"><button
-                                            data-url="/files/{{ track.file|urlencode }}"
-                                            data-artist="{{ album.artist }}"
-                                            data-name="{{ track.title }}"
-                                            data-album="{{ album.album }}"
-                                            data-picture="/files/{{ album.path }}/{{ album.cover }}"
+                                            data-id="{{ track.track_id }}"
                                             class="add-button">+/-
                                         </button>
                          </td>
