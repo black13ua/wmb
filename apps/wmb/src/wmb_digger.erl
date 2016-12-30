@@ -189,7 +189,8 @@ get_album_id(Artist, Album, Date, Genre) ->
 find_album_cover(AlbumFilesList, [PossibleCover|RestPossibleCovers]) ->
     case lists:member(PossibleCover, AlbumFilesList) of
         true ->
-            {ok, PossibleCover};
+            Cover = unicode:characters_to_binary(PossibleCover),
+            {ok, Cover};
         false ->
             find_album_cover(AlbumFilesList, RestPossibleCovers)
     end;
