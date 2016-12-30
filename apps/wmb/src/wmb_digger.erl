@@ -88,7 +88,7 @@ handle_call({parse, File, FileID3Tags}, _From, State) ->
         undefined ->
             {ok, FilesRoot} = application:get_env(wmb, files_root),
             FilePathFull = lists:concat([FilesRoot, "/", File]),
-            AlbumPathRel = filename:dirname(File),
+            AlbumPathRelBin = unicode:characters_to_binary(filename:dirname(File)),
             AlbumPathFull = filename:dirname(FilePathFull),
             io:format("~p~n: ", [{AlbumPathFull, File, FileID3Tags}]),
             AlbumID = erlang:unique_integer([positive, monotonic]),
@@ -96,7 +96,7 @@ handle_call({parse, File, FileID3Tags}, _From, State) ->
             ets:insert(?ETS_ARTISTS, {{album_id, AlbumID}, {artist, AlbumArtist}}),
             ets:insert(?ETS_TRACKS,  {{album_id, AlbumID}, {{file, File}, {title, Title}, {track_id, TrackID}}}),
             ets:insert(?ETS_GENRES,  {{album_id, AlbumID}, {genre, Genre}}),
-            ets:insert(?ETS_PATHS,   {{album_id, AlbumID}, {path, AlbumPathRel}}),
+            ets:insert(?ETS_PATHS,   {{album_id, AlbumID}, {path, AlbumPathRelBin}}),
             {ok, PossibleCoversList} = application:get_env(wmb, possible_covers_list),
             {ok, AlbumFilesList} = file:list_dir(AlbumPathFull),
             {_, AlbumCover} = find_album_cover(AlbumFilesList, PossibleCoversList),

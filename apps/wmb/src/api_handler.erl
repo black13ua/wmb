@@ -19,10 +19,9 @@ handle(Req, State) ->
 
         [[AlbumID, {file, File}, Title]] = ets:match(?ETS_TRACKS, {'$1', {'$2', '$3', {track_id, binary_to_integer(APIid)}}}),
         [{AlbumID, {cover, AlbumCover}}] = ets:lookup(?ETS_COVERS, AlbumID),
-        [{AlbumID, {path, AlbumPath}}] = ets:lookup(?ETS_PATHS, AlbumID),
+        [{AlbumID, {path, AlbumPathBin}}] = ets:lookup(?ETS_PATHS, AlbumID),
         [[{AlbumTuple, DateTuple}]] = ets:match(?ETS_ALBUMS, {'$1', AlbumID}),
         [{AlbumID, AlbumArtist}] = ets:lookup(?ETS_ARTISTS, AlbumID),
-        AlbumPathBin = unicode:characters_to_binary(AlbumPath),
         FileBin      = unicode:characters_to_binary(File),
         FilesUrlRoot = <<"/files/">>,
         io:format("TrackInfo: ~p~n", [[AlbumID, Title, AlbumPathBin, AlbumCover, AlbumArtist]]),
