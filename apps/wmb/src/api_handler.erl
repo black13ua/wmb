@@ -26,7 +26,7 @@ handle(Req, State) ->
         FilesUrlRoot = <<"/files/">>,
         io:format("TrackInfo: ~p~n", [[AlbumID, Title, AlbumPathBin, AlbumCover, AlbumArtist]]),
         UrlCover = <<FilesUrlRoot/binary, AlbumPathBin/binary, <<"/">>/binary, AlbumCover/binary>>,
-        UrlFile  = <<FilesUrlRoot/binary, FileBin/binary>>,
+        UrlFile  = <<FilesUrlRoot/binary, AlbumPathBin/binary, <<"/">>/binary, FileBin/binary>>,
 
 	Res = jsx:encode([{file, UrlFile}, {cover, UrlCover}, AlbumArtist, AlbumTuple, DateTuple, Title]),
 

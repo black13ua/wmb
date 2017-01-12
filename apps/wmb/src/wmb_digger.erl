@@ -83,6 +83,7 @@ handle_call({parse, File, FileID3Tags}, _From, State) ->
     Genre  = maps:get(<<"GENRE">>,  FileID3Tags, <<"Undef_Genre">>),
     Date   = maps:get(<<"DATE">>,   FileID3Tags, <<"Undef_Date">>),
     Title  = maps:get(<<"TITLE">>,  FileID3Tags, <<"Undef_Title">>),
+    FileBasename = unicode:characters_to_binary(filename:basename(File)),
     TrackID = erlang:unique_integer([positive, monotonic]),
     case get_album_id(Artist, Album, Date, Genre) of
         undefined ->
@@ -90,11 +91,11 @@ handle_call({parse, File, FileID3Tags}, _From, State) ->
             FilePathFull = lists:concat([FilesRoot, "/", File]),
             AlbumPathRelBin = unicode:characters_to_binary(filename:dirname(File)),
             AlbumPathFull = filename:dirname(FilePathFull),
-            io:format("~p~n: ", [{AlbumPathFull, File, FileID3Tags}]),
+            io:format("Files and Tags: ~p~n", [{AlbumPathFull, FileBasename, FileID3Tags}]),
             AlbumID = erlang:unique_integer([positive, monotonic]),
             ets:insert(?ETS_ALBUMS,  {{{album, Album}, {date, Date}}, {album_id, AlbumID}}),
             ets:insert(?ETS_ARTISTS, {{album_id, AlbumID}, {artist, AlbumArtist}}),
-            ets:insert(?ETS_TRACKS,  {{album_id, AlbumID}, {{file, File}, {title, Title}, {track_id, TrackID}}}),
+            ets:insert(?ETS_TRACKS,  {{album_id, AlbumID}, {{file, FileBasename}, {title, Title}, {track_id, TrackID}}}),
             ets:insert(?ETS_GENRES,  {{album_id, AlbumID}, {genre, Genre}}),
             ets:insert(?ETS_PATHS,   {{album_id, AlbumID}, {path, AlbumPathRelBin}}),
             {ok, PossibleCoversList} = application:get_env(wmb, possible_covers_list),
@@ -103,7 +104,7 @@ handle_call({parse, File, FileID3Tags}, _From, State) ->
             ets:insert(?ETS_COVERS, {{album_id, AlbumID}, {cover, AlbumCover}}),
             io:format("Album Cover is: ~p~n", [AlbumCover]);
         ExistedAlbumID ->
-            ets:insert(?ETS_TRACKS, {{album_id, ExistedAlbumID}, {{file, File}, {title, Title}, {track_id, TrackID}}})
+            ets:insert(?ETS_TRACKS, {{album_id, ExistedAlbumID}, {{file, FileBasename}, {title, Title}, {track_id, TrackID}}})
     end,
     {reply, FileID3Tags, State};
 handle_call(_Request, _From, State) ->
