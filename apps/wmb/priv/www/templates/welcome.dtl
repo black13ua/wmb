@@ -40,13 +40,13 @@ We have:
              <td>
                  <table class="tracks">
                      {% for track in album.tracks %}
-                     <tr><td width="85%">{{ track.title }}</td>
+                     <tr><td width="90%">{{ track.title }}</td>
                          <td width="5%"><button
                                             data-id="{{ track.track_id }}"
                                             class="add-button">+/-
                                         </button>
                          </td>
-                         <td width="10%"><a href="/files/{{ track.file|urlencode }}">File</a></td></tr>
+                         <td width="5%"><a href="/files/{{ track.file|urlencode }}">File</a></td></tr>
                      {% endfor %}
                  </table>
              </td>

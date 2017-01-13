@@ -10,32 +10,51 @@
 -include("ets_names.hrl").
 
 init(_Type, Req, []) ->
-	{ok, Req, undefined}.
+    {ok, Req, undefined}.
 
 handle(Req, State) ->
-        {Path, Req1} = cowboy_req:path(Req),
-        [_, _, APIType, APIid] = binary:split(Path, [<<"/">>], [global]),
-        io:format("Path Elements: ~p~n", [[APIType, APIid]]),
+    {Path, Req1} = cowboy_req:path(Req),
+    [_, _, APIType, APIid] = binary:split(Path, [<<"/">>], [global]),
+    io:format("Path Elements: ~p~n", [[APIType, APIid]]),
+    FilesUrlRoot = <<"/files/">>,
 
-        [[AlbumID, {file, File}, Title]] = ets:match(?ETS_TRACKS, {'$1', {'$2', '$3', {track_id, binary_to_integer(APIid)}}}),
-        [{AlbumID, {cover, AlbumCover}}] = ets:lookup(?ETS_COVERS, AlbumID),
-        [{AlbumID, {path, AlbumPathBin}}] = ets:lookup(?ETS_PATHS, AlbumID),
-        [[{AlbumTuple, DateTuple}]] = ets:match(?ETS_ALBUMS, {'$1', AlbumID}),
-        [{AlbumID, AlbumArtist}] = ets:lookup(?ETS_ARTISTS, AlbumID),
-        FileBin      = unicode:characters_to_binary(File),
-        FilesUrlRoot = <<"/files/">>,
-        io:format("TrackInfo: ~p~n", [[AlbumID, Title, AlbumPathBin, AlbumCover, AlbumArtist]]),
-        UrlCover = <<FilesUrlRoot/binary, AlbumPathBin/binary, <<"/">>/binary, AlbumCover/binary>>,
-        UrlFile  = <<FilesUrlRoot/binary, AlbumPathBin/binary, <<"/">>/binary, FileBin/binary>>,
+    case APIType of
+        <<"albums">> ->
+            AlbumID = {album_id, binary_to_integer(APIid)},
+            [[{AlbumTuple, DateTuple}]] = ets:match(?ETS_ALBUMS, {'$1', AlbumID}),
+            [{AlbumID, AlbumArtist}] = ets:lookup(?ETS_ARTISTS, AlbumID),
+            [{AlbumID, {path, AlbumPathBin}}] = ets:lookup(?ETS_PATHS, AlbumID),
+            [{AlbumID, {cover, AlbumCover}}] = ets:lookup(?ETS_COVERS, AlbumID),
+            UrlCover = <<FilesUrlRoot/binary, AlbumPathBin/binary, <<"/">>/binary, AlbumCover/binary>>,
+            TracksList = ets:match(?ETS_TRACKS, {AlbumID, {'$2', '$1', '_'}}),
+            TracksListWithPath = lists:map(fun(X) ->
+                                     File = proplists:get_value(file, X),
+                                     Title = proplists:get_value(title, X),
+				     FullPath = <<FilesUrlRoot/binary, AlbumPathBin/binary, <<"/">>/binary, File/binary>>,
+				     [{file, FullPath}, {title, Title}]  end, TracksList),
+            io:format("AlbumID is: ~p~n", [[AlbumArtist, AlbumTuple, DateTuple, {cover, UrlCover}, {tracks, TracksListWithPath}]]),
+            Res = jsx:encode([AlbumArtist, AlbumTuple, DateTuple, {cover, UrlCover}, {tracks, TracksListWithPath}]);
+        <<"tracks">> ->
+            [[AlbumID, {file, File}, Title]] = ets:match(?ETS_TRACKS, {'$1', {'$2', '$3', {track_id, binary_to_integer(APIid)}}}),
+            [{AlbumID, {cover, AlbumCover}}] = ets:lookup(?ETS_COVERS, AlbumID),
+            [{AlbumID, {path, AlbumPathBin}}] = ets:lookup(?ETS_PATHS, AlbumID),
+            [[{AlbumTuple, DateTuple}]] = ets:match(?ETS_ALBUMS, {'$1', AlbumID}),
+            [{AlbumID, AlbumArtist}] = ets:lookup(?ETS_ARTISTS, AlbumID),
+            FileBin = unicode:characters_to_binary(File),
+            io:format("TrackInfo: ~p~n", [[AlbumID, Title, AlbumPathBin, AlbumCover, AlbumArtist]]),
+            UrlCover = <<FilesUrlRoot/binary, AlbumPathBin/binary, <<"/">>/binary, AlbumCover/binary>>,
+            UrlFile  = <<FilesUrlRoot/binary, AlbumPathBin/binary, <<"/">>/binary, FileBin/binary>>,
+            Res = jsx:encode([{file, UrlFile}, {cover, UrlCover}, AlbumArtist, AlbumTuple, DateTuple, Title]);
+        _ ->
+            Res = <<"Not Found">>
+    end,
 
-	Res = jsx:encode([{file, UrlFile}, {cover, UrlCover}, AlbumArtist, AlbumTuple, DateTuple, Title]),
-
-	{ok, Req2} = cowboy_req:reply(
-                   200,
-                   [{<<"content-type">>, <<"application/json">>}],
-	               Res,
-                   Req),
-	{ok, Req2, State}.
+    {ok, Req2} = cowboy_req:reply(
+               200,
+               [{<<"content-type">>, <<"application/json">>}],
+                   Res,
+               Req),
+    {ok, Req2, State}.
 
 terminate(_Reason, _Req, _State) ->
 	ok.
