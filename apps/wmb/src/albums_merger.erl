@@ -1,5 +1,5 @@
 -module(albums_merger).
--export([get_albums/1, get_albums/3]).
+-export([get_albums/1, get_albums/3, get_tracklist_by_albumid/1, get_tracklist_by_albumtuple/1]).
 
 -include("ets_names.hrl").
 
@@ -43,8 +43,30 @@ ets_lookup_album(AlbumTuple) ->
     [{AlbumID, CoverTuple}] = ets:lookup(?ETS_COVERS, AlbumID),
     [{AlbumID, GenreTuple}] = ets:lookup(?ETS_GENRES, AlbumID),
     [{AlbumID, PathTuple}] = ets:lookup(?ETS_PATHS, AlbumID),
-    TracksList = ets:match(?ETS_TRACKS, {AlbumID, {'$2', '$1', '$3'}}),
+%    TracksList = ets:match(?ETS_TRACKS, {AlbumID, {'$2', '$1', '$3'}}),
+io:format("AlbumID: ~p~n", [AlbumID]),
+    {ok, TracksList} = get_tracklist_by_albumtuple(AlbumID),
     AlbumList = erlang:tuple_to_list(AlbumTuple),
-    AlbumResult = [AlbumArtist, CoverTuple, GenreTuple, PathTuple, {tracks, TracksList} | AlbumList],
+    AlbumResult = [AlbumID, AlbumArtist, CoverTuple, GenreTuple, PathTuple, {tracks, TracksList} | AlbumList],
     {ok, AlbumResult}.
+
+get_tracklist_by_albumid(AlbumID) ->
+    get_tracklist_by_albumtuple({album_id, AlbumID}).
+
+get_tracklist_by_albumtuple(AlbumID) ->
+    FilesUrlRoot = <<"/files/">>,
+    [{AlbumID, {path, AlbumPathBin}}] = ets:lookup(?ETS_PATHS, AlbumID),
+    TracksList = ets:match(?ETS_TRACKS, {AlbumID, {'$2', '$1', '$3'}}),
+    case TracksList of
+        [] ->
+            {error, trackslist_empty};
+        _ ->
+            TracksListWithPath = lists:map(fun(X) ->
+                                 File = proplists:get_value(file, X),
+                                 Title = proplists:get_value(title, X),
+                                 TrackID = proplists:get_value(track_id, X),
+                                 FullPath = <<FilesUrlRoot/binary, AlbumPathBin/binary, <<"/">>/binary, File/binary>>,
+                                 [{file, FullPath}, {title, Title}, {track_id, TrackID}]  end, TracksList),
+            {ok, TracksListWithPath}
+    end.
 

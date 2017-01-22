@@ -19,16 +19,20 @@ We have:
  {{ dates_list|length }} Dates: {{ dates_list|join:", " }}
 <br>
 
-
-
 <table class="main">
 {% for album in albums %}
   <tr>
   <td>
       <table class="album">
           <tr>
-              <td colspan="3">
-              {{ album.artist }} - [{{ album.date }}] {{ album.album }}
+              <td colspan="2">
+                  <div id="maincontainer">
+                      <div id="leftcolumn">
+                          {{ album.artist }} - [{{ album.date }}] {{ album.album }}
+                      </div><div id="contentwrapper">
+                          <button data-id="{{ album.album_id }}" class="add-album">+/-</button>
+                      </div>
+                  </div>
               </td>
           </tr>
           <tr>
@@ -46,7 +50,7 @@ We have:
                                             class="add-button">+/-
                                         </button>
                          </td>
-                         <td width="5%"><a href="/files/{{ track.file|urlencode }}">File</a></td></tr>
+                         <td width="5%"><a href="{{ track.file|urlencode }}">File</a></td></tr>
                      {% endfor %}
                  </table>
              </td>
