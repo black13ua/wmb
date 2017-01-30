@@ -33,8 +33,8 @@ handle(Req, State) ->
                                      Title = proplists:get_value(title, X),
 				     FullPath = <<FilesUrlRoot/binary, AlbumPathBin/binary, <<"/">>/binary, File/binary>>,
 				     [{file, FullPath}, {title, Title}, {track_id, TrackID}]  end, TracksList),
-            io:format("AlbumID is: ~p~n", [[AlbumArtist, AlbumTuple, DateTuple, {cover, UrlCover}, {tracks, TracksListWithPath}]]),
-            Res = jsx:encode([AlbumArtist, AlbumTuple, DateTuple, {cover, UrlCover}, {tracks, TracksListWithPath}]);
+            io:format("Response from /api/albums/id: ~p~n", [[AlbumID, AlbumArtist, AlbumTuple, DateTuple, {cover, UrlCover}, {tracks, TracksListWithPath}]]),
+            Res = jsx:encode([AlbumID, AlbumArtist, AlbumTuple, DateTuple, {cover, UrlCover}, {tracks, TracksListWithPath}]);
         <<"tracks">> ->
             [[AlbumID, {file, File}, Title]] = ets:match(?ETS_TRACKS, {'$1', {'$2', '$3', {track_id, binary_to_integer(APIid)}}}),
             [{AlbumID, {cover, AlbumCover}}] = ets:lookup(?ETS_COVERS, AlbumID),
@@ -42,10 +42,10 @@ handle(Req, State) ->
             [[{AlbumTuple, DateTuple}]] = ets:match(?ETS_ALBUMS, {'$1', AlbumID}),
             [{AlbumID, AlbumArtist}] = ets:lookup(?ETS_ARTISTS, AlbumID),
             FileBin = unicode:characters_to_binary(File),
-            io:format("TrackInfo: ~p~n", [[AlbumID, Title, AlbumPathBin, AlbumCover, AlbumArtist]]),
+            io:format("Response from /api/tracks/id: ~p~n", [[AlbumID, AlbumArtist, Title, AlbumPathBin, AlbumCover]]),
             UrlCover = <<FilesUrlRoot/binary, AlbumPathBin/binary, <<"/">>/binary, AlbumCover/binary>>,
             UrlFile  = <<FilesUrlRoot/binary, AlbumPathBin/binary, <<"/">>/binary, FileBin/binary>>,
-            Res = jsx:encode([{file, UrlFile}, {cover, UrlCover}, AlbumArtist, AlbumTuple, DateTuple, Title]);
+            Res = jsx:encode([AlbumID, {file, UrlFile}, {cover, UrlCover}, AlbumArtist, AlbumTuple, DateTuple, Title]);
         _ ->
             Res = <<"Not Found">>
     end,

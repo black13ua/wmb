@@ -44,7 +44,7 @@ ets_lookup_album(AlbumTuple) ->
     [{AlbumID, GenreTuple}] = ets:lookup(?ETS_GENRES, AlbumID),
     [{AlbumID, PathTuple}] = ets:lookup(?ETS_PATHS, AlbumID),
 %    TracksList = ets:match(?ETS_TRACKS, {AlbumID, {'$2', '$1', '$3'}}),
-io:format("AlbumID: ~p~n", [AlbumID]),
+    io:format("AlbumID: ~p~n", [AlbumID]),
     {ok, TracksList} = get_tracklist_by_albumtuple(AlbumID),
     AlbumList = erlang:tuple_to_list(AlbumTuple),
     AlbumResult = [AlbumID, AlbumArtist, CoverTuple, GenreTuple, PathTuple, {tracks, TracksList} | AlbumList],
