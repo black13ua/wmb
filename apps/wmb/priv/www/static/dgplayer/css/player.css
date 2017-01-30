@@ -24,7 +24,7 @@
     -moz-user-select: none;
     cursor: default;
     position: absolute;
-    bottom: 0;
+    top: 0;
     left:50%;
     margin-left: -200px;
     outline: none;

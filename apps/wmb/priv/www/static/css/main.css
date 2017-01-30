@@ -1,7 +1,6 @@
 img.album_cover {
-    align:left;
-    width:250px;
-    height:250px;
+    width: 250px;
+    height: 250px;
 }
 
 table.album {
@@ -15,25 +14,33 @@ table.main {
     width: 60%;
 }
 
+table.main button.add-album {
+    background: #ABC4FF;
+}
+
+table.main button.add-album.active {
+    background: #3975FF;
+}
+
 table.tracks {
     background-color: #F0F8FF;
     width: 100%;
 }
 
-table.tracks button.play-button {
+table.tracks button.add-track {
+    background: #ABC4FF;
+}
+
+table.tracks button.add-track.active {
+    background: #3975FF;
+}
+
+table.tracks button.play-track {
     background: #ff8080;
 }
 
-table.tracks button.play-button.active {
+table.tracks button.play-track.active {
     background: #990000;
-}
-
-table.tracks button.add-button {
-    background: #80ffff;
-}
-
-table.tracks button.add-button.active {
-    background: #006666;
 }
 
 table, td, th {
@@ -41,20 +48,22 @@ table, td, th {
 }
 
 #maincontainer {
-  width:100%;
-  height: 100%;
+    width: 100%;
+    height: 100%;
 }
 
 #leftcolumn {
-  display:inline-block;
-  width: 91%;
-  height: 100%;
-  background: white;
+    display: inline-block;
+    width: 75%;
+    height: 100%;
+    background-color: white;
 }
 
 #contentwrapper {
-  display:inline-block;
-  width: 9%;
-  height: 100%;
-  background-color: white;
+    display: inline-block;
+    text-align: right;
+    width: 25%;
+    height: 100%;
+    background-color: white;
 }
+

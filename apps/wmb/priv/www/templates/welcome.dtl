@@ -23,56 +23,53 @@ We have:
 {% for album in albums %}
   <tr>
   <td>
-      <table class="album">
-          <tr>
-              <td colspan="2">
-                  <div id="maincontainer">
-                      <div id="leftcolumn">
-                          {{ album.artist }} - [{{ album.date }}] {{ album.album }}
-                      </div><div id="contentwrapper">
-                          <button data-id="{{ album.album_id }}" class="add-album">+/-</button>
-                      </div>
-                  </div>
-              </td>
-          </tr>
-          <tr>
-             <td rowspan="4" valign="top" width="250">
-             <img class="album_cover" src="/files/{{ album.path }}/{{ album.cover }}">
-             </td>
-          </tr>
-          <tr align=left valign=top>
-             <td>
-                 <table class="tracks">
-                     {% for track in album.tracks %}
-                     <tr><td width="90%">{{ track.title }}</td>
-                         <td width="5%"><button
-                                            data-id="{{ track.track_id }}"
-                                            class="add-button">+/-
-                                        </button>
-                         </td>
-                         <td width="5%"><a href="{{ track.file|urlencode }}">File</a></td></tr>
-                     {% endfor %}
-                 </table>
-             </td>
-          </tr>
-      </table>
+    <table class="album">
+      <tr>
+        <td colspan="2">
+          <div id="maincontainer">
+            <div id="leftcolumn">
+              {{ album.artist }} - [{{ album.date }}] {{ album.album }}
+            </div><div id="contentwrapper">
+              [{{ album.genre }}] <button data-id="{{ album.album_id }}" class="add-album">+/-</button><a href="#"> File </a>
+            </div>
+          </div>
+        </td>
+      </tr>
+      <tr>
+         <td rowspan="4" valign="top" width="250">
+         <img class="album_cover" src="/files/{{ album.path }}/{{ album.cover }}">
+         </td>
+      </tr>
+      <tr align=left valign=top>
+         <td>
+             <table class="tracks">
+                 {% for track in album.tracks %}
+                 <tr><td width="90%">{{ track.title }}</td>
+                     <td width="5%"><button
+                                        data-id="{{ track.track_id }}"
+                                        class="add-track">+/-
+                                    </button>
+                     </td>
+                     <td width="5%"><a href="{{ track.file|urlencode }}">File</a></td></tr>
+                 {% endfor %}
+             </table>
+         </td>
+      </tr>
+    </table>
   </td>
   </tr>
 {% endfor %}
 </table>
 
 <!-- DGPlayer Start --!>
-
     <div class="player" id="dgplayer" tabindex="0">
         <div id="dgplayer-item" class="cf player-item">
             <div class="avatar">
                 <img src="/static/dgplayer/img/avatar.jpeg">
             </div>
-
             <div style="float:left;max-width: 300px;">
                 <span class="title">Unknown Title</span>
                 <span class="artist">Unknown Artist</span>
-
                 <div class="seek">
                     <span>0:00</span>
                     <div class="track">
@@ -85,8 +82,6 @@ We have:
                     <div class="button-prev"><i class="entypo-fast-backward"></i></div>
                     <div class="button"><i class="entypo-play"></i></div>
                     <div class="button-next"><i class="entypo-fast-forward"></i></div>
-
-
                     <div class="volume">
                        <img src="/static/dgplayer/img/volume_low.png">
                         <div class="track">
@@ -95,18 +90,12 @@ We have:
                         </div>
                         <img src="/static/dgplayer/img/volume_high.png">
                     </div>
-
                     <div class="button-playlist"><i class="entypo-numbered-list"></i></div>
-
                 </div>
             </div>
-
         </div>
-        
         <div id="playlist">
-        
         </div>
-
     </div>
 <!-- DGPlayer end --!>
 
@@ -126,8 +115,8 @@ Stats: Albums - {{ albums_count }}, Pages - {{ pages_count }}, LimitOnPage - {{ 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js" type="text/javascript"></script>
     <script src="/static/dgplayer/audiocogs/aurora.js"></script>
     <script src="/static/dgplayer/audiocogs/flac.js"></script>
-    <!-- <script src="/static/dgplayer/js/player_23ua.js"></script> -->
-    <script src="/static/dgplayer/js/player.js"></script>
+    <script src="/static/dgplayer/js/player_23ua.js"></script>
+    <!-- <script src="/static/dgplayer/js/player.js"></script> -->
     <script src="/static/dgplayer/js/DGAuroraPlayer.js"></script>
     <script src="/static/js/main.js"></script>
 

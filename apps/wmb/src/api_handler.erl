@@ -26,12 +26,13 @@ handle(Req, State) ->
             [{AlbumID, {path, AlbumPathBin}}] = ets:lookup(?ETS_PATHS, AlbumID),
             [{AlbumID, {cover, AlbumCover}}] = ets:lookup(?ETS_COVERS, AlbumID),
             UrlCover = <<FilesUrlRoot/binary, AlbumPathBin/binary, <<"/">>/binary, AlbumCover/binary>>,
-            TracksList = ets:match(?ETS_TRACKS, {AlbumID, {'$2', '$1', '_'}}),
+            TracksList = ets:match(?ETS_TRACKS, {AlbumID, {'$2', '$1', '$3'}}),
             TracksListWithPath = lists:map(fun(X) ->
+                                     TrackID = proplists:get_value(track_id, X),
                                      File = proplists:get_value(file, X),
                                      Title = proplists:get_value(title, X),
 				     FullPath = <<FilesUrlRoot/binary, AlbumPathBin/binary, <<"/">>/binary, File/binary>>,
-				     [{file, FullPath}, {title, Title}]  end, TracksList),
+				     [{file, FullPath}, {title, Title}, {track_id, TrackID}]  end, TracksList),
             io:format("AlbumID is: ~p~n", [[AlbumArtist, AlbumTuple, DateTuple, {cover, UrlCover}, {tracks, TracksListWithPath}]]),
             Res = jsx:encode([AlbumArtist, AlbumTuple, DateTuple, {cover, UrlCover}, {tracks, TracksListWithPath}]);
         <<"tracks">> ->

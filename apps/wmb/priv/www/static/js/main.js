@@ -1,34 +1,93 @@
-console.info('Hello once again!');
 var playerAPI = {};
-var pathToFilesApi = '/api/tracks/'
-var playlist = [
-    {
-        name : "Message In a Bottle",
-        url : "/files/Ulf%20Wakenius/2012%20-%20Vagabond/02.%20Message%20In%20a%20Bottle.flac",
-        artist : 'Ulf Wakenius', 
-        album : 'Vagabond', 
-        picture : '/files/Ulf Wakenius/2012 - Vagabond/cover.jpg', 
-    }
-];
+var pathToTracksApi = '/api/tracks/';
+var pathToAlbumsApi = '/api/albums/';
+var playlist = [];
 
-function addTrackToPlaylist(id) {
-    var fullPath = pathToFilesApi + id;
+// DGPlayer Playlist Example
+//var playlist = [
+//    {
+//        name : "Message In a Bottle",
+//        url : "/files/Ulf%20Wakenius/2012%20-%20Vagabond/02.%20Message%20In%20a%20Bottle.flac",
+//        artist : 'Ulf Wakenius', 
+//        album : 'Vagabond', 
+//        picture : '/files/Ulf Wakenius/2012 - Vagabond/cover.jpg', 
+//    }
+//];
+
+document.addEventListener('click', function(event) { 
+    reactingOnClicks(event); 
+}); 
+ 
+function reactingOnClicks(event) { 
+    var target = event.target; 
+    var id = +target.dataset.id;
+    var mainClassName = target.className.replace(/active/gi, '').trim(); 
+    switch(mainClassName) { 
+        case 'add-track': {
+            var already = handleActiveClass(target);
+            var fullPath = pathToTracksApi + id;
+            console.info(already, fullPath);
+            addOrRemoveToPlaylist(id, already, fullPath);
+            break;
+        }
+        case 'add-album': {
+            var already = handleActiveClass(target);
+            var fullPath = pathToAlbumsApi + id;
+            console.info(already, fullPath, target);
+            addOrRemoveToPlaylist(id, already, fullPath);
+            break;
+        }
+    } 
+}; 
+
+function handleActiveClass(target) { 
+    var isAlreadyActive = Array.prototype.join.call(target.classList, '').match(/active/gi); 
+    if (isAlreadyActive) { 
+        target.classList.remove('active'); 
+        return false;
+    } else { 
+        target.classList.add('active');
+        return true;
+    } 
+};
+
+function addOrRemoveToPlaylist(id, active, path) {
+    if (active) {
+        addToPlaylist(path, id)
+    } else {
+        console.info(id, active, path);
+        removeTrackFromPlaylist(id);
+    }
+};
+
+function addToPlaylist(fullPath, id) {
+    console.info(fullPath);
     $.get(fullPath)
         .done(function(data) {
             if (!playerAPI) return;
-            playerAPI.addSong = {
-                _id: id,
-                name: data.artist + ' - ' + data.title,
-                url: encodeURI(data.file),
-                artist: data.artist,
-                album: data.album,
-                picture: data.cover
-            };
+            if (data.tracks) {
+                data.tracks.forEach(function(item) {
+                    addTrackToPlaylist(id, data.artist, item.title, item.file, data.album, data.cover);
+                });
+            } else {
+                addTrackToPlaylist(id, data.artist, data.title, data.file, data.album, data.cover)
+            }
         })
         .fail(function(error) {
-            console.warn('NO_TRACK');
+            console.warn('NO_ALBUMS');
         });
-}
+};
+
+function addTrackToPlaylist(id, artist, title, file, album, cover) {
+    playerAPI.addSong = {
+        _id: id,
+        name: artist + ' - ' + title,
+        url: encodeURI(file),
+        artist: artist,
+        album: album,
+        picture: cover
+    };
+};
 
 function removeTrackFromPlaylist(id) {
     if (!playerAPI) return;
@@ -39,8 +98,11 @@ function removeTrackFromPlaylist(id) {
         return;
     }
     playerAPI.removeSong = indexOfSong;
-}
+};
 
+//
+// Player
+//
 function createPlayer(playlist) {
     var _sampleRate = (function() {
         var AudioContext = (window.AudioContext || window.webkitAudioContext);
@@ -74,33 +136,9 @@ function createPlayer(playlist) {
     })(DGPlayer(document.getElementById('dgplayer')));
 };
 
-document.addEventListener('click', function(event) { 
-    reactingOnClicks(event); 
-}); 
- 
-function reactingOnClicks(event) { 
-    var target = event.target; 
-    var mainClassName = target.className.replace(/active/gi, '').trim(); 
-    switch(mainClassName) { 
-        case 'add-button': {
-            handleActiveClass(target); 
-            break;
-        }
-    } 
-} 
-
-function handleActiveClass(target) { 
-    var isAlreadyActive = Array.prototype.join.call(target.classList, '').match(/active/gi); 
-    var id = +target.dataset.id;
-    if (isAlreadyActive) { 
-        target.classList.remove('active'); 
-        removeTrackFromPlaylist(id);
-    } else { 
-        target.classList.add('active'); 
-        addTrackToPlaylist(id);
-    } 
-};
-
+//
+// For Moving Player
+//
 function adddragAbilityToPlayer() {
     document.getElementById('dgplayer').addEventListener('mousedown', mouseDown, false);
     window.addEventListener('mouseup', mouseUp, false);
@@ -120,7 +158,7 @@ function adddragAbilityToPlayer() {
     }
 
     function divMove(e){
-      console.info(e.clientY, clientX);
+      console.info(e.clientY, e.clientX);
       div.style.position = 'fixed';
       div.style.top = e.clientY - diff.x + 'px';
       div.style.left = e.clientX - diff.y + 'px';
@@ -129,5 +167,6 @@ function adddragAbilityToPlayer() {
 
 document.addEventListener("DOMContentLoaded", function(event) {
     createPlayer(playlist);
-    // adddragAbilityToPlayer();
+//    adddragAbilityToPlayer();
 });
+
