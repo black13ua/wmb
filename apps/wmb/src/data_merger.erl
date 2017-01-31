@@ -1,4 +1,4 @@
--module(albums_merger).
+-module(data_merger).
 -export([get_albums/1, get_albums/3, get_tracklist_by_albumid/1, get_tracklist_by_albumtuple/1]).
 
 -include("ets_names.hrl").
@@ -43,8 +43,7 @@ ets_lookup_album(AlbumTuple) ->
     [{AlbumID, CoverTuple}] = ets:lookup(?ETS_COVERS, AlbumID),
     [{AlbumID, GenreTuple}] = ets:lookup(?ETS_GENRES, AlbumID),
     [{AlbumID, PathTuple}] = ets:lookup(?ETS_PATHS, AlbumID),
-%    TracksList = ets:match(?ETS_TRACKS, {AlbumID, {'$2', '$1', '$3'}}),
-    io:format("AlbumID: ~p~n", [AlbumID]),
+    io:format("AlbumID is: ~p~n", [AlbumID]),
     {ok, TracksList} = get_tracklist_by_albumtuple(AlbumID),
     AlbumList = erlang:tuple_to_list(AlbumTuple),
     AlbumResult = [AlbumID, AlbumArtist, CoverTuple, GenreTuple, PathTuple, {tracks, TracksList} | AlbumList],

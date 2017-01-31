@@ -27,12 +27,7 @@ handle(Req, State) ->
             [{AlbumID, {cover, AlbumCover}}] = ets:lookup(?ETS_COVERS, AlbumID),
             UrlCover = <<FilesUrlRoot/binary, AlbumPathBin/binary, <<"/">>/binary, AlbumCover/binary>>,
             TracksList = ets:match(?ETS_TRACKS, {AlbumID, {'$2', '$1', '$3'}}),
-            TracksListWithPath = lists:map(fun(X) ->
-                                     TrackID = proplists:get_value(track_id, X),
-                                     File = proplists:get_value(file, X),
-                                     Title = proplists:get_value(title, X),
-				     FullPath = <<FilesUrlRoot/binary, AlbumPathBin/binary, <<"/">>/binary, File/binary>>,
-				     [{file, FullPath}, {title, Title}, {track_id, TrackID}]  end, TracksList),
+            {ok, TracksListWithPath} = data_merger:get_tracklist_by_albumtuple(AlbumID),
             io:format("Response from /api/albums/id: ~p~n", [[AlbumID, AlbumArtist, AlbumTuple, DateTuple, {cover, UrlCover}, {tracks, TracksListWithPath}]]),
             Res = jsx:encode([AlbumID, AlbumArtist, AlbumTuple, DateTuple, {cover, UrlCover}, {tracks, TracksListWithPath}]);
         <<"tracks">> ->

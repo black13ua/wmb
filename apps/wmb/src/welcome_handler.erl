@@ -24,7 +24,7 @@ handle(Req, State) ->
     DatesList = lists:usort(lists:flatten(ets:match(wmb_albums, {{{album, '_'}, {date, '$1'}}, {album_id, '_'}}))),
     %%
     
-    {ok, Res2} = albums_merger:get_albums(tpl, SkipAlbums, erlang:binary_to_integer(LimitOnPage)),
+    {ok, Res2} = data_merger:get_albums(tpl, SkipAlbums, erlang:binary_to_integer(LimitOnPage)),
 
     io:format("Res2: ~p~n", [Res2]),
     io:format("Page Render: ~p~n", [[AlbumsCount, PagesCount, LimitOnPage, CurrentPage]]),
