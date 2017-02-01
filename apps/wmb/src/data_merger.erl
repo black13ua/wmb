@@ -1,5 +1,8 @@
 -module(data_merger).
--export([get_albums/1, get_albums/3, get_tracklist_by_albumid/1, get_tracklist_by_albumtuple/1]).
+-export([get_albums/1, get_albums/3,
+         get_tracklist_by_albumid/1, get_tracklist_by_albumtuple/1,
+         get_albums_by_genre_name/1, get_albums_by_genre_tuple/1
+]).
 
 -include("ets_names.hrl").
 
@@ -23,7 +26,6 @@ get_albums(Format, Skip, Items) ->
         _ -> 
             io:format("Unknown Format Selected: ~p~n", [[Format, Items]])
     end.
-
 
 get_tpl(AlbumTuple, 1, ResultAcc) ->
     {ok, ResultFromEts} = ets_lookup_album(AlbumTuple),
@@ -49,9 +51,13 @@ ets_lookup_album(AlbumTuple) ->
     AlbumResult = [AlbumID, AlbumArtist, CoverTuple, GenreTuple, PathTuple, {tracks, TracksList} | AlbumList],
     {ok, AlbumResult}.
 
+-spec get_tracklist_by_albumid(integer()) ->
+    {ok, list()} | {error, atom()}.
 get_tracklist_by_albumid(AlbumID) ->
     get_tracklist_by_albumtuple({album_id, AlbumID}).
 
+-spec get_tracklist_by_albumtuple({album_id, integer()}) ->
+    {ok, list()} | {error, atom()}.
 get_tracklist_by_albumtuple(AlbumID) ->
     FilesUrlRoot = <<"/files/">>,
     [{AlbumID, {path, AlbumPathBin}}] = ets:lookup(?ETS_PATHS, AlbumID),
@@ -61,11 +67,22 @@ get_tracklist_by_albumtuple(AlbumID) ->
             {error, trackslist_empty};
         _ ->
             TracksListWithPath = lists:map(fun(X) ->
-                                 File = proplists:get_value(file, X),
-                                 Title = proplists:get_value(title, X),
-                                 TrackID = proplists:get_value(track_id, X),
-                                 FullPath = <<FilesUrlRoot/binary, AlbumPathBin/binary, <<"/">>/binary, File/binary>>,
-                                 [{file, FullPath}, {title, Title}, {track_id, TrackID}]  end, TracksList),
+                File = proplists:get_value(file, X),
+                Title = proplists:get_value(title, X),
+                TrackID = proplists:get_value(track_id, X),
+                FullPath = <<FilesUrlRoot/binary, AlbumPathBin/binary, <<"/">>/binary, File/binary>>,
+                [{file, FullPath}, {title, Title}, {track_id, TrackID}]  end, TracksList),
             {ok, TracksListWithPath}
     end.
+
+-spec get_albums_by_genre_name(bitstring()) ->
+    {ok, list()} | {error, atom()}.
+get_albums_by_genre_name(GenreName) ->
+    get_albums_by_genre_tuple({genre, GenreName}).
+
+-spec get_albums_by_genre_tuple({genre, bitstring()}) ->
+    {ok, list()} | {error, atom()}.
+get_albums_by_genre_tuple(GenreTuple) ->
+    AlbumIDList = ets:match(?ETS_GENRES, {'$1', GenreTuple}),
+    {ok, AlbumIDList}.
 

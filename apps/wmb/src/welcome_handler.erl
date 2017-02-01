@@ -17,17 +17,19 @@ handle(Req, State) ->
     AlbumsCount = ets:info(?ETS_ALBUMS, size),
     {LimitOnPage, _} = cowboy_req:qs_val(<<"limit">>, Req, <<"10">>),
     {CurrentPage, _} = cowboy_req:qs_val(<<"page">>, Req, <<"1">>),
+    {Filter_genre, _} = cowboy_req:qs_val(<<"genre">>, Req),
     PagesCount = wmb_helpers:ceiling(AlbumsCount / erlang:binary_to_integer(LimitOnPage)),
     PagesList = lists:seq(1, PagesCount),
     SkipAlbums = erlang:binary_to_integer(CurrentPage) * erlang:binary_to_integer(LimitOnPage) - erlang:binary_to_integer(LimitOnPage),
     GenresList = lists:usort(lists:flatten(ets:match(?ETS_GENRES, {'_',{genre,'$2'}}))),
-    DatesList = lists:usort(lists:flatten(ets:match(wmb_albums, {{{album, '_'}, {date, '$1'}}, {album_id, '_'}}))),
+    DatesList = lists:usort(lists:flatten(ets:match(?ETS_ALBUMS, {{{album, '_'}, {date, '$1'}}, {album_id, '_'}}))),
     %%
     
     {ok, Res2} = data_merger:get_albums(tpl, SkipAlbums, erlang:binary_to_integer(LimitOnPage)),
 
     io:format("Res2: ~p~n", [Res2]),
     io:format("Page Render: ~p~n", [[AlbumsCount, PagesCount, LimitOnPage, CurrentPage]]),
+    io:format("Genre is: ~p~n", [Filter_genre]),
     {ok, Body} = welcome_dtl:render([
                     {albums_count, AlbumsCount},
                     {pages_count, PagesCount},
