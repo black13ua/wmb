@@ -1,4 +1,4 @@
-UNKNOWN_ART = 'img/avatar.jpeg';
+UNKNOWN_ART = '/static/dgplayer/img/avatar.jpeg';
 
 function DGAuroraPlayer(player, DGPlayer) {
     this.player = player;
