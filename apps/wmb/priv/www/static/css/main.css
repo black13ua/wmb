@@ -1,6 +1,9 @@
+a:link, a:visited {
+    color: blue;
+}
+
 img.album_cover {
-    width: 250px;
-    height: 250px;
+    width: 100%;
 }
 
 table.album {

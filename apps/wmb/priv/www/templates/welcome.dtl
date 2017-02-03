@@ -57,15 +57,20 @@
     </div>
 <!-- DGPlayer end --!>
 
-<div align="center">
+<div align="center" class="filters">
 <p>
-We have:
+Filters:
 <br>
- {{ genres_list|length }} Genres: {{ genres_list|join:", " }}
+ {{ genres_list|length }} Genre:
+ {% for genre in genres_list %}
+   <a href="?genre={{ genre }}">{{ genre }}</a>
+ {% endfor %}
 <br>
  {{ dates_list|length }} Dates: {{ dates_list|join:", " }}
 <br>
+</div>
 
+<div align="center">
 <table class="main">
 {% for album in albums %}
   <tr>
