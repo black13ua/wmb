@@ -77,7 +77,7 @@ We have:
             <div id="leftcolumn">
               {{ album.artist }} - [{{ album.date }}] {{ album.album }}
             </div><div id="contentwrapper">
-              [{{ album.genre }}] <button data-id="{{ album.album_id }}" class="add-album">+/-</button><a href="#"> File </a>
+              [<a href="?genre={{ album.genre }}">{{ album.genre }}</a>] <button data-id="{{ album.album_id }}" class="add-album">+/-</button><a href="#"> File </a>
             </div>
           </div>
         </td>

@@ -1,7 +1,10 @@
 -module(data_merger).
--export([get_albums/1, get_albums/3,
-         get_tracklist_by_albumid/1, get_tracklist_by_albumtuple/1,
-         get_albums_by_genre_name/1, get_albums_by_genre_tuple/1
+-export([
+    ets_lookup_album/1,
+    get_albums/1, get_albums/3,
+    get_tracklist_by_albumid/1, get_tracklist_by_albumtuple/1,
+    get_albums_by_genre_name/1, get_albums_by_genre_tuple/1,
+    get_albumtuple_by_albumid/1
 ]).
 
 -include("ets_names.hrl").
@@ -52,12 +55,12 @@ ets_lookup_album(AlbumTuple) ->
     {ok, AlbumResult}.
 
 -spec get_tracklist_by_albumid(integer()) ->
-    {ok, list()} | {error, atom()}.
+    {ok, []} | {ok, [proplists:proplist()]} | {error, atom()}.
 get_tracklist_by_albumid(AlbumID) ->
     get_tracklist_by_albumtuple({album_id, AlbumID}).
 
 -spec get_tracklist_by_albumtuple({album_id, integer()}) ->
-    {ok, list()} | {error, atom()}.
+    {ok, []} | {ok, [proplists:proplist()]} | {error, atom()}.
 get_tracklist_by_albumtuple(AlbumID) ->
     FilesUrlRoot = <<"/files/">>,
     [{AlbumID, {path, AlbumPathBin}}] = ets:lookup(?ETS_PATHS, AlbumID),
@@ -75,14 +78,33 @@ get_tracklist_by_albumtuple(AlbumID) ->
             {ok, TracksListWithPath}
     end.
 
+%%% Get AlbumTuple by AlbumID
+-spec get_albumtuple_by_albumid({album_id, integer()}) ->
+    {ok, {{album, bitstring(), bitstring()}}}.
+get_albumtuple_by_albumid(AlbumID) ->
+    [[AlbumTuple]] = ets:match(?ETS_ALBUMS, {'$1', AlbumID}),
+    io:format("AlbumTuple is: ~p~n", [AlbumTuple]),
+    {ok, AlbumTuple}.
+
+%%% Get AlbumList by Genre Name
 -spec get_albums_by_genre_name(bitstring()) ->
-    {ok, list()} | {error, atom()}.
+    {ok, []} | {ok, [proplists:proplist()]}.
 get_albums_by_genre_name(GenreName) ->
     get_albums_by_genre_tuple({genre, GenreName}).
 
+%%% Get AlbumList by Genre Tuple
 -spec get_albums_by_genre_tuple({genre, bitstring()}) ->
-    {ok, list()} | {error, atom()}.
+    {ok, []} | {ok, [proplists:proplist()]}.
 get_albums_by_genre_tuple(GenreTuple) ->
     AlbumIDList = ets:match(?ETS_GENRES, {'$1', GenreTuple}),
-    {ok, AlbumIDList}.
+    get_albums_by_albumtuplelist(AlbumIDList, []).
+
+-spec get_albums_by_albumtuplelist([proplists:proplist()], list()) ->
+    {ok, [proplists:proplist()]}.
+get_albums_by_albumtuplelist([[AlbumID]|Rest], Acc) ->
+    {ok, AlbumTuple} = get_albumtuple_by_albumid(AlbumID),
+    {ok, R} = ets_lookup_album(AlbumTuple),
+    get_albums_by_albumtuplelist(Rest, [R|Acc]);
+get_albums_by_albumtuplelist([], Acc) ->
+    {ok, Acc}.
 
