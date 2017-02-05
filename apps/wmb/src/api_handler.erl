@@ -30,6 +30,9 @@ handle(Req, State) ->
             {ok, TracksListWithPath} = data_merger:get_tracklist_by_albumtuple(AlbumID),
             io:format("Response from /api/albums/id: ~p~n", [[AlbumID, AlbumArtist, AlbumTuple, DateTuple, {cover, UrlCover}, {tracks, TracksListWithPath}]]),
             Res = jsx:encode([AlbumID, AlbumArtist, AlbumTuple, DateTuple, {cover, UrlCover}, {tracks, TracksListWithPath}]);
+        <<"random">> ->
+            {ok, RandomTrackList} = data_merger:get_random_tracks(binary_to_integer(APIid)),
+	    Res = jsx:encode(RandomTrackList);
         <<"tracks">> ->
             [[AlbumID, {file, File}, Title]] = ets:match(?ETS_TRACKS, {'$1', {'$2', '$3', {track_id, binary_to_integer(APIid)}}}),
             [{AlbumID, {cover, AlbumCover}}] = ets:lookup(?ETS_COVERS, AlbumID),
@@ -42,7 +45,7 @@ handle(Req, State) ->
             UrlFile  = <<FilesUrlRoot/binary, AlbumPathBin/binary, <<"/">>/binary, FileBin/binary>>,
             Res = jsx:encode([AlbumID, {file, UrlFile}, {cover, UrlCover}, AlbumArtist, AlbumTuple, DateTuple, Title]);
         _ ->
-            Res = <<"Not Found">>
+            Res = <<"API Request Not Found">>
     end,
 
     {ok, Req2} = cowboy_req:reply(

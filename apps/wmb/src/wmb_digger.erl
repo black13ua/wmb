@@ -85,7 +85,7 @@ handle_call({parse, File, FileID3Tags}, _From, State) ->
     Title  = maps:get(<<"TITLE">>,  FileID3Tags, <<"Undef_Title">>),
     FileBasename = unicode:characters_to_binary(filename:basename(File)),
     TrackID = erlang:unique_integer([positive, monotonic]),
-    case get_album_id(Artist, Album, Date, Genre) of
+    case get_album_id(Album, Date) of
         undefined ->
             {ok, FilesRoot} = application:get_env(wmb, files_root),
             FilePathFull = lists:concat([FilesRoot, "/", File]),
@@ -179,7 +179,7 @@ parse_file(File) ->
 %%%===================================================================
 %%% Internal functions
 %%%===================================================================
-get_album_id(Artist, Album, Date, Genre) ->
+get_album_id(Album, Date) ->
     case ets:lookup(?ETS_ALBUMS, {{album, Album}, {date, Date}}) of
         [] ->
             undefined;

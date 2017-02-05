@@ -3,8 +3,10 @@
     ets_lookup_album/1,
     get_albums/1, get_albums/3,
     get_tracklist_by_albumid/1, get_tracklist_by_albumtuple/1,
+    get_track_by_trackid/1,
     get_albums_by_genre_name/1, get_albums_by_genre_tuple/1,
-    get_albumtuple_by_albumid/1
+    get_albumtuple_by_albumid/1,
+    get_random_tracks/1
 ]).
 
 -include("ets_names.hrl").
@@ -108,3 +110,41 @@ get_albums_by_albumtuplelist([[AlbumID]|Rest], Acc) ->
 get_albums_by_albumtuplelist([], Acc) ->
     {ok, Acc}.
 
+%%% Get TrackList with N Tracks
+%%% > erlang:element(2, {a, b, c}).
+%%% b
+%%% > erlang:length([1,2,3,4,5,6,7,8,9]).
+%%% 9
+-spec get_random_tracks(integer()) ->
+    {ok, [proplists:proplist()]}.
+get_random_tracks(N) ->
+    AlbumsCount = ets:info(?ETS_ALBUMS, size),
+    TracksCount = ets:info(?ETS_TRACKS, size),
+    {ok, TracksListRandom} = get_random_tracks(N, random:uniform(AlbumsCount + TracksCount), AlbumsCount + TracksCount, []),
+    {ok, TracksListRandom}.
+
+get_random_tracks(0, RandomID, MaxID, Acc) ->
+    {ok, Acc};
+get_random_tracks(N, RandomID, MaxID, Acc) ->
+%    io:format("Random Acc: ~p~n", [[Acc, ?MODULE]]),
+    RandomTrack = ets:match(?ETS_TRACKS, {'_', {'_', '_', {track_id, RandomID}}}),
+    case RandomTrack of
+        [] ->
+            get_random_tracks(N, random:uniform(MaxID), MaxID, Acc); 
+        _ ->
+            {ok, TrackJson} = get_track_by_trackid({track_id, RandomID}),
+            get_random_tracks(N - 1, random:uniform(MaxID), MaxID, [TrackJson|Acc])
+    end.
+
+get_track_by_trackid(TrackID) ->
+    FilesUrlRoot = <<"/files/">>,
+    [[AlbumID, {file, File}, Title]] = ets:match(?ETS_TRACKS, {'$1', {'$2', '$3', TrackID}}),
+    [{AlbumID, {cover, AlbumCover}}] = ets:lookup(?ETS_COVERS, AlbumID),
+    [{AlbumID, {path, AlbumPathBin}}] = ets:lookup(?ETS_PATHS, AlbumID),
+    [[{AlbumTuple, DateTuple}]] = ets:match(?ETS_ALBUMS, {'$1', AlbumID}),
+    [{AlbumID, AlbumArtist}] = ets:lookup(?ETS_ARTISTS, AlbumID),
+    FileBin = unicode:characters_to_binary(File),
+    UrlCover = <<FilesUrlRoot/binary, AlbumPathBin/binary, <<"/">>/binary, AlbumCover/binary>>,
+    UrlFile  = <<FilesUrlRoot/binary, AlbumPathBin/binary, <<"/">>/binary, FileBin/binary>>,
+    Res = [AlbumID, {file, UrlFile}, {cover, UrlCover}, AlbumArtist, AlbumTuple, DateTuple, Title],
+    {ok, Res}.
