@@ -59,7 +59,7 @@
 
 <div align="center" class="filters">
 <p>
-Filters:
+ <button data-id="5" class="add-random">Push Me!</button> Filters:
 <br>
  {{ genres_list|length }} Genre:
  {% for genre in genres_list %}

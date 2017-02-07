@@ -1,6 +1,7 @@
 var playerAPI = {};
-var pathToTracksApi = '/api/tracks/';
 var pathToAlbumsApi = '/api/albums/';
+var pathToRandomApi = '/api/random/';
+var pathToTracksApi = '/api/tracks/';
 var playlist = [];
 
 // DGPlayer Playlist Example
@@ -21,19 +22,24 @@ document.addEventListener('click', function(event) {
 function reactingOnClicks(event) { 
     var target = event.target; 
     var id = +target.dataset.id;
+    var already = handleActiveClass(target);
     var mainClassName = target.className.replace(/active/gi, '').trim(); 
     switch(mainClassName) { 
-        case 'add-track': {
-            var already = handleActiveClass(target);
-            var fullPath = pathToTracksApi + id;
+        case 'add-album': {
+            var fullPath = pathToAlbumsApi + id;
+            console.info(already, fullPath, target);
+            addOrRemoveToPlaylist(id, already, fullPath);
+            break;
+        }
+        case 'add-random': {
+            var fullPath = pathToRandomApi + id;
             console.info(already, fullPath);
             addOrRemoveToPlaylist(id, already, fullPath);
             break;
         }
-        case 'add-album': {
-            var already = handleActiveClass(target);
-            var fullPath = pathToAlbumsApi + id;
-            console.info(already, fullPath, target);
+        case 'add-track': {
+            var fullPath = pathToTracksApi + id;
+            console.info(already, fullPath);
             addOrRemoveToPlaylist(id, already, fullPath);
             break;
         }
@@ -65,7 +71,12 @@ function addToPlaylist(fullPath, id) {
     $.get(fullPath)
         .done(function(data) {
             if (!playerAPI) return;
-            if (data.tracks) {
+            if (Array.isArray(data)) {
+                data.forEach(function(item) {
+                    addTrackToPlaylist(id, item.artist, item.title, item.file, item.album, item.cover);
+                });
+            }
+            else if (data.tracks) {
                 data.tracks.forEach(function(item) {
                     addTrackToPlaylist(id, data.artist, item.title, item.file, data.album, data.cover);
                 });
