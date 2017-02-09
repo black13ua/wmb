@@ -20,6 +20,7 @@
 
 <body>
 <!-- DGPlayer Start --!>
+<div class="player-container">
     <div class="player" id="dgplayer" tabindex="0">
         <div id="dgplayer-item" class="cf player-item">
             <div class="avatar">
@@ -55,76 +56,79 @@
         <div id="playlist">
         </div>
     </div>
+</div>
 <!-- DGPlayer end --!>
-
-<div align="center" class="filters">
-<p>
- <button data-id="5" class="add-random">Push Me!</button> Filters:
-<br>
- {{ genres_list|length }} Genre:
- {% for genre in genres_list %}
-   <a href="?genre={{ genre }}">{{ genre }}</a>
- {% endfor %}
-<br>
- {{ dates_list|length }} Dates: {{ dates_list|join:", " }}
-<br>
-</div>
-
-<div align="center">
-<table class="main">
-{% for album in albums %}
-  <tr>
-  <td>
-    <table class="album">
+<aside class="aside-left">
+    <div class="filters">
+        <p>
+            <button data-id="5" class="add-random">Push Me!</button> Filters:
+            <br>
+            {{ genres_list|length }} Genre:
+            {% for genre in genres_list %}
+                <a href="?genre={{ genre }}">{{ genre }}</a>
+            {% endfor %}
+            <br>
+            {{ dates_list|length }} Dates: {{ dates_list|join:", " }}
+            <br>
+        </p>
+    </div>
+</aside>
+<main align="center">
+    <table class="main">
+    {% for album in albums %}
       <tr>
-        <td colspan="2">
-          <div id="maincontainer">
-            <div id="leftcolumn">
-              {{ album.artist }} - [{{ album.date }}] {{ album.album }}
-            </div><div id="contentwrapper">
-              [<a href="?genre={{ album.genre }}">{{ album.genre }}</a>] <button data-id="{{ album.album_id }}" class="add-album">+/-</button><a href="#"> File </a>
-            </div>
-          </div>
-        </td>
+      <td>
+        <table class="album">
+          <tr>
+            <td colspan="2">
+              <div id="maincontainer">
+                <div id="leftcolumn">
+                  {{ album.artist }} - [{{ album.date }}] {{ album.album }}
+                </div><div id="contentwrapper">
+                  [<a href="?genre={{ album.genre }}">{{ album.genre }}</a>] <button data-id="{{ album.album_id }}" class="add-album">+/-</button><a href="#"> File </a>
+                </div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+             <td rowspan="4" valign="top" width="250">
+             <img class="album_cover" src="/files/{{ album.path }}/{{ album.cover }}">
+             </td>
+          </tr>
+          <tr align=left valign=top>
+             <td>
+                 <table class="tracks">
+                     {% for track in album.tracks %}
+                     <tr><td width="90%">{{ track.title }}</td>
+                         <td width="5%"><button
+                                            data-id="{{ track.track_id }}"
+                                            class="add-track">+/-
+                                        </button>
+                         </td>
+                         <td width="5%"><a href="{{ track.file|urlencode }}">File</a></td></tr>
+                     {% endfor %}
+                 </table>
+             </td>
+          </tr>
+        </table>
+      </td>
       </tr>
-      <tr>
-         <td rowspan="4" valign="top" width="250">
-         <img class="album_cover" src="/files/{{ album.path }}/{{ album.cover }}">
-         </td>
-      </tr>
-      <tr align=left valign=top>
-         <td>
-             <table class="tracks">
-                 {% for track in album.tracks %}
-                 <tr><td width="90%">{{ track.title }}</td>
-                     <td width="5%"><button
-                                        data-id="{{ track.track_id }}"
-                                        class="add-track">+/-
-                                    </button>
-                     </td>
-                     <td width="5%"><a href="{{ track.file|urlencode }}">File</a></td></tr>
-                 {% endfor %}
-             </table>
-         </td>
-      </tr>
+    {% endfor %}
     </table>
-  </td>
-  </tr>
-{% endfor %}
-</table>
 
 
-{% for page in pages_list %}
-    {% if page == current_page %}
-        {{ page }}
-    {% else %}
-        <a href="?page={{ page }}&limit={{ limit_on_page }}">{{ page }}</a>
-    {% endif %}
-{% endfor %}
+    {% for page in pages_list %}
+        {% if page == current_page %}
+            {{ page }}
+        {% else %}
+            <a href="?page={{ page }}&limit={{ limit_on_page }}">{{ page }}</a>
+        {% endif %}
+    {% endfor %}
 
-<br>
-Stats: Albums - {{ albums_count }}, Pages - {{ pages_count }}, LimitOnPage - {{ limit_on_page }}
+    <br>
+    Stats: Albums - {{ albums_count }}, Pages - {{ pages_count }}, LimitOnPage - {{ limit_on_page }}
 
-</div>
+</main>
+<aside class="aside-right"></aside>
 </body>
 </html>
