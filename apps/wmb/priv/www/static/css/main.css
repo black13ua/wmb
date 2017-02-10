@@ -79,10 +79,13 @@ table, td, th {
 .aside-left {
     float: left;
     width: 20%;
+    position: fixed;
+    left: 0;
 }
 main {
     float: left;
     width: 60%;
+    margin-left: 20%;
 }
 .aside-right {
     float: left;

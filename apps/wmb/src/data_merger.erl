@@ -118,23 +118,17 @@ get_albums_by_albumtuplelist([], Acc) ->
 -spec get_random_tracks(integer()) ->
     {ok, [proplists:proplist()]}.
 get_random_tracks(N) ->
-    AlbumsCount = ets:info(?ETS_ALBUMS, size),
     TracksCount = ets:info(?ETS_TRACKS, size),
-    {ok, TracksListRandom} = get_random_tracks(N, crypto:rand_uniform(1, AlbumsCount + TracksCount), AlbumsCount + TracksCount, []),
+    {ok, TracksListRandom} = get_random_tracks(N, crypto:rand_uniform(1, TracksCount), TracksCount, []),
     {ok, TracksListRandom}.
 
 get_random_tracks(0, RandomID, MaxID, Acc) ->
     {ok, Acc};
 get_random_tracks(N, RandomID, MaxID, Acc) ->
     RandomTrack = ets:match(?ETS_TRACKS, {'_', {'_', '_', {track_id, RandomID}}}),
-    case RandomTrack of
-        [] ->
-            get_random_tracks(N, crypto:rand_uniform(1, MaxID), MaxID, Acc); 
-        _ ->
-            {ok, TrackJson} = get_track_by_trackid({track_id, RandomID}),
-            io:format("RandomID: ~p~n", [[RandomID, ?MODULE]]),
-            get_random_tracks(N - 1, crypto:rand_uniform(1, MaxID), MaxID, [TrackJson|Acc])
-    end.
+    {ok, TrackJson} = get_track_by_trackid({track_id, RandomID}),
+    io:format("RandomID: ~p~n", [[RandomID, ?MODULE]]),
+    get_random_tracks(N - 1, crypto:rand_uniform(1, MaxID), MaxID, [TrackJson|Acc]).
 
 get_track_by_trackid(TrackID) ->
     FilesUrlRoot = <<"/files/">>,
