@@ -32,18 +32,12 @@ handle(Req, State) ->
             Res = jsx:encode([AlbumID, AlbumArtist, AlbumTuple, DateTuple, {cover, UrlCover}, {tracks, TracksListWithPath}]);
         <<"random">> ->
             {ok, RandomTrackList} = data_merger:get_random_tracks(binary_to_integer(APIid)),
-	    Res = jsx:encode(RandomTrackList);
+            io:format("Response from /api/random/id: ~p~n", [RandomTrackList]),
+            Res = jsx:encode(RandomTrackList);
         <<"tracks">> ->
-            [[AlbumID, {file, File}, Title]] = ets:match(?ETS_TRACKS, {'$1', {'$2', '$3', {track_id, binary_to_integer(APIid)}}}),
-            [{AlbumID, {cover, AlbumCover}}] = ets:lookup(?ETS_COVERS, AlbumID),
-            [{AlbumID, {path, AlbumPathBin}}] = ets:lookup(?ETS_PATHS, AlbumID),
-            [[{AlbumTuple, DateTuple}]] = ets:match(?ETS_ALBUMS, {'$1', AlbumID}),
-            [{AlbumID, AlbumArtist}] = ets:lookup(?ETS_ARTISTS, AlbumID),
-            FileBin = unicode:characters_to_binary(File),
-            io:format("Response from /api/tracks/id: ~p~n", [[AlbumID, AlbumArtist, Title, AlbumPathBin, AlbumCover]]),
-            UrlCover = <<FilesUrlRoot/binary, AlbumPathBin/binary, <<"/">>/binary, AlbumCover/binary>>,
-            UrlFile  = <<FilesUrlRoot/binary, AlbumPathBin/binary, <<"/">>/binary, FileBin/binary>>,
-            Res = jsx:encode([AlbumID, {file, UrlFile}, {cover, UrlCover}, AlbumArtist, AlbumTuple, DateTuple, Title]);
+            {ok, Track2Web} = data_merger:get_track_by_trackid({track_id, binary_to_integer(APIid)}),
+            io:format("Response from /api/tracks/id: ~p~n", [Track2Web]),
+            Res = jsx:encode(Track2Web);
         _ ->
             Res = <<"API Request Not Found">>
     end,
