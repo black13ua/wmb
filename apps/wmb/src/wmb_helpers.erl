@@ -1,5 +1,7 @@
 -module(wmb_helpers).
--export([ceiling/1, skip_ets_elements/2]).
+-export([ceiling/1, get_uniq_id/1, skip_ets_elements/2]).
+
+-include("ets_names.hrl").
 
 
 %%%%
@@ -27,3 +29,10 @@ skip_ets_elements(Skip, Ets, Key) ->
     Next = ets:next(Ets, Key),
     skip_ets_elements(Skip - 1, Ets, Next).
 
+-spec get_uniq_id(atom()) ->
+    {ok, integer()}.
+get_uniq_id(Key) ->
+    ID = ets:lookup_element(?ETS_COUNTERS, Key, 2),
+    NewID = ID + 1,
+    ets:update_element(?ETS_COUNTERS, Key, {2, NewID}),
+    {ok, NewID}.

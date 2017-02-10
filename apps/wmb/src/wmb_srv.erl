@@ -62,7 +62,7 @@ init([]) ->
     ets:new(?ETS_ALBUMS, [public, bag, named_table]),
     ets:new(?ETS_ARTISTS, [public, bag, named_table]),
     ets:new(?ETS_COVERS, [public, bag, named_table]),
-    ets:new(?ETS_COUNTERS, [public, bag, named_table]),
+    ets:new(?ETS_COUNTERS, [public, set, named_table]),
     ets:new(?ETS_GENRES, [public, bag, named_table]),
     ets:new(?ETS_PATHS,  [public, bag, named_table]),
     ets:new(?ETS_TRACKS, [public, bag, named_table]),
@@ -113,6 +113,7 @@ handle_cast(_Msg, State) ->
 handle_info(read_all, State) ->
     {ok, FilesRoot} = application:get_env(wmb, files_root),
     {ok, FilesPattern} = application:get_env(wmb, files_pattern),
+    [ets:insert(?ETS_COUNTERS, {CounterKey, 0}) || CounterKey <- [album_id_counter, track_id_counter]],
     Res = filelib:wildcard(FilesPattern, FilesRoot),
     io:format("All Files: ~p~n: ", [Res]),
     [wmb_digger:parse_file(X) || X <- Res],

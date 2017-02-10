@@ -84,7 +84,7 @@ handle_call({parse, File, FileID3Tags}, _From, State) ->
     Date   = maps:get(<<"DATE">>,   FileID3Tags, <<"Undef_Date">>),
     Title  = maps:get(<<"TITLE">>,  FileID3Tags, <<"Undef_Title">>),
     FileBasename = unicode:characters_to_binary(filename:basename(File)),
-    TrackID = erlang:unique_integer([positive, monotonic]),
+    {ok, TrackID} = wmb_helpers:get_uniq_id(track_id_counter),
     case get_album_id(Album, Date) of
         undefined ->
             {ok, FilesRoot} = application:get_env(wmb, files_root),
@@ -92,7 +92,7 @@ handle_call({parse, File, FileID3Tags}, _From, State) ->
             AlbumPathRelBin = unicode:characters_to_binary(filename:dirname(File)),
             AlbumPathFull = filename:dirname(FilePathFull),
             io:format("Files and Tags: ~p~n", [{AlbumPathFull, FileBasename, FileID3Tags}]),
-            AlbumID = erlang:unique_integer([positive, monotonic]),
+            {ok, AlbumID} = wmb_helpers:get_uniq_id(album_id_counter),
             ets:insert(?ETS_ALBUMS,  {{{album, Album}, {date, Date}}, {album_id, AlbumID}}),
             ets:insert(?ETS_ARTISTS, {{album_id, AlbumID}, {artist, AlbumArtist}}),
             ets:insert(?ETS_TRACKS,  {{album_id, AlbumID}, {{file, FileBasename}, {title, Title}, {track_id, TrackID}}}),

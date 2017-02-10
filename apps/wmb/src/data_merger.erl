@@ -120,20 +120,20 @@ get_albums_by_albumtuplelist([], Acc) ->
 get_random_tracks(N) ->
     AlbumsCount = ets:info(?ETS_ALBUMS, size),
     TracksCount = ets:info(?ETS_TRACKS, size),
-    {ok, TracksListRandom} = get_random_tracks(N, random:uniform(AlbumsCount + TracksCount), AlbumsCount + TracksCount, []),
+    {ok, TracksListRandom} = get_random_tracks(N, crypto:rand_uniform(1, AlbumsCount + TracksCount), AlbumsCount + TracksCount, []),
     {ok, TracksListRandom}.
 
 get_random_tracks(0, RandomID, MaxID, Acc) ->
     {ok, Acc};
 get_random_tracks(N, RandomID, MaxID, Acc) ->
-%    io:format("Random Acc: ~p~n", [[Acc, ?MODULE]]),
     RandomTrack = ets:match(?ETS_TRACKS, {'_', {'_', '_', {track_id, RandomID}}}),
     case RandomTrack of
         [] ->
-            get_random_tracks(N, random:uniform(MaxID), MaxID, Acc); 
+            get_random_tracks(N, crypto:rand_uniform(1, MaxID), MaxID, Acc); 
         _ ->
             {ok, TrackJson} = get_track_by_trackid({track_id, RandomID}),
-            get_random_tracks(N - 1, random:uniform(MaxID), MaxID, [TrackJson|Acc])
+            io:format("RandomID: ~p~n", [[RandomID, ?MODULE]]),
+            get_random_tracks(N - 1, crypto:rand_uniform(1, MaxID), MaxID, [TrackJson|Acc])
     end.
 
 get_track_by_trackid(TrackID) ->
@@ -146,5 +146,5 @@ get_track_by_trackid(TrackID) ->
     FileBin = unicode:characters_to_binary(File),
     UrlCover = <<FilesUrlRoot/binary, AlbumPathBin/binary, <<"/">>/binary, AlbumCover/binary>>,
     UrlFile  = <<FilesUrlRoot/binary, AlbumPathBin/binary, <<"/">>/binary, FileBin/binary>>,
-    Res = [AlbumID, {file, UrlFile}, {cover, UrlCover}, AlbumArtist, AlbumTuple, DateTuple, Title],
+    Res = [AlbumID, {file, UrlFile}, {cover, UrlCover}, AlbumArtist, AlbumTuple, DateTuple, Title, TrackID],
     {ok, Res}.
