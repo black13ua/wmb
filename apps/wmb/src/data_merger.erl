@@ -1,9 +1,10 @@
 -module(data_merger).
 -export([
-    ets_lookup_album/1,
     get_albums/1, get_albums/3,
     get_tracklist_by_albumid/1, get_tracklist_by_albumtuple/1,
     get_track_by_trackid/1,
+    get_album_by_albumid/1,
+    get_album_by_albumtuple/1,
     get_albums_by_genre_name/1, get_albums_by_genre_tuple/1,
     get_albums_by_year/1, get_albums_by_year_tuple/1,
     get_albumtuple_by_albumid/1,
@@ -34,10 +35,10 @@ get_albums(Format, Skip, Items) ->
     end.
 
 get_tpl(AlbumTuple, 1, ResultAcc) ->
-    {ok, ResultFromEts} = ets_lookup_album(AlbumTuple),
+    {ok, ResultFromEts} = get_album_by_albumtuple(AlbumTuple),
     {ok, lists:reverse([ResultFromEts | ResultAcc])};
 get_tpl(AlbumTuple, Items, ResultAcc) ->
-    {ok, ResultFromEts} = ets_lookup_album(AlbumTuple),
+    {ok, ResultFromEts} = get_album_by_albumtuple(AlbumTuple),
     case ets:next(?ETS_ALBUMS, AlbumTuple) of
         '$end_of_table' ->
             {ok, lists:reverse([ResultFromEts | ResultAcc])};
@@ -45,7 +46,16 @@ get_tpl(AlbumTuple, Items, ResultAcc) ->
             get_tpl(AlbumTupleNext, Items - 1, [ResultFromEts | ResultAcc])
     end.
 
-ets_lookup_album(AlbumTuple) ->
+-spec get_album_by_albumtuple({{album, bitstring()}, {date, bitstring()}}) ->
+    {ok, [proplists:proplist()]}.
+get_album_by_albumtuple(AlbumTuple) ->
+    [{AlbumTuple, AlbumID}|_] = ets:lookup(?ETS_ALBUMS, AlbumTuple),
+    get_album_by_albumid(AlbumID).
+
+-spec get_album_by_albumid({album_id, integer()}) ->
+    {ok, [proplists:proplist()]}.
+get_album_by_albumid(AlbumID) ->
+    {ok, AlbumTuple} = get_albumtuple_by_albumid(AlbumID),
     [{AlbumTuple, AlbumID}|_] = ets:lookup(?ETS_ALBUMS, AlbumTuple),
     [{AlbumID, AlbumArtist}] = ets:lookup(?ETS_ARTISTS, AlbumID),
     [{AlbumID, CoverTuple}] = ets:lookup(?ETS_COVERS, AlbumID),
@@ -106,7 +116,7 @@ get_albums_by_genre_tuple(GenreTuple) ->
     {ok, [proplists:proplist()]}.
 get_albums_by_albumtuplelist([[AlbumID]|Rest], Acc) ->
     {ok, AlbumTuple} = get_albumtuple_by_albumid(AlbumID),
-    {ok, R} = ets_lookup_album(AlbumTuple),
+    {ok, R} = get_album_by_albumtuple(AlbumTuple),
     get_albums_by_albumtuplelist(Rest, [R|Acc]);
 get_albums_by_albumtuplelist([], Acc) ->
     {ok, Acc}.
@@ -124,7 +134,7 @@ get_albums_by_year_tuple(YearTuple) ->
     AlbumIDList = ets:match(?ETS_ALBUMS, {{'_', YearTuple}, '$1'}),
     get_albums_by_albumtuplelist(AlbumIDList, []).
 
-%%% Get TrackList with N Tracks
+%%% Get TrackList with N Random Tracks
 -spec get_random_tracks(integer()) ->
     {ok, [proplists:proplist()]}.
 get_random_tracks(N) ->
@@ -140,6 +150,9 @@ get_random_tracks(N, RandomID, MaxID, Acc) ->
     io:format("RandomID: ~p~n", [[RandomID, ?MODULE]]),
     get_random_tracks(N - 1, crypto:rand_uniform(1, MaxID), MaxID, [TrackJson|Acc]).
 
+%%% Get Track by TrackID
+-spec get_track_by_trackid({track_id, integer()}) ->
+    {ok, [proplists:proplist()]}.
 get_track_by_trackid(TrackID) ->
     FilesUrlRoot = <<"/files/">>,
     [[AlbumID, {file, File}, Title]] = ets:match(?ETS_TRACKS, {'$1', {'$2', '$3', TrackID}}),

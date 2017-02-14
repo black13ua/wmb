@@ -26,6 +26,7 @@
     top: 5px;
     outline: none;
     width: 100%;
+    z-index: 10;
 }
 
 .player, .player * {

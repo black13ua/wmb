@@ -61,9 +61,11 @@
 <aside class="aside-left">
     <div class="filters">
         <p>
-            <button data-id="5" class="add-random">Push Me!</button> Filters:
+            <button data-id="5" class="add-random">+5 Random Tracks</button>
             <br>
-            {{ genres_list|length }} Genre:
+            Filters:
+            <br>
+            {{ genres_list|length }} Genres:
             {% for genre in genres_list %}
                 <a href="?genre={{ genre }}">{{ genre }}</a>
             {% endfor %}
