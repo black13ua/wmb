@@ -20,16 +20,9 @@ handle(Req, State) ->
 
     case APIType of
         <<"albums">> ->
-            AlbumID = {album_id, binary_to_integer(APIid)},
-            [[{AlbumTuple, DateTuple}]] = ets:match(?ETS_ALBUMS, {'$1', AlbumID}),
-            [{AlbumID, AlbumArtist}] = ets:lookup(?ETS_ARTISTS, AlbumID),
-            [{AlbumID, {path, AlbumPathBin}}] = ets:lookup(?ETS_PATHS, AlbumID),
-            [{AlbumID, {cover, AlbumCover}}] = ets:lookup(?ETS_COVERS, AlbumID),
-            UrlCover = <<FilesUrlRoot/binary, AlbumPathBin/binary, <<"/">>/binary, AlbumCover/binary>>,
-            TracksList = ets:match(?ETS_TRACKS, {AlbumID, {'$2', '$1', '$3'}}),
-            {ok, TracksListWithPath} = data_merger:get_tracklist_by_albumtuple(AlbumID),
-            io:format("Response from /api/albums/id: ~p~n", [[AlbumID, AlbumArtist, AlbumTuple, DateTuple, {cover, UrlCover}, {tracks, TracksListWithPath}]]),
-            Res = jsx:encode([AlbumID, AlbumArtist, AlbumTuple, DateTuple, {cover, UrlCover}, {tracks, TracksListWithPath}]);
+            {ok, Album} = data_merger:get_album_by_albumid({album_id, binary_to_integer(APIid)}),
+            io:format("Response from /api/albums/id: ~p~n", [Album]),
+            Res = jsx:encode(Album);
         <<"random">> ->
             {ok, RandomTrackList} = data_merger:get_random_tracks(binary_to_integer(APIid)),
             io:format("Response from /api/random/id: ~p~n", [RandomTrackList]),

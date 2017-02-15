@@ -71,15 +71,18 @@ function addToPlaylist(fullPath, id) {
     $.get(fullPath)
         .done(function(data) {
             if (!playerAPI) return;
+            // Random Tracks List
             if (Array.isArray(data)) {
                 data.forEach(function(item) {
                     addTrackToPlaylist(id, item.artist, item.title, item.file, item.album, item.cover);
                 });
             }
+            // Album
             else if (data.tracks) {
                 data.tracks.forEach(function(item) {
                     addTrackToPlaylist(id, data.artist, item.title, item.file, data.album, data.cover);
                 });
+            // Track
             } else {
                 addTrackToPlaylist(id, data.artist, data.title, data.file, data.album, data.cover)
             }

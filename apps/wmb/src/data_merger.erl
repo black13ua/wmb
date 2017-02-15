@@ -8,6 +8,7 @@
     get_albums_by_genre_name/1, get_albums_by_genre_tuple/1,
     get_albums_by_year/1, get_albums_by_year_tuple/1,
     get_albumtuple_by_albumid/1,
+    get_cover_by_albumid/1,
     get_random_tracks/1
 ]).
 
@@ -58,13 +59,13 @@ get_album_by_albumid(AlbumID) ->
     {ok, AlbumTuple} = get_albumtuple_by_albumid(AlbumID),
     [{AlbumTuple, AlbumID}|_] = ets:lookup(?ETS_ALBUMS, AlbumTuple),
     [{AlbumID, AlbumArtist}] = ets:lookup(?ETS_ARTISTS, AlbumID),
-    [{AlbumID, CoverTuple}] = ets:lookup(?ETS_COVERS, AlbumID),
     [{AlbumID, GenreTuple}] = ets:lookup(?ETS_GENRES, AlbumID),
     [{AlbumID, PathTuple}] = ets:lookup(?ETS_PATHS, AlbumID),
     io:format("AlbumID is: ~p~n", [AlbumID]),
+    {ok, Cover} = get_cover_by_albumid(AlbumID),
     {ok, TracksList} = get_tracklist_by_albumtuple(AlbumID),
     AlbumList = erlang:tuple_to_list(AlbumTuple),
-    AlbumResult = [AlbumID, AlbumArtist, CoverTuple, GenreTuple, PathTuple, {tracks, TracksList} | AlbumList],
+    AlbumResult = [AlbumID, AlbumArtist, {cover, Cover}, GenreTuple, PathTuple, {tracks, TracksList} | AlbumList],
     {ok, AlbumResult}.
 
 -spec get_tracklist_by_albumid(integer()) ->
@@ -165,4 +166,14 @@ get_track_by_trackid(TrackID) ->
     UrlFile  = <<FilesUrlRoot/binary, AlbumPathBin/binary, <<"/">>/binary, FileBin/binary>>,
     Res = [AlbumID, {file, UrlFile}, {cover, UrlCover}, AlbumArtist, AlbumTuple, DateTuple, Title, TrackID],
     {ok, Res}.
+
+%%% Get Cover by TrackID
+-spec get_cover_by_albumid({album_id, integer()}) ->
+    {ok, [proplists:proplist()]}.
+get_cover_by_albumid(AlbumID) ->
+    FilesUrlRoot = <<"/files/">>,
+    [{AlbumID, {cover, AlbumCover}}] = ets:lookup(?ETS_COVERS, AlbumID),
+    [{AlbumID, {path, AlbumPathBin}}] = ets:lookup(?ETS_PATHS, AlbumID),
+    UrlCover = <<FilesUrlRoot/binary, AlbumPathBin/binary, <<"/">>/binary, AlbumCover/binary>>,
+    {ok, UrlCover}.
 
