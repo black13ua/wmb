@@ -66,11 +66,20 @@
             Filters:
             <br>
             {{ genres_list|length }} Genres:
-            {% for genre in genres_list %}
-                <a href="?genre={{ genre }}">{{ genre }}</a>
-            {% endfor %}
+            <input list="genres" placeholder="type your favorit genre"/>
+            <datalist id="genres">
+                {% for genre in genres_list %}
+                    <option value="{{ genre }}">
+                {% endfor %}
+            </datalist>
             <br>
-            {{ dates_list|length }} Dates: {{ dates_list|join:", " }}
+            {{ dates_list|length }} Dates:
+            <input list="dates" placeholder="type your favorit year"/>
+            <datalist id="dates">
+                {% for date in dates_list %}
+                    <option value="{{ date }}">
+                {% endfor %}
+            </datalist>
             <br>
         </p>
     </div>
