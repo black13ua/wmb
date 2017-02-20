@@ -6,7 +6,7 @@
     get_album_by_albumid/1,
     get_album_by_albumtuple/1,
     get_albums_by_genre_name/1, get_albums_by_genre_tuple/1,
-    get_albums_by_year/1, get_albums_by_year_tuple/1,
+    get_albums_by_date/1, get_albums_by_date_tuple/1,
     get_albumtuple_by_albumid/1,
     get_cover_by_albumid/1,
     get_random_tracks/1
@@ -122,17 +122,17 @@ get_albums_by_albumtuplelist([[AlbumID]|Rest], Acc) ->
 get_albums_by_albumtuplelist([], Acc) ->
     {ok, Acc}.
 
-%%% Get AlbumList by Year
--spec get_albums_by_year(bitstring()) ->
+%%% Get AlbumList by Date
+-spec get_albums_by_date(bitstring()) ->
     {ok, []} | {ok, [proplists:proplist()]}.
-get_albums_by_year(Year) ->
-    get_albums_by_year_tuple({date, Year}).
+get_albums_by_date(Date) ->
+    get_albums_by_date_tuple({date, Date}).
 
-%%% Get AlbumList by Year Tuple
--spec get_albums_by_year_tuple({date, bitstring()}) ->
+%%% Get AlbumList by Date Tuple
+-spec get_albums_by_date_tuple({date, bitstring()}) ->
     {ok, []} | {ok, [proplists:proplist()]}.
-get_albums_by_year_tuple(YearTuple) ->
-    AlbumIDList = ets:match(?ETS_ALBUMS, {{'_', YearTuple}, '$1'}),
+get_albums_by_date_tuple(DateTuple) ->
+    AlbumIDList = ets:match(?ETS_ALBUMS, {{'_', DateTuple}, '$1'}),
     get_albums_by_albumtuplelist(AlbumIDList, []).
 
 %%% Get TrackList with N Random Tracks
