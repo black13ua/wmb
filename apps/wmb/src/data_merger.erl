@@ -24,15 +24,15 @@ get_albums(Format) ->
 % Format can be json or tpl
 get_albums(Format, Skip, Items) ->
     FirstAlbumTuple = wmb_helpers:skip_ets_elements(Skip, ?ETS_ALBUMS),
+    io:format("Albums Format Selected: ~p~n", [[Format, Skip, Items]]),
     case Format of
         json ->
             io:format("JSON Format Selected: ~p~n", [[Format, Items]]); 
         tpl ->
-            io:format("TPL Format Selected: ~p~n", [[Format, Skip, Items]]),
             Result = get_tpl(FirstAlbumTuple, Items, []),
             Result;
         _ -> 
-            io:format("Unknown Format Selected: ~p~n", [[Format, Items]])
+            io:format("Unknown Albums Format Selected: ~p~n", [[Format, Items]])
     end.
 
 get_tpl(AlbumTuple, 1, ResultAcc) ->
