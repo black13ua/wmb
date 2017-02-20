@@ -18,3 +18,8 @@ log
 logs
 priv/files
 rel/example_project
+vscode/
+vscode/*
+node_modules/*
+node_modules/
+*.js.map
