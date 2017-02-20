@@ -196,4 +196,4 @@ find_album_cover(AlbumFilesList, [PossibleCover|RestPossibleCovers]) ->
             find_album_cover(AlbumFilesList, RestPossibleCovers)
     end;
 find_album_cover(AlbumFilesList, []) ->
-    {error, cover_not_found}.
+    {error, <<"cover_not_found">>}.
