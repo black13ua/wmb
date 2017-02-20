@@ -4,7 +4,6 @@
     <meta charset="utf-8">
     <title>WMB</title>
     <!-- CSS -->
-    <link rel="stylesheet" type="text/css" href="/static/css/main.css">
     <link rel="stylesheet" type="text/css" href="/static/dgplayer/css/icon-font.css">
     <link rel="stylesheet" type="text/css" href="/static/dgplayer/css/player.css">
     <!-- JS -->
@@ -13,13 +12,13 @@
     <script src="/static/dgplayer/audiocogs/aurora.js"></script>
     <script src="/static/dgplayer/audiocogs/flac.js"></script>
     <script src="/static/dgplayer/js/player_23ua.js"></script>
-    <!-- <script src="/static/dgplayer/js/player.js"></script> -->
     <script src="/static/dgplayer/js/DGAuroraPlayer.js"></script>
-    <script src="/static/js/main.js"></script>
+
+    <script src="/static/js/dist/bundle.js"></script>
 </head>
 
 <body>
-<!-- DGPlayer Start --!>
+<!-- DGPlayer Start -->
 <div class="player-container">
     <div class="player" id="dgplayer" tabindex="0">
         <div id="dgplayer-item" class="cf player-item">
@@ -57,7 +56,7 @@
         </div>
     </div>
 </div>
-<!-- DGPlayer end --!>
+<!-- DGPlayer end -->
 <aside class="aside-left">
     <div class="filters">
         <p>
