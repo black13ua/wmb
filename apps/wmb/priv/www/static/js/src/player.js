@@ -13,7 +13,8 @@ export function createPlayer(playlist = []) {
         playerAPI = DGPlayer;
         DGPlayer.playlist = playlist;
         DGPlayer.volume = 50;
-        var player, onplay;
+
+        var player, onplay, onplaylist;
  
         DGPlayer.on('play', onplay = function(a,b,c){
             if (player) {
