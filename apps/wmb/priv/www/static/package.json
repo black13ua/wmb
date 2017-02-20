@@ -35,19 +35,26 @@
   "scripts": {
     "build:dist": "better-npm-run build:dist",
     "build:prod": "better-npm-run build:prod",
+    "build:dll": "better-npm-run build:dll",
     "test": "better-npm-run test"
   },
   "betterScripts": {
     "build:dist": {
-      "command": "webpack --config webpack.config.dev.js --progress --colors",
+      "command": "webpack --config webpack.dev.config.js --progress --colors",
       "env": {
         "NODE_ENV": "development"
       }
     },
     "build:prod": {
-      "command": "webpack --config webpack.config.prod.js --progress --colors",
+      "command": "webpack --config webpack.prod.config.js --progress --colors",
       "env": {
         "NODE_ENV": "production"
+      }
+    },
+    "build:dll": {
+      "command": "webpack --config webpack.dll.config.js --progress --color",
+      "env": {
+        "NODE_ENV": "development"
       }
     },
     "test": {
