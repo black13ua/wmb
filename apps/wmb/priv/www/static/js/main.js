@@ -99,7 +99,7 @@ function addTrackToPlaylist(id, artist, title, file, album, cover) {
         url: encodeURI(file),
         artist: artist,
         album: album,
-        picture: cover
+        picture: encodeURI(cover)
     };
 };
 
