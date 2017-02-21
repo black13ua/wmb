@@ -1,5 +1,7 @@
-const webpack = require('webpack');
-const { resolve } = require('path');
+const webpack           = require('webpack');
+const { resolve }       = require('path');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+
 
 const config = {
     context: __dirname,
@@ -31,8 +33,13 @@ const config = {
                     }
                 }
             },
-            { test: /\.scss/, use: ['style-loader', 'css-loader', 'sass-loader'] },
-            { test: /\.css$/, use: ['style-loader', 'css-loader'] }
+            {
+                test: /\.scss/,
+                use: ExtractTextPlugin.extract({
+                    fallback: 'style-loader',
+                    use: ['css-loader', 'sass-loader']
+                })
+            },
         ]
     },
 
@@ -40,6 +47,9 @@ const config = {
         new webpack.ProvidePlugin({
             fetch: 'imports?this=>global!exports?global.fetch!whatwg-fetch'
         }),
+        new ExtractTextPlugin({
+            filename: 'style.css'
+        })
     ]
 };
 

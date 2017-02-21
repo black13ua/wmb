@@ -1,4 +1,4 @@
-require('../../sass/main.scss');
+import '../../sass/main.scss';
 import { pathToAlbumsApi, pathToRandomApi, pathToTracksApi } from './constants';
 import { 
     createPlayer,
