@@ -7,6 +7,7 @@
     <link rel="stylesheet" type="text/css" href="/static/dgplayer/css/icon-font.css">
     <link rel="stylesheet" type="text/css" href="/static/dgplayer/css/player.css">
     <link rel="stylesheet" type="text/css" href="/static/js/dist/style.css">
+    <link rel="stylesheet" type="text/css" href="/static/js/dist/style.css.map">
     <!-- JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js"></script>
     <script src="/static/dgplayer/js/underscore-min_1_5_2.js"></script>
@@ -16,6 +17,7 @@
     <script src="/static/dgplayer/js/DGAuroraPlayer.js"></script>
 
     <script src="/static/js/dist/bundle.js"></script>
+    <script src="/static/js/dist/bundle.js.map"></script>
 </head>
 
 <body>

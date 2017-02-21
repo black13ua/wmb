@@ -7,7 +7,7 @@ const config = {
     context: __dirname,
     cache: true,
     watch: true,
-    devtool: "source-map",
+    devtool: 'source-map',
 
     entry: './js/src/index.js',
 
