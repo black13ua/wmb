@@ -1,0 +1,77 @@
+.player-container {
+  height: 150px;
+  width: 100%; }
+
+a:link, a:visited {
+  color: blue; }
+
+img.album_cover {
+  width: 100%; }
+
+table.album {
+  background-color: white;
+  width: 100%; }
+
+table.main {
+  background-color: #DCDCDC;
+  border-collapse: collapse;
+  width: 100%; }
+
+table.main button.add-album {
+  background: #ABC4FF; }
+
+table.main button.add-album.active {
+  background: #3975FF; }
+
+table.tracks {
+  background-color: #F0F8FF;
+  width: 100%; }
+
+table.tracks button.add-track {
+  background: #ABC4FF; }
+
+table.tracks button.add-track.active {
+  background: #3975FF; }
+
+table.tracks button.play-track {
+  background: #ff8080; }
+
+table.tracks button.play-track.active {
+  background: #990000; }
+
+table, td, th {
+  border: 1px solid black; }
+
+#maincontainer {
+  width: 100%;
+  height: 100%; }
+
+#leftcolumn {
+  display: inline-block;
+  text-align: left;
+  width: 75%;
+  height: 100%;
+  background-color: white; }
+
+#contentwrapper {
+  display: inline-block;
+  text-align: right;
+  width: 25%;
+  height: 100%;
+  background-color: white; }
+
+/* new 3-cloumn style */
+main {
+  float: left;
+  width: 60%;
+  margin-left: 20%; }
+
+.aside-left {
+  float: left;
+  width: 20%;
+  position: fixed;
+  left: 0; }
+
+.aside-right {
+  float: left;
+  width: 20%; }

@@ -24,9 +24,13 @@ handle(Req, State) ->
             {ok, Album} = data_merger:get_album_by_albumid({album_id, APIidAtom}),
             io:format("Response from /api/albums/id: ~p~n", [Album]),
             Res = jsx:encode(Album);
+        <<"date">> ->
+            {ok, Albums} = data_merger:get_albums_by_date_tuple({date, APIid}),
+            io:format("Response from /api/date/id: ~p~n", [Albums]),
+            Res = jsx:encode(Albums);
         <<"page">> ->
             SkipAlbums = (APIidAtom * 10) - 10,
-	    {ok, Albums} = data_merger:get_albums(tpl, SkipAlbums, 10),
+            {ok, Albums} = data_merger:get_albums(tpl, SkipAlbums, 10),
             io:format("Response from /api/page/item: ~p~n", [Albums]),
             Res = jsx:encode(Albums);
         <<"random">> ->
