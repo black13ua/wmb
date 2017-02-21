@@ -1,2 +1,260 @@
-!function(t){function e(r){if(n[r])return n[r].exports;var a=n[r]={i:r,l:!1,exports:{}};return t[r].call(a.exports,a,a.exports,e),a.l=!0,a.exports}var n={};return e.m=t,e.c=n,e.i=function(t){return t},e.d=function(t,n,r){e.o(t,n)||Object.defineProperty(t,n,{configurable:!1,enumerable:!0,get:r})},e.n=function(t){var n=t&&t.__esModule?function(){return t.default}:function(){return t};return e.d(n,"a",n),n},e.o=function(t,e){return Object.prototype.hasOwnProperty.call(t,e)},e.p="",e(e.s=3)}([function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});e.ALBUMS_URL="/api/albums/",e.RANDOM_URL="/api/random/",e.TRACKS_URL="/api/tracks/"},function(t,e,n){"use strict";function r(){var t=arguments.length>0&&void 0!==arguments[0]?arguments[0]:[];(function(){var t=window.AudioContext||window.webkitAudioContext;return t?(new t).sampleRate:44100})();!function(e){if(e){u=e,e.playlist=t,e.volume=50;var n,r,a;e.on("play",r=function(t,a,o){n&&n.disconnect(),n=new DGAuroraPlayer(AV.Player.fromURL(u.current.url),e),e.off("play",r)}),e.on("playlist",a=function(t,r,a){n&&(n.disconnect(),e.state="paused"),n=new DGAuroraPlayer(AV.Player.fromURL(u.current.url),e)})}}(DGPlayer(document.getElementById("dgplayer")))}function a(t,e,n){e?o(n,t):c(t)}function o(t,e){$.get(t).done(function(t){u&&(Array.isArray(t)?t.forEach(function(t){i(e,t.artist,t.title,t.file,t.album,t.cover)}):t.tracks?t.tracks.forEach(function(n){i(e,t.artist,n.title,n.file,t.album,t.cover)}):i(e,t.artist,t.title,t.file,t.album,t.cover))}).fail(function(t){})}function i(t,e,n,r,a,o){u.addSong={_id:t,name:e+" - "+n,url:encodeURI(r),artist:e,album:a,picture:encodeURI(o)}}function c(t){if(u){var e=u.playlist.find(function(e){return e._id===t}),n=u.playlist.indexOf(e);n<0||(u.removeSong=n)}}Object.defineProperty(e,"__esModule",{value:!0}),e.createPlayer=r,e.addOrRemoveToPlaylist=a;var u={}},function(t,e){},function(t,e,n){"use strict";function r(t){var e=t.target,n=+e.dataset.id,r=a(e),c=e.className.replace(/active/gi,"").trim();switch(c){case"add-album":var u=o.pathToAlbumsApi+n;(0,i.addOrRemoveToPlaylist)(n,r,u);break;case"add-random":var u=o.pathToRandomApi+n;(0,i.addOrRemoveToPlaylist)(n,r,u);break;case"add-track":var u=o.pathToTracksApi+n;(0,i.addOrRemoveToPlaylist)(n,r,u)}}function a(t){var e=Array.prototype.join.call(t.classList,"").match(/active/gi);return e?(t.classList.remove("active"),!1):(t.classList.add("active"),!0)}n(2);var o=n(0),i=n(1);document.addEventListener("DOMContentLoaded",function(t){(0,i.createPlayer)(),document.addEventListener("click",function(t){r(t)})})}]);
+/******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId])
+/******/ 			return installedModules[moduleId].exports;
+/******/
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// identity function for calling harmony imports with the correct context
+/******/ 	__webpack_require__.i = function(value) { return value; };
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, {
+/******/ 				configurable: false,
+/******/ 				enumerable: true,
+/******/ 				get: getter
+/******/ 			});
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = 3);
+/******/ })
+/************************************************************************/
+/******/ ([
+/* 0 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var ALBUMS_URL = exports.ALBUMS_URL = '/api/albums/';
+var RANDOM_URL = exports.RANDOM_URL = '/api/random/';
+var TRACKS_URL = exports.TRACKS_URL = '/api/tracks/';
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.createPlayer = createPlayer;
+exports.addOrRemoveToPlaylist = addOrRemoveToPlaylist;
+var playerAPI = {};
+
+function createPlayer() {
+    var playlist = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+
+    var _sampleRate = function () {
+        var AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) {
+            return 44100;
+        }
+        return new AudioContext().sampleRate;
+    }();
+    (function (DGPlayer) {
+        if (!DGPlayer) return;
+        playerAPI = DGPlayer;
+        DGPlayer.playlist = playlist;
+        DGPlayer.volume = 50;
+
+        var player, _onplay, onplaylist;
+
+        DGPlayer.on('play', _onplay = function onplay(a, b, c) {
+            if (player) {
+                player.disconnect();
+            }
+            player = new DGAuroraPlayer(AV.Player.fromURL(playerAPI.current.url), DGPlayer);
+            DGPlayer.off('play', _onplay);
+        });
+
+        DGPlayer.on('playlist', onplaylist = function onplaylist(a, b, c) {
+            if (player) {
+                player.disconnect();
+                DGPlayer.state = 'paused';
+            }
+            player = new DGAuroraPlayer(AV.Player.fromURL(playerAPI.current.url), DGPlayer);
+        });
+    })(DGPlayer(document.getElementById('dgplayer')));
+};
+
+function addOrRemoveToPlaylist(id, active, path) {
+    if (active) {
+        addToPlaylist(path, id);
+    } else {
+        console.info(id, active, path);
+        removeTrackFromPlaylist(id);
+    }
+};
+
+function addToPlaylist(fullPath, id) {
+    console.info(fullPath);
+    $.get(fullPath).done(function (data) {
+        if (!playerAPI) return;
+        // Random Tracks List
+        if (Array.isArray(data)) {
+            data.forEach(function (item) {
+                addTrackToPlaylist(id, item.artist, item.title, item.file, item.album, item.cover);
+            });
+        }
+        // Album
+        else if (data.tracks) {
+                data.tracks.forEach(function (item) {
+                    addTrackToPlaylist(id, data.artist, item.title, item.file, data.album, data.cover);
+                });
+                // Track
+            } else {
+                addTrackToPlaylist(id, data.artist, data.title, data.file, data.album, data.cover);
+            }
+    }).fail(function (error) {
+        console.warn('NO_ALBUMS');
+    });
+};
+
+function addTrackToPlaylist(id, artist, title, file, album, cover) {
+    playerAPI.addSong = {
+        _id: id,
+        name: artist + ' - ' + title,
+        url: encodeURI(file),
+        artist: artist,
+        album: album,
+        picture: encodeURI(cover)
+    };
+};
+
+function removeTrackFromPlaylist(id) {
+    if (!playerAPI) return;
+    var songToRemove = playerAPI.playlist.find(function (song) {
+        return song._id === id;
+    });
+    var indexOfSong = playerAPI.playlist.indexOf(songToRemove);
+    if (indexOfSong < 0) {
+        console.warn('NOTHING_TO_REMOVE');
+        return;
+    }
+    playerAPI.removeSong = indexOfSong;
+};
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+__webpack_require__(2);
+
+var _constants = __webpack_require__(0);
+
+var _player = __webpack_require__(1);
+
+function reactingOnClicks(event) {
+    var target = event.target;
+    var id = +target.dataset.id;
+    var already = handleActiveClass(target);
+    var mainClassName = target.className.replace(/active/gi, '').trim();
+    switch (mainClassName) {
+        case 'add-album':
+            {
+                var fullPath = _constants.pathToAlbumsApi + id;
+                console.info(already, fullPath, target);
+                (0, _player.addOrRemoveToPlaylist)(id, already, fullPath);
+                break;
+            }
+        case 'add-random':
+            {
+                var fullPath = _constants.pathToRandomApi + id;
+                console.info(already, fullPath);
+                (0, _player.addOrRemoveToPlaylist)(id, already, fullPath);
+                break;
+            }
+        case 'add-track':
+            {
+                var fullPath = _constants.pathToTracksApi + id;
+                console.info(already, fullPath);
+                (0, _player.addOrRemoveToPlaylist)(id, already, fullPath);
+                break;
+            }
+    }
+};
+
+function handleActiveClass(target) {
+    var isAlreadyActive = Array.prototype.join.call(target.classList, '').match(/active/gi);
+    if (isAlreadyActive) {
+        target.classList.remove('active');
+        return false;
+    } else {
+        target.classList.add('active');
+        return true;
+    }
+};
+
+document.addEventListener("DOMContentLoaded", function (event) {
+    (0, _player.createPlayer)();
+
+    document.addEventListener('click', function (event) {
+        reactingOnClicks(event);
+    });
+});
+
+/***/ })
+/******/ ]);
 //# sourceMappingURL=bundle.js.map
