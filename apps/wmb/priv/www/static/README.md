@@ -11,12 +11,10 @@ $ npm install # Install dependencies
 
 #### DEV Build
 ```bash
-$ npm run clean
 $ npm run build:dist
 ```
 
 #### PROD Build
 ```bash
-$ npm run clean
 $ npm run build:prod
 ```
