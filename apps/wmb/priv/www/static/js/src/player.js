@@ -81,6 +81,8 @@ function removeAlbumFromPlaylist() {
 
 function addTrackToPlaylist(id, artist, title, file, album, cover) {
     console.info(...arguments); // eslint-disable-line
+    window.PAPI = playerAPI;
+    console.info(encodeURI(file));
     playerAPI.addSong = {
         _id    : id,
         name   : `${artist} - ${title}`,
