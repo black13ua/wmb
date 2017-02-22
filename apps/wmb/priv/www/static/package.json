@@ -20,14 +20,15 @@
     "eslint-plugin-jsx-a11y": "^4.0.0",
     "eslint-plugin-react": "^6.10.0",
     "exports-loader": "^0.6.2",
+    "extract-text-webpack-plugin": "^2.0.0-rc.3",
+    "humps": "^2.0.0",
     "imports-loader": "^0.6.5",
     "node-libs-browser": "^0.5.2",
     "node-sass": "^3.7.0",
     "sass-loader": "^3.2.0",
     "style-loader": "^0.13.0",
     "webpack": "^2.2.1",
-    "whatwg-fetch": "^2.0.2",
-    "extract-text-webpack-plugin": "^2.0.0-rc.3"
+    "whatwg-fetch": "^2.0.2"
   },
   "devDependencies": {
     "better-npm-run": "0.0.14",

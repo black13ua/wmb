@@ -1,8 +1,6 @@
-import {
-    fetchAlbum,
-    fetchTrack,
-    fetchRandom
-} from './api';
+import humps from 'humps';
+import { fetchAlbum, fetchTrack, fetchRandom } from './api';
+
 
 let playerAPI = {};
 
@@ -45,8 +43,8 @@ export function createPlayer(playlist = []) {
 export function trackToggle(trackId, active) {
     if (active) {
         fetchTrack(trackId)
-            .then((data) => {
-                addTrackToPlaylist(data, trackId);
+            .then((json) => {
+                addTrackToPlaylist(humps.camelizeKeys(json));
             });
     } else {
         removeTrackFromPlaylist(trackId);
@@ -79,12 +77,11 @@ function removeAlbumFromPlaylist() {
     // TODO
 }
 
-function addTrackToPlaylist(id, artist, title, file, album, cover) {
-    console.info(...arguments); // eslint-disable-line
-    window.PAPI = playerAPI;
-    console.info(encodeURI(file));
+function addTrackToPlaylist(json) {
+    const { trackId, artist, title, file, cover, album } = json;
+    console.info(trackId, artist, title, file, cover, album);
     playerAPI.addSong = {
-        _id    : id,
+        _id    : trackId,
         name   : `${artist} - ${title}`,
         url    : encodeURI(file),
         artist,
@@ -92,7 +89,6 @@ function addTrackToPlaylist(id, artist, title, file, album, cover) {
         picture: encodeURI(cover)
     };
 }
-
 
 function removeTrackFromPlaylist(id) {
     if (!playerAPI) return;
