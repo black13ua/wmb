@@ -9,21 +9,21 @@ function handleWrongStatusCoode(res) {
     return res;
 }
 
-function fetchRandomTracks() {
+export function fetchRandom() {
     return fetch(`${ RANDOM_URL }`)
         .then(handleWrongStatusCoode)
         .then((res) => res.json())
         .catch((err) => console.error(err));
 }
 
-function fetchFullAlbum(albumId) {
+export function fetchAlbum(albumId) {
     return fetch(`${ ALBUMS_URL }${ albumId }`)
         .then(handleWrongStatusCoode)
         .then((res) => res.json())
         .catch((err) => console.error(err));
 }
 
-function fetchSingleTrack(trackId) {
+export function fetchTrack(trackId) {
     return fetch(`${ RANDOM_URL }${ trackId }`)
         .then(handleWrongStatusCoode)
         .then((res) => res.json())

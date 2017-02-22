@@ -2,7 +2,9 @@ import '../../sass/main.scss';
 import { pathToAlbumsApi, pathToRandomApi, pathToTracksApi } from './constants';
 import { 
     createPlayer,
-    addOrRemoveToPlaylist,
+    randomAdd,
+    trackToggle,
+    albumToggle
 } from './player';
 
 function reactingOnClicks(event) { 
@@ -12,25 +14,19 @@ function reactingOnClicks(event) {
     var mainClassName = target.className.replace(/active/gi, '').trim(); 
     switch(mainClassName) { 
         case 'add-album': {
-            var fullPath = pathToAlbumsApi + id;
-            console.info(already, fullPath, target);
-            addOrRemoveToPlaylist(id, already, fullPath);
+            albumToggle(albumId, already);
             break;
         }
         case 'add-random': {
-            var fullPath = pathToRandomApi + id;
-            console.info(already, fullPath);
-            addOrRemoveToPlaylist(id, already, fullPath);
+            randomAdd();
             break;
         }
         case 'add-track': {
-            var fullPath = pathToTracksApi + id;
-            console.info(already, fullPath);
-            addOrRemoveToPlaylist(id, already, fullPath);
+            trackToggle(trackId, already);
             break;
         }
     } 
-}; 
+};
 
 function handleActiveClass(target) { 
     var isAlreadyActive = Array.prototype.join.call(target.classList, '').match(/active/gi); 

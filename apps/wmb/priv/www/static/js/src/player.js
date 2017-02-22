@@ -1,5 +1,11 @@
 let playerAPI = {};
 
+import {
+    fetchAlbum,
+    fetchTrack,
+    fetchRandom
+} from './api.js';
+
 export function createPlayer(playlist = []) {
     var _sampleRate = (function() {
         var AudioContext = (window.AudioContext || window.webkitAudioContext);
@@ -35,39 +41,36 @@ export function createPlayer(playlist = []) {
 };
 
 
-export function addOrRemoveToPlaylist(id, active, path) {
+export function trackToggle(trackId, active) {
     if (active) {
-        addToPlaylist(path, id)
+        fetchTrack(trackId)
+            .then((data) => {
+                addTrackToPlaylist(data, trackId)
+            })
     } else {
-        console.info(id, active, path);
-        removeTrackFromPlaylist(id);
+        removeTrackFromPlaylist(trackId);
     }
 };
 
+export function albumToggle(albumId, active) {
+    if (active) {
+        fetchAlbum(albumId)
+            .then((data) => {
+                data.tracks.forEach((item) => { 
+                    addTrackToPlaylist(item.id, data.artist, item.title, item.file, data.album, data.cover);
+                });
+            });
+    } else {
+        removeAlbumFromPlaylist(albumId); // TODO: get all tracksId from album and remove them separatly
+    }
+};
 
-function addToPlaylist(fullPath, id) {
-    console.info(fullPath);
-    $.get(fullPath)
-        .done(function(data) {
-            if (!playerAPI) return;
-            // Random Tracks List
-            if (Array.isArray(data)) {
-                data.forEach(function(item) {
-                    addTrackToPlaylist(id, item.artist, item.title, item.file, item.album, item.cover);
-                });
-            }
-            // Album
-            else if (data.tracks) {
-                data.tracks.forEach(function(item) {
-                    addTrackToPlaylist(id, data.artist, item.title, item.file, data.album, data.cover);
-                });
-            // Track
-            } else {
-                addTrackToPlaylist(id, data.artist, data.title, data.file, data.album, data.cover)
-            }
-        })
-        .fail(function(error) {
-            console.warn('NO_ALBUMS');
+export function randomAdd() {
+    fetchRandom()
+        .then((data) => {
+            data.forEach((item) => {
+                addTrackToPlaylist(item.id, item.artist, item.title, item.file, item.album, item.cover);
+            });
         });
 };
 
@@ -86,7 +89,7 @@ function addTrackToPlaylist(id, artist, title, file, album, cover) {
 
 function removeTrackFromPlaylist(id) {
     if (!playerAPI) return;
-    var songToRemove = playerAPI.playlist.find(function(song){ return song._id === id});
+    var songToRemove = playerAPI.playlist.find((song) => song._id === id);
     var indexOfSong = playerAPI.playlist.indexOf(songToRemove);
     if (indexOfSong < 0) {
         console.warn('NOTHING_TO_REMOVE');
