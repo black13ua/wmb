@@ -1,6 +1,5 @@
 import '../../sass/main.scss';
-import { pathToAlbumsApi, pathToRandomApi, pathToTracksApi } from './constants';
-import { 
+import {
     createPlayer,
     randomAdd,
     trackToggle,

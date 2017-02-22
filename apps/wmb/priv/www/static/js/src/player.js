@@ -1,11 +1,12 @@
-let playerAPI = {};
-
 import {
     fetchAlbum,
     fetchTrack,
     fetchRandom
-} from './api.js';
+} from './api';
 
+let playerAPI = {};
+
+/* eslint-disable */
 export function createPlayer(playlist = []) {
     var _sampleRate = (function() {
         var AudioContext = (window.AudioContext || window.webkitAudioContext);
@@ -39,31 +40,31 @@ export function createPlayer(playlist = []) {
         });
     })(DGPlayer(document.getElementById('dgplayer')));
 };
-
+/* eslint-enable */
 
 export function trackToggle(trackId, active) {
     if (active) {
         fetchTrack(trackId)
             .then((data) => {
-                addTrackToPlaylist(data, trackId)
-            })
+                addTrackToPlaylist(data, trackId);
+            });
     } else {
         removeTrackFromPlaylist(trackId);
     }
-};
+}
 
 export function albumToggle(albumId, active) {
     if (active) {
         fetchAlbum(albumId)
             .then((data) => {
-                data.tracks.forEach((item) => { 
+                data.tracks.forEach((item) => {
                     addTrackToPlaylist(item.id, data.artist, item.title, item.file, data.album, data.cover);
                 });
             });
     } else {
         removeAlbumFromPlaylist(albumId); // TODO: get all tracksId from album and remove them separatly
     }
-};
+}
 
 export function randomAdd() {
     fetchRandom()
@@ -72,28 +73,30 @@ export function randomAdd() {
                 addTrackToPlaylist(item.id, item.artist, item.title, item.file, item.album, item.cover);
             });
         });
-};
+}
 
+function removeAlbumFromPlaylist() {
+    // TODO
+}
 
 function addTrackToPlaylist(id, artist, title, file, album, cover) {
     playerAPI.addSong = {
         _id    : id,
-        name   : artist + ' - ' + title,
+        name   : `${artist} - ${title}`,
         url    : encodeURI(file),
-        artist : artist,
-        album  : album,
-        picture:  encodeURI(cover)
+        artist,
+        album,
+        picture: encodeURI(cover)
     };
-};
+}
 
 
 function removeTrackFromPlaylist(id) {
     if (!playerAPI) return;
-    var songToRemove = playerAPI.playlist.find((song) => song._id === id);
-    var indexOfSong = playerAPI.playlist.indexOf(songToRemove);
+    const songToRemove = playerAPI.playlist.find(song => song._id === id);
+    const indexOfSong = playerAPI.playlist.indexOf(songToRemove);
     if (indexOfSong < 0) {
-        console.warn('NOTHING_TO_REMOVE');
         return;
     }
     playerAPI.removeSong = indexOfSong;
-};
+}
