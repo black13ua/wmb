@@ -94,7 +94,7 @@ get_tracklist_by_albumtuple(AlbumID) ->
 
 %%% Get AlbumTuple by AlbumID
 -spec get_albumtuple_by_albumid({album_id, integer()}) ->
-    {ok, {{album, bitstring(), bitstring()}}}.
+    {ok, {{album, bitstring()}, {date, bitstring()}}}.
 get_albumtuple_by_albumid(AlbumID) ->
     [[AlbumTuple]] = ets:match(?ETS_ALBUMS, {'$1', AlbumID}),
     io:format("AlbumTuple is: ~p~n", [AlbumTuple]),
@@ -167,9 +167,9 @@ get_track_by_trackid(TrackID) ->
     Res = [AlbumID, {file, UrlFile}, {cover, UrlCover}, AlbumArtist, AlbumTuple, DateTuple, Title, TrackID],
     {ok, Res}.
 
-%%% Get Cover by TrackID
+%%% Get Cover by AlbumID
 -spec get_cover_by_albumid({album_id, integer()}) ->
-    {ok, [proplists:proplist()]}.
+    {ok, bitstring()}.
 get_cover_by_albumid(AlbumID) ->
     FilesUrlRoot = <<"/files/">>,
     [{AlbumID, {cover, AlbumCover}}] = ets:lookup(?ETS_COVERS, AlbumID),
