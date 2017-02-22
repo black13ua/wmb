@@ -6,14 +6,14 @@ import {
     albumToggle
 } from './player';
 
-function reactingOnClicks(event) { 
-    var target = event.target; 
-    var id = +target.dataset.id;
-    var already = handleActiveClass(target);
-    var mainClassName = target.className.replace(/active/gi, '').trim(); 
-    switch(mainClassName) { 
+function reactingOnClicks(event) {
+    const target = event.target;
+    const id = +target.dataset.id;
+    const already = handleActiveClass(target);
+    const mainClassName = target.className.replace(/active/gi, '').trim();
+    switch (mainClassName) {
         case 'add-album': {
-            albumToggle(albumId, already);
+            albumToggle(id, already);
             break;
         }
         case 'add-random': {
@@ -21,28 +21,33 @@ function reactingOnClicks(event) {
             break;
         }
         case 'add-track': {
-            trackToggle(trackId, already);
+            trackToggle(id, already);
             break;
         }
-    } 
-};
+        default: {
+            return null;
+        }
+    }
+}
 
-function handleActiveClass(target) { 
-    var isAlreadyActive = Array.prototype.join.call(target.classList, '').match(/active/gi); 
-    if (isAlreadyActive) { 
-        target.classList.remove('active'); 
-        return false;
-    } else { 
+function handleActiveClass(target) {
+    const isAlreadyActive = Array.prototype.join.call(target.classList, '').match(/active/gi);
+    let already = false;
+    if (isAlreadyActive) {
+        target.classList.remove('active');
+        already = false;
+    } else {
         target.classList.add('active');
-        return true;
-    } 
-};
+        already = true;
+    }
+    return already;
+}
 
 
-document.addEventListener("DOMContentLoaded", function(event) {
+document.addEventListener('DOMContentLoaded', () => {
     createPlayer();
 
-    document.addEventListener('click', function(event) { 
-        reactingOnClicks(event); 
+    document.addEventListener('click', (event) => {
+        reactingOnClicks(event);
     });
 });
