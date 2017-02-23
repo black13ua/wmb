@@ -44,7 +44,7 @@ export function trackToggle(trackId, active) {
     if (active) {
         fetchTrack(trackId)
             .then((json) => {
-                addTrackToPlaylist(humps.camelizeKeys(json));
+                addTrackToPlaylist(json);
             });
     } else {
         removeTrackFromPlaylist(trackId);
@@ -54,9 +54,10 @@ export function trackToggle(trackId, active) {
 export function albumToggle(albumId, active) {
     if (active) {
         fetchAlbum(albumId)
-            .then((data) => {
-                data.tracks.forEach((item) => {
-                    addTrackToPlaylist(item.id, data.artist, item.title, item.file, data.album, data.cover);
+            .then((json) => {
+                json.tracks.forEach((track) => {
+                    const flattedJson = { ...json, ...track };
+                    addTrackToPlaylist(flattedJson);
                 });
             });
     } else {
@@ -66,9 +67,9 @@ export function albumToggle(albumId, active) {
 
 export function randomAdd() {
     fetchRandom()
-        .then((data) => {
-            data.forEach((item) => {
-                addTrackToPlaylist(item.id, item.artist, item.title, item.file, item.album, item.cover);
+        .then((json) => {
+            json.forEach((track) => {
+                addTrackToPlaylist(track);
             });
         });
 }
@@ -79,7 +80,7 @@ function removeAlbumFromPlaylist() {
 
 function addTrackToPlaylist(json) {
     const { trackId, artist, title, file, cover, album } = json;
-    console.info(trackId, artist, title, file, cover, album);
+    console.info('addTrackToPlaylist', trackId, artist, title, file, cover, album);
     playerAPI.addSong = {
         _id    : trackId,
         name   : `${artist} - ${title}`,
