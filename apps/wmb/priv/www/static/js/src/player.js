@@ -4,7 +4,7 @@ import { fetchAlbum, fetchTrack, fetchRandom } from './api';
 let playerAPI = {};
 
 /* eslint-disable */
-export function createPlayer(playlist = []) {
+function createPlayerAPI(playlist = []) {
     var _sampleRate = (function() {
         var AudioContext = (window.AudioContext || window.webkitAudioContext);
         if (!AudioContext) {
@@ -36,8 +36,15 @@ export function createPlayer(playlist = []) {
             player = new DGAuroraPlayer(AV.Player.fromURL(playerAPI.current.url), DGPlayer);
         });
     })(DGPlayer(document.getElementById('dgplayer')));
+    return playerAPI;
 };
 /* eslint-enable */
+
+export function createPlayer() {
+    playerAPI = createPlayerAPI();
+    window.PAPI = playerAPI;
+    console.info('playerAPI', playerAPI);
+}
 
 export function trackToggle(trackId, active) {
     if (active) {
@@ -79,8 +86,7 @@ function removeAlbumFromPlaylist() {
 
 function addTrackToPlaylist(json) {
     const { trackId, artist, title, file, cover, album } = json;
-    console.info('addTrackToPlaylist', trackId, artist, title, file, cover, album);
-    window.PAPI = playerAPI;
+    console.info('addTrackToPlaylist', trackId, artist, title, file, cover, album, window.PAPI);
     playerAPI.addSong = {
         _id    : trackId,
         name   : `${artist} - ${title}`,
