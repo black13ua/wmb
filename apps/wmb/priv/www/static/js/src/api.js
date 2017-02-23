@@ -1,9 +1,9 @@
 import humps from 'humps';
-import { ALBUMS_URL, RANDOM_URL, TRACKS_URL } from './constants';
+import { ALBUMS_URL, RANDOM_URL, TRACKS_URL, RANDOM_NUMBER } from './constants';
 
 
 export function fetchRandom() {
-    return fetch(`${RANDOM_URL}`)
+    return fetch(`${RANDOM_URL}${RANDOM_NUMBER}`)
         .then(res => res.json())
         .then(json => humps.camelizeKeys(json))
         .catch(err => console.error(err));

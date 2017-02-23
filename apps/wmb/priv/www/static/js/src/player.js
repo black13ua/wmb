@@ -42,8 +42,6 @@ function createPlayerAPI(playlist = []) {
 
 export function createPlayer() {
     playerAPI = createPlayerAPI();
-    window.PAPI = playerAPI;
-    console.info('playerAPI', playerAPI);
 }
 
 export function trackToggle(trackId, active) {
@@ -86,7 +84,6 @@ function removeAlbumFromPlaylist() {
 
 function addTrackToPlaylist(json) {
     const { trackId, artist, title, file, cover, album } = json;
-    console.info('addTrackToPlaylist', trackId, artist, title, file, cover, album, window.PAPI);
     playerAPI.addSong = {
         _id    : trackId,
         name   : `${artist} - ${title}`,
