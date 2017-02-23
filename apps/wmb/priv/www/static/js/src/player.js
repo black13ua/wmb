@@ -12,9 +12,9 @@ function createPlayerAPI(playlist = []) {
         }
         return new AudioContext().sampleRate;
     }());
-    (function(DGPlayer) {
+    return (function(DGPlayer) {
+        console.info('DGPlayer', DGPlayer);
         if (!DGPlayer) return;
-        playerAPI = DGPlayer;
         DGPlayer.playlist = playlist;
         DGPlayer.volume = 50;
 
@@ -35,8 +35,8 @@ function createPlayerAPI(playlist = []) {
             }
             player = new DGAuroraPlayer(AV.Player.fromURL(playerAPI.current.url), DGPlayer);
         });
-    })(DGPlayer(document.getElementById('dgplayer')));
-    return playerAPI;
+        return DGPlayer;
+    })(window.DGPlayer(document.getElementById('dgplayer')));
 };
 /* eslint-enable */
 
