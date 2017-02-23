@@ -1,4 +1,3 @@
-import humps from 'humps';
 import { fetchAlbum, fetchTrack, fetchRandom } from './api';
 
 
@@ -81,6 +80,7 @@ function removeAlbumFromPlaylist() {
 function addTrackToPlaylist(json) {
     const { trackId, artist, title, file, cover, album } = json;
     console.info('addTrackToPlaylist', trackId, artist, title, file, cover, album);
+    window.PAPI = playerAPI;
     playerAPI.addSong = {
         _id    : trackId,
         name   : `${artist} - ${title}`,
