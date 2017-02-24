@@ -22,11 +22,8 @@
     -webkit-user-select: none;
     -moz-user-select: none;
     cursor: default;
-    position: fixed;
-    top: 5px;
     outline: none;
-    width: 100%;
-    z-index: 10;
+
 }
 
 .player, .player * {
