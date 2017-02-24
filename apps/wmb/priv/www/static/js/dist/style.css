@@ -6,6 +6,9 @@
     top: 5px;
     width: 100%;
     z-index: 10; }
+    .player-container .player #playlist ol li.active a {
+      color: #fff;
+      text-shadow: rgba(255, 255, 255, 0.2) 0 1px 3px; }
     .player-container .player #playlist ol li a {
       font-family: Helvetica, Arial, "DejaVu Sans Condensed", sans-serif;
       text-decoration: none;
@@ -13,7 +16,7 @@
       -webkit-transition: color 0.75s;
       -moz-transition: color 0.75s;
       -o-transition: color 0.75s; }
-      .player-container .player #playlist ol li a:hover, .player-container .player #playlist ol li a:visited {
+      .player-container .player #playlist ol li a:hover {
         color: #fff;
         text-shadow: rgba(255, 255, 255, 0.2) 0 1px 3px; }
 
