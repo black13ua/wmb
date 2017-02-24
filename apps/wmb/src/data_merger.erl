@@ -9,7 +9,8 @@
     get_albums_by_date/1, get_albums_by_date_tuple/1,
     get_albumtuple_by_albumid/1,
     get_cover_by_albumid/1,
-    get_random_tracks/1
+    get_random_tracks/1,
+    search_albums_by_phrase/1
 ]).
 
 -include("ets_names.hrl").
@@ -176,4 +177,30 @@ get_cover_by_albumid(AlbumID) ->
     [{AlbumID, {path, AlbumPathBin}}] = ets:lookup(?ETS_PATHS, AlbumID),
     UrlCover = <<FilesUrlRoot/binary, AlbumPathBin/binary, <<"/">>/binary, AlbumCover/binary>>,
     {ok, UrlCover}.
+
+%%% Search Albums by Phrase
+-spec search_albums_by_phrase(bitstring()) ->
+    {ok, []} | {ok, [proplists:proplist()]}.
+search_albums_by_phrase(SearchPhrase) ->
+    search_albums_by_phrase(0, 0, SearchPhrase, []).
+
+-spec search_albums_by_phrase(integer(), integer(), bitstring(), list()) ->
+    {ok, []} | {ok, [proplists:proplist()]}.
+search_albums_by_phrase(5, EtsSkip, SearchPhrase, Acc) ->
+    {ok, Acc};
+search_albums_by_phrase(N, EtsSkip, SearchPhrase, Acc) ->
+    NextAlbumTuple = wmb_helpers:skip_ets_elements(EtsSkip, ?ETS_ALBUMS),
+    case NextAlbumTuple of
+        {error, _} ->
+            {ok, Acc};
+        {{album, FirstAlbumTuple}, {date, Date}} ->
+            MatchResult = re:run(FirstAlbumTuple, SearchPhrase, [caseless]),
+            case MatchResult of
+                {match, _} ->
+                    {ok, Album} = get_album_by_albumtuple({{album, FirstAlbumTuple}, {date, Date}}),
+                    search_albums_by_phrase(N+1, EtsSkip+1, SearchPhrase, [Album|Acc]);
+                nomatch ->
+                    search_albums_by_phrase(N, EtsSkip+1, SearchPhrase, Acc)
+            end
+    end.
 
