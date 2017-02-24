@@ -1,53 +1,53 @@
 import '../../sass/main.scss';
-import { pathToAlbumsApi, pathToRandomApi, pathToTracksApi } from './constants';
-import { 
+import {
     createPlayer,
-    addOrRemoveToPlaylist,
+    randomAdd,
+    trackToggle,
+    albumToggle
 } from './player';
 
-function reactingOnClicks(event) { 
-    var target = event.target; 
-    var id = +target.dataset.id;
-    var already = handleActiveClass(target);
-    var mainClassName = target.className.replace(/active/gi, '').trim(); 
-    switch(mainClassName) { 
+function reactingOnClicks(event) {
+    const target = event.target;
+    const id = +target.dataset.id;
+    const already = handleActiveClass(target);
+    const mainClassName = target.className.replace(/active/gi, '').trim();
+    switch (mainClassName) {
         case 'add-album': {
-            var fullPath = pathToAlbumsApi + id;
-            console.info(already, fullPath, target);
-            addOrRemoveToPlaylist(id, already, fullPath);
+            albumToggle(id, already);
             break;
         }
         case 'add-random': {
-            var fullPath = pathToRandomApi + id;
-            console.info(already, fullPath);
-            addOrRemoveToPlaylist(id, already, fullPath);
+            randomAdd();
             break;
         }
         case 'add-track': {
-            var fullPath = pathToTracksApi + id;
-            console.info(already, fullPath);
-            addOrRemoveToPlaylist(id, already, fullPath);
+            trackToggle(id, already);
             break;
         }
-    } 
-}; 
+        default: {
+            return null;
+        }
+    }
+}
 
-function handleActiveClass(target) { 
-    var isAlreadyActive = Array.prototype.join.call(target.classList, '').match(/active/gi); 
-    if (isAlreadyActive) { 
-        target.classList.remove('active'); 
-        return false;
-    } else { 
+function handleActiveClass(target) {
+    const isAlreadyActive = Array.prototype.join.call(target.classList, '').match(/active/gi);
+    let already = false;
+    if (isAlreadyActive) {
+        target.classList.remove('active');
+        already = false;
+    } else {
         target.classList.add('active');
-        return true;
-    } 
-};
+        already = true;
+    }
+    return already;
+}
 
 
-document.addEventListener("DOMContentLoaded", function(event) {
+document.addEventListener('DOMContentLoaded', () => {
     createPlayer();
 
-    document.addEventListener('click', function(event) { 
-        reactingOnClicks(event); 
+    document.addEventListener('click', (event) => {
+        reactingOnClicks(event);
     });
 });

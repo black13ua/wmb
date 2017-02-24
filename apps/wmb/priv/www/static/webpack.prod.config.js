@@ -5,7 +5,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 const config = {
     context: __dirname,
-    devtool: 'cheap-module-source-map',
+    devtool: 'source-map',
 
     entry: './js/src/index.js',
 
@@ -15,17 +15,17 @@ const config = {
     },
 
     resolve: {
-        modules: ['node_modules'],
-        extensions: [".js", ".json", ".jsx", ".scss"],
+        modules   : ['node_modules'],
+        extensions: ['.js', '.json', '.jsx', '.scss'],
     },
 
     module: {
         rules: [
             {
-                test: /\.js$/,
+                test   : /\.js$/,
                 exclude: /node_modules/,
-                use: {
-                    loader: 'babel-loader',
+                use    : {
+                    loader : 'babel-loader',
                     options: {
                         presets: ['es2015']
                     }
@@ -33,9 +33,9 @@ const config = {
             },
             {
                 test: /\.scss/,
-                use: ExtractTextPlugin.extract({
+                use : ExtractTextPlugin.extract({
                     fallback: 'style-loader',
-                    use: ['css-loader', 'sass-loader']
+                    use     : ['css-loader', 'sass-loader']
                 })
             },
         ]
@@ -43,14 +43,14 @@ const config = {
 
     plugins: [
         new webpack.ProvidePlugin({
-            fetch: 'imports?this=>global!exports?global.fetch!whatwg-fetch'
+            fetch: 'imports-loader?this=>global!exports-loader?global.fetch!whatwg-fetch'
         }),
         new webpack.optimize.UglifyJsPlugin({
-          sourceMap: true,
-          compress: {
-              warnings: false,
-              drop_console: true,
-          }
+            sourceMap: true,
+            compress : {
+                warnings    : false,
+                drop_console: true,
+            }
         }),
         new ExtractTextPlugin({
             filename: 'style.css'

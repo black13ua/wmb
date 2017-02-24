@@ -1,31 +1,24 @@
-import { ALBUMS_URL, RANDOM_URL, TRACKS_URL } from './constants';
+import humps from 'humps';
+import { ALBUMS_URL, RANDOM_URL, TRACKS_URL, RANDOM_NUMBER } from './constants';
 
-function handleWrongStatusCoode(res) {
-    if (res.status !== 200) {
-        throw new Error(res.url.split(`/`).slice(3).join(`/`) + `>`
-            + res.status + `:` + res.statusText
-        );
-    }
-    return res;
+
+export function fetchRandom() {
+    return fetch(`${RANDOM_URL}${RANDOM_NUMBER}`)
+        .then(res => res.json())
+        .then(json => humps.camelizeKeys(json))
+        .catch(err => console.error(err));
 }
 
-function fetchRandomTracks() {
-    return fetch(`${ RANDOM_URL }`)
-        .then(handleWrongStatusCoode)
-        .then((res) => res.json())
-        .catch((err) => console.error(err));
+export function fetchAlbum(albumId) {
+    return fetch(`${ALBUMS_URL}${albumId}`)
+        .then(res => res.json())
+        .then(json => humps.camelizeKeys(json))
+        .catch(err => console.error(err));
 }
 
-function fetchFullAlbum(albumId) {
-    return fetch(`${ ALBUMS_URL }${ albumId }`)
-        .then(handleWrongStatusCoode)
-        .then((res) => res.json())
-        .catch((err) => console.error(err));
-}
-
-function fetchSingleTrack(trackId) {
-    return fetch(`${ RANDOM_URL }${ trackId }`)
-        .then(handleWrongStatusCoode)
-        .then((res) => res.json())
-        .catch((err) => console.error(err));
+export function fetchTrack(trackId) {
+    return fetch(`${TRACKS_URL}${trackId}`)
+        .then(res => res.json())
+        .then(json => humps.camelizeKeys(json))
+        .catch(err => console.error(err));
 }

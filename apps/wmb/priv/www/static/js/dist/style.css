@@ -1,6 +1,43 @@
 .player-container {
   height: 150px;
   width: 100%; }
+  .player-container .player {
+    position: fixed;
+    top: 5px;
+    width: 100%;
+    z-index: 10; }
+    .player-container .player #playlist ol li.active a {
+      color: #fff;
+      text-shadow: rgba(255, 255, 255, 0.2) 0 1px 3px; }
+    .player-container .player #playlist ol li a {
+      font-family: Helvetica, Arial, "DejaVu Sans Condensed", sans-serif;
+      text-decoration: none;
+      color: #A7AAB1;
+      -webkit-transition: color 0.75s;
+      -moz-transition: color 0.75s;
+      -o-transition: color 0.75s; }
+      .player-container .player #playlist ol li a:hover {
+        color: #fff;
+        text-shadow: rgba(255, 255, 255, 0.2) 0 1px 3px; }
+
+/**
+ * For modern browsers
+ * 1. The space content is one way to avoid an Opera bug when the
+ *    contenteditable attribute is included anywhere else in the document.
+ *    Otherwise it causes space to appear at the top and bottom of elements
+ *    that are clearfixed.
+ * 2. The use of `table` rather than `block` is only necessary if using
+ *    `:before` to contain the top-margins of child elements.
+ */
+.cf:before,
+.cf:after {
+  content: " ";
+  /* 1 */
+  display: table;
+  /* 2 */ }
+
+.cf:after {
+  clear: both; }
 
 a:link, a:visited {
   color: blue; }

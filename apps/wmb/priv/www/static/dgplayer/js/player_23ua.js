@@ -452,8 +452,6 @@ function DGPlayer(root) {
 
                 loadElements();
 
-                console.log(songs.length, albumEnd);
-
                 if(albumEnd !== 0 && songs.length > albumEnd) {
                     track = albumEnd;
                     current = songs[track];
