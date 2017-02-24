@@ -1,0 +1,116 @@
+.player-container {
+  height: 150px;
+  width: 100%; }
+  .player-container .player {
+    position: fixed;
+    top: 5px;
+    width: 100%;
+    z-index: 10; }
+    .player-container .player #playlist ol li.active a {
+      color: #fff;
+      text-shadow: rgba(255, 255, 255, 0.2) 0 1px 3px; }
+    .player-container .player #playlist ol li a {
+      font-family: Helvetica, Arial, "DejaVu Sans Condensed", sans-serif;
+      text-decoration: none;
+      color: #A7AAB1;
+      -webkit-transition: color 0.75s;
+      -moz-transition: color 0.75s;
+      -o-transition: color 0.75s; }
+      .player-container .player #playlist ol li a:hover {
+        color: #fff;
+        text-shadow: rgba(255, 255, 255, 0.2) 0 1px 3px; }
+
+/**
+ * For modern browsers
+ * 1. The space content is one way to avoid an Opera bug when the
+ *    contenteditable attribute is included anywhere else in the document.
+ *    Otherwise it causes space to appear at the top and bottom of elements
+ *    that are clearfixed.
+ * 2. The use of `table` rather than `block` is only necessary if using
+ *    `:before` to contain the top-margins of child elements.
+ */
+.cf:before,
+.cf:after {
+  content: " ";
+  /* 1 */
+  display: table;
+  /* 2 */ }
+
+.cf:after {
+  clear: both; }
+
+a:link, a:visited {
+  color: blue; }
+
+img.album_cover {
+  width: 100%; }
+
+table.album {
+  background-color: white;
+  width: 100%; }
+
+table.main {
+  background-color: #DCDCDC;
+  border-collapse: collapse;
+  width: 100%; }
+
+table.main button.add-album {
+  background: #ABC4FF; }
+
+table.main button.add-album.active {
+  background: #3975FF; }
+
+table.tracks {
+  background-color: #F0F8FF;
+  width: 100%; }
+
+table.tracks button.add-track {
+  background: #ABC4FF; }
+
+table.tracks button.add-track.active {
+  background: #3975FF; }
+
+table.tracks button.play-track {
+  background: #ff8080; }
+
+table.tracks button.play-track.active {
+  background: #990000; }
+
+table, td, th {
+  border: 1px solid black; }
+
+#maincontainer {
+  width: 100%;
+  height: 100%; }
+
+#leftcolumn {
+  display: inline-block;
+  text-align: left;
+  width: 75%;
+  height: 100%;
+  background-color: white; }
+
+#contentwrapper {
+  display: inline-block;
+  text-align: right;
+  width: 25%;
+  height: 100%;
+  background-color: white; }
+
+/* new 3-cloumn style */
+main {
+  float: left;
+  width: 60%;
+  margin-left: 20%; }
+
+.aside-left {
+  float: left;
+  width: 20%;
+  position: fixed;
+  left: 0; }
+
+.aside-right {
+  float: left;
+  width: 20%; }
+
+/*# sourceMappingURL=style.css.map*/
