@@ -13,7 +13,6 @@ function createPlayerAPI(playlist = []) {
         return new AudioContext().sampleRate;
     }());
     return (function(DGPlayer) {
-        console.info('DGPlayer', DGPlayer);
         if (!DGPlayer) return;
         DGPlayer.playlist = playlist;
         DGPlayer.volume = 50;
