@@ -48,8 +48,8 @@ const config = {
         new webpack.optimize.UglifyJsPlugin({
             sourceMap: true,
             compress : {
-                warnings: false,
-            //   drop_console: true,
+                warnings    : false,
+                drop_console: true,
             }
         }),
         new ExtractTextPlugin({
