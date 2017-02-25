@@ -23,7 +23,7 @@ function createPlayerAPI(playlist = []) {
             if (player) {
                 player.disconnect();
             }
-            player = new DGAuroraPlayer(AV.Player.fromURL(playerAPI.current.url), DGPlayer);
+            player = new DGAuroraPlayer(AV.Player.fromURL(DGPlayer.current.url), DGPlayer);
             DGPlayer.off('play', onplay);
         });
 
@@ -32,7 +32,7 @@ function createPlayerAPI(playlist = []) {
                 player.disconnect();
                 DGPlayer.state = 'paused';
             }
-            player = new DGAuroraPlayer(AV.Player.fromURL(playerAPI.current.url), DGPlayer);
+            player = new DGAuroraPlayer(AV.Player.fromURL(DGPlayer.current.url), DGPlayer);
         });
         return DGPlayer;
     })(window.DGPlayer(document.getElementById('dgplayer')));
