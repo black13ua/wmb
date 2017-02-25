@@ -53,7 +53,7 @@
                         </div>
                         <img src="/static/dgplayer/img/volume_high.png">
                     </div>
-                    <!--<div class="button-playlist"><i class="entypo-numbered-list"></i></div>-->
+                    <div class="button-playlist"><i class="entypo-numbered-list"></i></div>
                 </div>
             </div>
         </div>
