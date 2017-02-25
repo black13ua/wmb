@@ -8,7 +8,7 @@
     z-index: 10; }
     .player-container .player .player-item .avatar-container {
       float: left;
-      width: 100%; }
+      width: 10%; }
     .player-container .player .player-item .info-container {
       float: left;
       max-width: 300px; }
@@ -136,13 +136,14 @@ main {
   float: left;
   width: 20%; }
   .aside-right #playlist {
-    height: 100%;
+    height: 100vh;
     background: -webkit-linear-gradient(#202328, #191B1E);
     background: -moz-linear-gradient(#202328, #191B1E);
     background: -o-linear-gradient(#202328, #191B1E); }
     .aside-right #playlist ol {
       padding: 10px;
-      margin: 0; }
+      margin: 0;
+      margin-left: 20px; }
       .aside-right #playlist ol li.active a {
         color: #fff;
         text-shadow: rgba(255, 255, 255, 0.2) 0 1px 3px; }
@@ -156,5 +157,8 @@ main {
         .aside-right #playlist ol li a:hover {
           color: #fff;
           text-shadow: rgba(255, 255, 255, 0.2) 0 1px 3px; }
+
+html, body {
+  height: 100%; }
 
 /*# sourceMappingURL=style.css.map*/
