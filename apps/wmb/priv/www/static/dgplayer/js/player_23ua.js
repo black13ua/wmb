@@ -343,7 +343,7 @@ function DGPlayer(root) {
       , current //stores the current song
       , track //stores the active track number
       , playlistLoaded = false
-      , $playlist = root.querySelector("#playlist")
+      , $playlist = querySelector("#playlist") // no root cause we separate playlist from player
       //On Song click
       , onSongClick = function(evt) {
 
