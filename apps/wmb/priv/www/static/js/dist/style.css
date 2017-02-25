@@ -6,19 +6,11 @@
     top: 5px;
     width: 100%;
     z-index: 10; }
-    .player-container .player #playlist ol li.active a {
-      color: #fff;
-      text-shadow: rgba(255, 255, 255, 0.2) 0 1px 3px; }
-    .player-container .player #playlist ol li a {
-      font-family: Helvetica, Arial, "DejaVu Sans Condensed", sans-serif;
-      text-decoration: none;
-      color: #A7AAB1;
-      -webkit-transition: color 0.75s;
-      -moz-transition: color 0.75s;
-      -o-transition: color 0.75s; }
-      .player-container .player #playlist ol li a:hover {
-        color: #fff;
-        text-shadow: rgba(255, 255, 255, 0.2) 0 1px 3px; }
+    .player-container .player .player-item .info-container {
+      float: left;
+      max-width: 300px; }
+    .player-container .player .player-item .controls .button-playlist {
+      display: none; }
 
 /**
  * For modern browsers
@@ -112,5 +104,18 @@ main {
 .aside-right {
   float: left;
   width: 20%; }
+  .aside-right #playlist ol li.active a {
+    color: #fff;
+    text-shadow: rgba(255, 255, 255, 0.2) 0 1px 3px; }
+  .aside-right #playlist ol li a {
+    font-family: Helvetica, Arial, "DejaVu Sans Condensed", sans-serif;
+    text-decoration: none;
+    color: #A7AAB1;
+    -webkit-transition: color 0.75s;
+    -moz-transition: color 0.75s;
+    -o-transition: color 0.75s; }
+    .aside-right #playlist ol li a:hover {
+      color: #fff;
+      text-shadow: rgba(255, 255, 255, 0.2) 0 1px 3px; }
 
 /*# sourceMappingURL=style.css.map*/

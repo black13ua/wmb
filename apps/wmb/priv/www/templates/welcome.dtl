@@ -25,7 +25,7 @@
                 <div class="avatar">
                     <img src="/static/dgplayer/img/avatar.jpeg">
                 </div>
-                <div style="float:left;max-width: 300px;">
+                <div class="info-container">
                     <span class="title">Unknown Title</span>
                     <span class="artist">Unknown Artist</span>
                     <div class="seek">
@@ -36,20 +36,20 @@
                         </div>
                         <span>-0:00</span>
                     </div>
-                    <div class="controls">
-                        <div class="button-prev"><i class="entypo-fast-backward"></i></div>
-                        <div class="button"><i class="entypo-play"></i></div>
-                        <div class="button-next"><i class="entypo-fast-forward"></i></div>
-                        <div class="volume">
-                        <img src="/static/dgplayer/img/volume_low.png">
-                            <div class="track">
-                                <div class="progress" style="height: 60px;"></div>
-                                <div class="handle" style="-webkit-transform: translate3d(0, -52px, 0);"></div>
-                            </div>
-                            <img src="/static/dgplayer/img/volume_high.png">
+                </div>
+                <div class="controls">
+                    <div class="button-prev"><i class="entypo-fast-backward"></i></div>
+                    <div class="button"><i class="entypo-play"></i></div>
+                    <div class="button-next"><i class="entypo-fast-forward"></i></div>
+                    <div class="volume">
+                    <img src="/static/dgplayer/img/volume_low.png">
+                        <div class="track">
+                            <div class="progress" style="height: 60px;"></div>
+                            <div class="handle" style="-webkit-transform: translate3d(0, -52px, 0);"></div>
                         </div>
-                        <div class="button-playlist"><i class="entypo-numbered-list"></i></div>
+                        <img src="/static/dgplayer/img/volume_high.png">
                     </div>
+                    <div class="button-playlist"><i class="entypo-numbered-list"></i></div>
                 </div>
             </div>
         </div>
