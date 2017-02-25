@@ -22,8 +22,10 @@
     <div class="player-container">
         <div class="player" id="dgplayer" tabindex="0">
             <div id="dgplayer-item" class="cf player-item">
-                <div class="avatar">
-                    <img src="/static/dgplayer/img/avatar.jpeg">
+                <div class="avatar-container">
+                    <div class="avatar">
+                        <img src="/static/dgplayer/img/avatar.jpeg">
+                    </div>
                 </div>
                 <div class="info-container">
                     <span class="title">Unknown Title</span>
@@ -38,9 +40,11 @@
                     </div>
                 </div>
                 <div class="controls">
-                    <div class="button-prev"><i class="entypo-fast-backward"></i></div>
-                    <div class="button"><i class="entypo-play"></i></div>
-                    <div class="button-next"><i class="entypo-fast-forward"></i></div>
+                    <div class="buttons">
+                        <div class="button-prev"><i class="entypo-fast-backward"></i></div>
+                        <div class="button"><i class="entypo-play"></i></div>
+                        <div class="button-next"><i class="entypo-fast-forward"></i></div>
+                    </div>
                     <div class="volume">
                     <img src="/static/dgplayer/img/volume_low.png">
                         <div class="track">
@@ -49,7 +53,7 @@
                         </div>
                         <img src="/static/dgplayer/img/volume_high.png">
                     </div>
-                    <div class="button-playlist"><i class="entypo-numbered-list"></i></div>
+                    <!--<div class="button-playlist"><i class="entypo-numbered-list"></i></div>-->
                 </div>
             </div>
         </div>
