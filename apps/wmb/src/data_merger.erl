@@ -10,7 +10,8 @@
     get_albumtuple_by_albumid/1,
     get_cover_by_albumid/1,
     get_random_tracks/1,
-    search_albums_by_phrase/1
+    search_albums_by_phrase/1,
+    search_artists_by_phrase/1
 ]).
 
 -include("ets_names.hrl").
@@ -19,10 +20,14 @@
 -define(DEFAULT_SKIP,  1).
 
 
+-spec get_albums(atom()) ->
+    {ok, [proplists:proplist()]}.
 get_albums(Format) ->
     get_albums(Format, ?DEFAULT_SKIP, ?DEFAULT_ITEMS).
 
 % Format can be json or tpl
+-spec get_albums(atom(), integer(), integer()) ->
+    {ok, [proplists:proplist()]}.
 get_albums(Format, Skip, Items) ->
     FirstAlbumTuple = wmb_helpers:skip_ets_elements(Skip, ?ETS_ALBUMS),
     io:format("Albums Format Selected: ~p~n", [[Format, Skip, Items]]),
@@ -36,6 +41,8 @@ get_albums(Format, Skip, Items) ->
             io:format("Unknown Albums Format Selected: ~p~n", [[Format, Items]])
     end.
 
+-spec get_tpl({{album, bitstring()}, {date, bitstring()}}, integer(), list()) ->
+    {ok, [proplists:proplist()]}.
 get_tpl(AlbumTuple, 1, ResultAcc) ->
     {ok, ResultFromEts} = get_album_by_albumtuple(AlbumTuple),
     {ok, lists:reverse([ResultFromEts | ResultAcc])};
@@ -144,6 +151,8 @@ get_random_tracks(N) ->
     {ok, TracksListRandom} = get_random_tracks(N, crypto:rand_uniform(1, TracksCount), TracksCount, []),
     {ok, TracksListRandom}.
 
+-spec get_random_tracks(integer(), integer(), integer(), list()) ->
+    {ok, [proplists:proplist()]}.
 get_random_tracks(0, RandomID, MaxID, Acc) ->
     {ok, Acc};
 get_random_tracks(N, RandomID, MaxID, Acc) ->
@@ -181,26 +190,52 @@ get_cover_by_albumid(AlbumID) ->
 %%% Search Albums by Phrase
 -spec search_albums_by_phrase(bitstring()) ->
     {ok, []} | {ok, [proplists:proplist()]}.
-search_albums_by_phrase(SearchPhrase) ->
-    search_albums_by_phrase(0, 0, SearchPhrase, []).
+search_albums_by_phrase(Q) ->
+    search_albums_by_phrase(0, 0, Q, []).
 
 -spec search_albums_by_phrase(integer(), integer(), bitstring(), list()) ->
     {ok, []} | {ok, [proplists:proplist()]}.
-search_albums_by_phrase(5, EtsSkip, SearchPhrase, Acc) ->
+search_albums_by_phrase(?DEFAULT_ITEMS, EtsSkip, Q, Acc) ->
     {ok, Acc};
-search_albums_by_phrase(N, EtsSkip, SearchPhrase, Acc) ->
+search_albums_by_phrase(N, EtsSkip, Q, Acc) ->
     NextAlbumTuple = wmb_helpers:skip_ets_elements(EtsSkip, ?ETS_ALBUMS),
     case NextAlbumTuple of
         {error, _} ->
             {ok, Acc};
         {{album, FirstAlbumTuple}, {date, Date}} ->
-            MatchResult = re:run(FirstAlbumTuple, SearchPhrase, [caseless]),
+            MatchResult = re:run(FirstAlbumTuple, Q, [caseless, unicode]),
             case MatchResult of
                 {match, _} ->
                     {ok, Album} = get_album_by_albumtuple({{album, FirstAlbumTuple}, {date, Date}}),
-                    search_albums_by_phrase(N+1, EtsSkip+1, SearchPhrase, [Album|Acc]);
+                    search_albums_by_phrase(N+1, EtsSkip+1, Q, [Album|Acc]);
                 nomatch ->
-                    search_albums_by_phrase(N, EtsSkip+1, SearchPhrase, Acc)
+                    search_albums_by_phrase(N, EtsSkip+1, Q, Acc)
             end
     end.
 
+%%% Search Artists in ETS
+-spec search_artists_by_phrase(bitstring()) ->
+    {ok, []} | {ok, [proplists:proplist()]}.
+search_artists_by_phrase(Q) ->
+    search_artists_by_phrase(0, 0, Q, []).
+
+-spec search_artists_by_phrase(integer(), integer(), bitstring(), list()) ->
+    {ok, []} | {ok, [proplists:proplist()]}.
+search_artists_by_phrase(?DEFAULT_ITEMS, EtsSkip, Q, Acc) ->
+    {ok, Acc};
+search_artists_by_phrase(N, EtsSkip, Q, Acc) ->
+    AlbumID = wmb_helpers:skip_ets_elements(EtsSkip, ?ETS_ARTISTS),
+    case AlbumID of
+        {error, _} ->
+            {ok, Acc};
+        {album_id, ID} ->
+            [{AlbumID, {artist, AlbumArtist}}] = ets:lookup(?ETS_ARTISTS, AlbumID),
+            MatchResult = re:run(AlbumArtist, Q, [caseless, unicode]),
+            case MatchResult of
+                {match, _} ->
+                    {ok, Album} = get_album_by_albumid(AlbumID),
+                    search_artists_by_phrase(N+1, EtsSkip+1, Q, [Album|Acc]);
+                nomatch ->
+                    search_artists_by_phrase(N, EtsSkip+1, Q, Acc)
+            end
+    end.
