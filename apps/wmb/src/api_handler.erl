@@ -19,6 +19,10 @@ handle(Req, State) ->
     FilesUrlRoot = <<"/files/">>,
 
     case APIType of
+        <<"abc">> ->
+            {ok, Letters} = data_merger:get_abc_letters(),
+            io:format("Response from /api/abc: ~p~n", [Letters]),
+            Res = jsx:encode(Letters);
         <<"albums">> ->
             {ok, Album} = data_merger:get_album_by_albumid({album_id, binary_to_integer(APIid)}),
             io:format("Response from /api/albums/id: ~p~n", [Album]),
