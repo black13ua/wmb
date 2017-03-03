@@ -1,4 +1,4 @@
-function DGPlayer(root) {
+function DGPlayer(root, outsideCallback) {
     
     // Get elements
     var events = {},
@@ -16,7 +16,7 @@ function DGPlayer(root) {
     }
     
     var seekBar = (function() {
-        
+
         var loading = root.querySelector(".seek .track .loaded"),
             progress = root.querySelector(".seek .track .progress"),
             played = root.querySelector(".seek span:first-child"),
@@ -347,16 +347,18 @@ function DGPlayer(root) {
       //On Song click
       , onSongClick = function(evt) {
 
-            evt.preventDefault();    
-
-            var no = evt.target.parentElement.dataset.no;
+            evt.preventDefault();
+            var localLI = evt.target.parentElement.dataset.no // only li has data-no attr
+                ? evt.target.parentElement
+                : evt.target;
+            var no = localLI.dataset.no;
 
             var active = $playlist.querySelector("li.active");
 
             if(active)
                 active.classList.remove("active");
 
-            evt.target.parentElement.classList.add("active");
+            localLI.classList.add("active");
 
             API.current = no;
 
@@ -400,7 +402,6 @@ function DGPlayer(root) {
 
             for (var i = 0; i < listElements.length; i++)
                 listElements[i].onclick = onSongClick;
-
             playlistLoaded = true;
           
         };
@@ -410,10 +411,20 @@ function DGPlayer(root) {
 
         //Set next on ends
         API.on('trackends', function() {
+            var activeNo = $playlist.querySelector("li.active").dataset.no;
+            console.info('ENDED!!', songs.length, activeNo);
             var previous = API.current;
 
             API.current = track + 1 < songs.length ? track + 1 : track;
-            
+            if (songs.length - Number(activeNo) < 2) {
+                console.log("is it RANDOM? cause it\'s time to load some more music!"); // global emit. TODO: fix it!
+                try {
+                    outsideCallback.call(null, 'moreTracks?');
+                } catch (error) {
+                    console.error('callback error', error);
+                }
+            }
+
             if(API.current == previous)
                 emit("pause");
             else {
@@ -517,7 +528,6 @@ function DGPlayer(root) {
         },
         set: function(song) {            
             songs.push(song);
-
             var i = songs.length - 1, songTemplate = "<li data-no='<%= i %>'><a href=''><%= song.name %></a></li>";
 
             //Dummy element
@@ -530,6 +540,11 @@ function DGPlayer(root) {
             $playlist.querySelector("ol").appendChild(dummy);
 
             delete dummy;
+            if (songs.length === 1) {
+                $playlist.querySelector("li").classList.add('active');
+                API.current = i;
+                emit("playlist");
+            }
         }
     });
 

@@ -1,7 +1,7 @@
 import { fetchAlbum, fetchTrack, fetchRandom } from './api';
 
-
 let playerAPI = {};
+let enableRandomAdd = false;
 
 /* eslint-disable */
 function createPlayerAPI(playlist = []) {
@@ -35,7 +35,7 @@ function createPlayerAPI(playlist = []) {
             player = new DGAuroraPlayer(AV.Player.fromURL(DGPlayer.current.url), DGPlayer);
         });
         return DGPlayer;
-    })(window.DGPlayer(document.getElementById('dgplayer')));
+    })(window.DGPlayer(document.getElementById('dgplayer')), callback);
 };
 /* eslint-enable */
 
@@ -101,4 +101,18 @@ function removeTrackFromPlaylist(id) {
         return;
     }
     playerAPI.removeSong = indexOfSong;
+}
+
+export function extraTrackAddingToggle() {
+    enableRandomAdd = !enableRandomAdd;
+}
+
+function callback(type) {
+    switch (type) {
+        case 'moreTracks?': {
+            if (enableRandomAdd) randomAdd();
+            break;
+        }
+        default: return null;
+    }
 }
