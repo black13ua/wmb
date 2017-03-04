@@ -214,7 +214,6 @@ function DGPlayer(root, outsideCallback) {
                 offset += obj.offsetLeft;
                 obj = obj.offsetParent;
             }
-            console.log('offset', offset);
             curX = Math.max(min, Math.min(max, x - offset - (handleSize + min)));
 
             handle.onmousedown(e);
@@ -517,8 +516,8 @@ function DGPlayer(root, outsideCallback) {
             return current;
         },
         set: function(no) {
-            track = no;
-            current = songs[no];
+            track = +no;
+            current = songs[+no];
         }
     });
 
