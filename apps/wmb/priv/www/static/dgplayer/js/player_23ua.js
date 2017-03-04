@@ -348,6 +348,7 @@ function DGPlayer(root, outsideCallback) {
       , onSongClick = function(evt) {
 
             evt.preventDefault();
+            evt.stopPropagation();
             var localLI = evt.target.parentElement.dataset.no // only li has data-no attr
                 ? evt.target.parentElement
                 : evt.target;
@@ -543,7 +544,6 @@ function DGPlayer(root, outsideCallback) {
             if (songs.length === 1) {
                 $playlist.querySelector("li").classList.add('active');
                 API.current = i;
-                emit("playlist");
             }
         }
     });
