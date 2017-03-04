@@ -61,35 +61,67 @@
     <!-- DGPlayer end -->
 
     <aside class="aside-left">
-        <div class="filters">
-            <p>
-                <button data-id="5" class="add-random">+5 Random Tracks</button>
-                <label for="autoload">
-                    <span>autoload</span>
-                    <input type="checkbox" id="autoload" onchange="autoLoadToggle()" checked>
+        <section class="random">
+            <button data-id="5" class="add-random">+5 Random Tracks</button>
+            <label for="autoload">
+                <span>autoload</span>
+                <input type="checkbox" id="autoload" onchange="autoLoadToggle()" checked>
+            </label>
+        </section>
+                
+        <section class="filters">
+            <h3 class="filters-header">Filters:</h3>
+
+            <div class="filter-genres">
+                <label for="filter-genres">
+                    <b>{{ genres_list|length }}</b><span>Genres:</span>
+                    <select id="filter-genres">
+                        {% for genre in genres_list %}
+                            <option value="{{ genre }}">{{ genre }}</option>
+                        {% endfor %}
+                    </select>
                 </label>
-                <br>
-                Filters:
-                <br>
-                {{ genres_list|length }} Genres:
-                <input list="genres" placeholder="type your favorit genre"/>
-                <datalist id="genres">
-                    {% for genre in genres_list %}
-                        <option value="{{ genre }}">
-                    {% endfor %}
-                </datalist>
-                <br>
-                {{ dates_list|length }} Dates:
-                <input list="dates" placeholder="type your favorit year"/>
-                <datalist id="dates">
-                    {% for date in dates_list %}
-                        <option value="{{ date }}">
-                    {% endfor %}
-                </datalist>
-                <br>
-                <button>find</button>
-            </p>
-        </div>
+            </div>
+
+            <div class="filter-date">
+                <label for="filter-date">
+                    <b>{{ dates_list|length }}</b><span>Dates:</span>
+                    <select id="filter-date"/>
+                        {% for date in dates_list %}
+                            <option value="{{ date }}">{{ date }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+            </div>
+
+            <h3 class="filters-header">Search:</h3>
+
+            <div class="filter-name">
+                <label for="textSearch">
+                    <input type="text" id="textSearch" placeholder="type your favorit artist">
+                </label>
+                <button>find it!</button>
+            </div>
+
+            <h3 class="filters-header">Alphabetical:</h3>
+
+            <div class="filter-abc">
+                <label for="filter-abc">
+                    <b>9</b><span>Letters:</span>
+                    <select name="filter-abc" id="filter-abc">
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="D">D</option>
+                        <option value="E">E</option>
+                        <option value="F">F</option>
+                        <option value="G">G</option>
+                        <option value="H">H</option>
+                        <option value="I">I</option>
+                    </select>
+                </label>
+            </div>
+        </section>
     </aside>
 
     <main align="center">

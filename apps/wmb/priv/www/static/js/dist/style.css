@@ -131,6 +131,16 @@ main {
   width: 20%;
   position: fixed;
   left: 0; }
+  .aside-left .random {
+    padding: 5px;
+    text-align: center; }
+  .aside-left .filters {
+    text-align: center;
+    font-size: 24px;
+    padding: 5px; }
+    .aside-left .filters > div {
+      margin: 7px 0;
+      text-align: center; }
 
 .aside-right {
   float: left;
