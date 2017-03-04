@@ -1,7 +1,8 @@
-import { fetchAlbum, fetchTrack, fetchRandom } from './api';
-
+import API from './api';
+import { TRACK_POINT_TO_EXTRA_LOAD } from './constants';
 
 let playerAPI = {};
+let enableRandomAdd = true;
 
 /* eslint-disable */
 function createPlayerAPI(playlist = []) {
@@ -23,7 +24,7 @@ function createPlayerAPI(playlist = []) {
             if (player) {
                 player.disconnect();
             }
-            player = new DGAuroraPlayer(AV.Player.fromURL(playerAPI.current.url), DGPlayer);
+            player = new DGAuroraPlayer(AV.Player.fromURL(DGPlayer.current.url), DGPlayer);
             DGPlayer.off('play', onplay);
         });
 
@@ -32,10 +33,10 @@ function createPlayerAPI(playlist = []) {
                 player.disconnect();
                 DGPlayer.state = 'paused';
             }
-            player = new DGAuroraPlayer(AV.Player.fromURL(playerAPI.current.url), DGPlayer);
+            player = new DGAuroraPlayer(AV.Player.fromURL(DGPlayer.current.url), DGPlayer);
         });
         return DGPlayer;
-    })(window.DGPlayer(document.getElementById('dgplayer')));
+    })(window.DGPlayer(document.getElementById('dgplayer'), callback, TRACK_POINT_TO_EXTRA_LOAD)); // callback for uploading extra tracks
 };
 /* eslint-enable */
 
@@ -45,7 +46,7 @@ export function createPlayer() {
 
 export function trackToggle(trackId, active) {
     if (active) {
-        fetchTrack(trackId)
+        API.fetchTrack(trackId)
             .then((json) => {
                 addTrackToPlaylist(json);
             });
@@ -56,7 +57,7 @@ export function trackToggle(trackId, active) {
 
 export function albumToggle(albumId, active) {
     if (active) {
-        fetchAlbum(albumId)
+        API.fetchAlbum(albumId)
             .then((json) => {
                 json.tracks.forEach((track) => {
                     const flattedJson = { ...json, ...track };
@@ -69,7 +70,7 @@ export function albumToggle(albumId, active) {
 }
 
 export function randomAdd() {
-    fetchRandom()
+    API.fetchRandom()
         .then((json) => {
             json.forEach((track) => {
                 addTrackToPlaylist(track);
@@ -101,4 +102,18 @@ function removeTrackFromPlaylist(id) {
         return;
     }
     playerAPI.removeSong = indexOfSong;
+}
+
+window.autoLoadToggle = () => { // FIX: will be fixed with react implementation
+    enableRandomAdd = !enableRandomAdd;
+};
+
+function callback(type) {
+    switch (type) {
+        case 'moreTracks?': {
+            if (enableRandomAdd) randomAdd();
+            break;
+        }
+        default: return null;
+    }
 }

@@ -6,19 +6,42 @@
     top: 5px;
     width: 100%;
     z-index: 10; }
-    .player-container .player #playlist ol li.active a {
-      color: #fff;
-      text-shadow: rgba(255, 255, 255, 0.2) 0 1px 3px; }
-    .player-container .player #playlist ol li a {
-      font-family: Helvetica, Arial, "DejaVu Sans Condensed", sans-serif;
-      text-decoration: none;
-      color: #A7AAB1;
-      -webkit-transition: color 0.75s;
-      -moz-transition: color 0.75s;
-      -o-transition: color 0.75s; }
-      .player-container .player #playlist ol li a:hover {
-        color: #fff;
-        text-shadow: rgba(255, 255, 255, 0.2) 0 1px 3px; }
+    .player-container .player .player-item .avatar-container {
+      float: left;
+      width: 10%; }
+    .player-container .player .player-item .info-container {
+      float: left;
+      max-width: 300px; }
+      .player-container .player .player-item .info-container .title {
+        font-family: Helvetica, Arial, "DejaVu Sans", sans-serif;
+        font-weight: 500;
+        font-size: 20px;
+        color: white;
+        margin: 0;
+        text-shadow: black 0 -1px 0;
+        display: block;
+        height: 20px;
+        line-height: 22px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap; }
+      .player-container .player .player-item .info-container .artist {
+        font-family: Helvetica, Arial, "DejaVu Sans Condensed", sans-serif;
+        font-size: 17px;
+        color: #A7AAB1;
+        text-shadow: black 0 -1px 0;
+        display: block;
+        line-height: 35px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap; }
+    .player-container .player .player-item .controls {
+      height: 100%;
+      width: 50%;
+      float: left;
+      padding: 25px; }
+      .player-container .player .player-item .controls .button-playlist {
+        display: none; }
 
 /**
  * For modern browsers
@@ -108,9 +131,44 @@ main {
   width: 20%;
   position: fixed;
   left: 0; }
+  .aside-left .random {
+    padding: 5px;
+    text-align: center; }
+  .aside-left .filters {
+    text-align: center;
+    font-size: 24px;
+    padding: 5px; }
+    .aside-left .filters > div {
+      margin: 7px 0;
+      text-align: center; }
 
 .aside-right {
   float: left;
   width: 20%; }
+  .aside-right #playlist {
+    height: 100vh;
+    background: -webkit-linear-gradient(#202328, #191B1E);
+    background: -moz-linear-gradient(#202328, #191B1E);
+    background: -o-linear-gradient(#202328, #191B1E); }
+    .aside-right #playlist ol {
+      padding: 10px;
+      margin: 0;
+      margin-left: 20px; }
+      .aside-right #playlist ol li.active a {
+        color: #fff;
+        text-shadow: rgba(255, 255, 255, 0.2) 0 1px 3px; }
+      .aside-right #playlist ol li a {
+        font-family: Helvetica, Arial, "DejaVu Sans Condensed", sans-serif;
+        text-decoration: none;
+        color: #A7AAB1;
+        -webkit-transition: color 0.75s;
+        -moz-transition: color 0.75s;
+        -o-transition: color 0.75s; }
+        .aside-right #playlist ol li a:hover {
+          color: #fff;
+          text-shadow: rgba(255, 255, 255, 0.2) 0 1px 3px; }
+
+html, body {
+  height: 100%; }
 
 /*# sourceMappingURL=style.css.map*/
