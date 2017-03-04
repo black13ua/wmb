@@ -1,5 +1,5 @@
-function DGPlayer(root, outsideCallback) {
-    
+function DGPlayer(root, outsideCallback, addingPoint) {
+    var ADDING_POINT = Number(addingPoint) ? Number(addingPoint) : 0;
     // Get elements
     var events = {},
         state = 'paused';
@@ -411,13 +411,11 @@ function DGPlayer(root, outsideCallback) {
 
         //Set next on ends
         API.on('trackends', function() {
-            var activeNo = $playlist.querySelector("li.active").dataset.no;
-            console.info('ENDED!!', songs.length, activeNo);
+            var activeNo = Number($playlist.querySelector("li.active").dataset.no);
             var previous = API.current;
 
             API.current = track + 1 < songs.length ? track + 1 : track;
-            if (songs.length - Number(activeNo) < 2) {
-                console.log("is it RANDOM? cause it\'s time to load some more music!"); // global emit. TODO: fix it!
+            if (songs.length - Number(activeNo) < ADDING_POINT + 2) {
                 try {
                     outsideCallback.call(null, 'moreTracks?');
                 } catch (error) {
@@ -443,6 +441,13 @@ function DGPlayer(root, outsideCallback) {
             API.current = track + 1 < songs.length ? track + 1 : track;
             setActivePlaylist();
             emit("playlist");
+            if (songs.length - Number(track) < ADDING_POINT + 1) {
+                try {
+                    outsideCallback.call(null, 'moreTracks?');
+                } catch (error) {
+                    console.error('callback error', error);
+                }
+            }
         }
 
         showlist.onclick = function(evt) {

@@ -87,8 +87,14 @@ exports.extraTrackAddingToggle = extraTrackAddingToggle;
 
 var _api = __webpack_require__(2);
 
+var _api2 = _interopRequireDefault(_api);
+
+var _constants = __webpack_require__(3);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 var playerAPI = {};
-var enableRandomAdd = false;
+var enableRandomAdd = true;
 
 /* eslint-disable */
 function createPlayerAPI() {
@@ -124,7 +130,7 @@ function createPlayerAPI() {
             player = new DGAuroraPlayer(AV.Player.fromURL(DGPlayer.current.url), DGPlayer);
         });
         return DGPlayer;
-    }(window.DGPlayer(document.getElementById('dgplayer')), callback);
+    }(window.DGPlayer(document.getElementById('dgplayer'), callback, _constants.TRACK_POINT_TO_EXTRA_LOAD)); // callback for uploading extra tracks
 };
 /* eslint-enable */
 
@@ -134,7 +140,7 @@ function createPlayer() {
 
 function trackToggle(trackId, active) {
     if (active) {
-        (0, _api.fetchTrack)(trackId).then(function (json) {
+        _api2.default.fetchTrack(trackId).then(function (json) {
             addTrackToPlaylist(json);
         });
     } else {
@@ -144,7 +150,7 @@ function trackToggle(trackId, active) {
 
 function albumToggle(albumId, active) {
     if (active) {
-        (0, _api.fetchAlbum)(albumId).then(function (json) {
+        _api2.default.fetchAlbum(albumId).then(function (json) {
             json.tracks.forEach(function (track) {
                 var flattedJson = _extends({}, json, track);
                 addTrackToPlaylist(flattedJson);
@@ -156,7 +162,7 @@ function albumToggle(albumId, active) {
 }
 
 function randomAdd() {
-    (0, _api.fetchRandom)().then(function (json) {
+    _api2.default.fetchRandom().then(function (json) {
         json.forEach(function (track) {
             addTrackToPlaylist(track);
         });
@@ -229,9 +235,6 @@ function callback(type) {
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.fetchRandom = fetchRandom;
-exports.fetchAlbum = fetchAlbum;
-exports.fetchTrack = fetchTrack;
 
 var _humps = __webpack_require__(4);
 
@@ -270,6 +273,36 @@ function fetchTrack(trackId) {
         return console.error(err);
     });
 }
+
+function fetchSearchResults(searchText) {
+    return fetch('' + _constants.FILTER_SEARCH_URL + searchText).then(function (res) {
+        return res.json();
+    }).then(function (json) {
+        return _humps2.default.camelizeKeys(json);
+    }).catch(function (err) {
+        return console.error(err);
+    });
+}
+
+function fetchFilterABC() {
+    return fetch('' + _constants.FILTER_ABC_URL).then(function (res) {
+        return res.json();
+    }).then(function (json) {
+        return _humps2.default.camelizeKeys(json);
+    }).catch(function (err) {
+        return console.error(err);
+    });
+}
+
+var API = {
+    fetchRandom: fetchRandom,
+    fetchAlbum: fetchAlbum,
+    fetchTrack: fetchTrack,
+    fetchFilterABC: fetchFilterABC,
+    fetchSearchResults: fetchSearchResults
+};
+
+exports.default = API;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
 
 /***/ }),
@@ -285,7 +318,13 @@ Object.defineProperty(exports, "__esModule", {
 var ALBUMS_URL = exports.ALBUMS_URL = '/api/albums/';
 var RANDOM_URL = exports.RANDOM_URL = '/api/random/';
 var TRACKS_URL = exports.TRACKS_URL = '/api/tracks/';
+var FILTER_ABC_URL = exports.FILTER_ABC_URL = '/api/abc/abc';
+var FILTER_SEARCH_URL = exports.FILTER_SEARCH_URL = '/api/search/';
+
 var RANDOM_NUMBER = exports.RANDOM_NUMBER = 5;
+
+// extra load will start when this track (number from the end of the playlist) starts to play
+var TRACK_POINT_TO_EXTRA_LOAD = exports.TRACK_POINT_TO_EXTRA_LOAD = 1; // 1 - last track in the playlist
 
 /***/ }),
 /* 4 */
