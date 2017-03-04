@@ -64,6 +64,10 @@
         <div class="filters">
             <p>
                 <button data-id="5" class="add-random">+5 Random Tracks</button>
+                <label for="autoload">
+                    <span>autoload</span>
+                    <input type="checkbox" id="autoload" onchange="autoLoadToggle()" checked>
+                </label>
                 <br>
                 Filters:
                 <br>

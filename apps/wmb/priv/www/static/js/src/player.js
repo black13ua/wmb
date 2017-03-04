@@ -104,9 +104,9 @@ function removeTrackFromPlaylist(id) {
     playerAPI.removeSong = indexOfSong;
 }
 
-export function extraTrackAddingToggle() {
+window.autoLoadToggle = () => { // FIX: will be fixed with react implementation
     enableRandomAdd = !enableRandomAdd;
-}
+};
 
 function callback(type) {
     switch (type) {
