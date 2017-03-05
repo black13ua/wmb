@@ -1,5 +1,5 @@
-function DGPlayer(root) {
-    
+function DGPlayer(root, outsideCallback, addingPoint) {
+    var ADDING_POINT = Number(addingPoint) ? Number(addingPoint) : 0;
     // Get elements
     var events = {},
         state = 'paused';
@@ -16,7 +16,7 @@ function DGPlayer(root) {
     }
     
     var seekBar = (function() {
-        
+
         var loading = root.querySelector(".seek .track .loaded"),
             progress = root.querySelector(".seek .track .progress"),
             played = root.querySelector(".seek span:first-child"),
@@ -214,7 +214,6 @@ function DGPlayer(root) {
                 offset += obj.offsetLeft;
                 obj = obj.offsetParent;
             }
-            console.log('offset', offset);
             curX = Math.max(min, Math.min(max, x - offset - (handleSize + min)));
 
             handle.onmousedown(e);
@@ -343,20 +342,23 @@ function DGPlayer(root) {
       , current //stores the current song
       , track //stores the active track number
       , playlistLoaded = false
-      , $playlist = root.querySelector("#playlist")
+      , $playlist = document.querySelector("#playlist") // no root cause we separate playlist from player
       //On Song click
       , onSongClick = function(evt) {
 
-            evt.preventDefault();    
-
-            var no = evt.target.parentElement.dataset.no;
+            evt.preventDefault();
+            evt.stopPropagation();
+            var localLI = evt.target.parentElement.dataset.no // only li has data-no attr
+                ? evt.target.parentElement
+                : evt.target;
+            var no = localLI.dataset.no;
 
             var active = $playlist.querySelector("li.active");
 
             if(active)
                 active.classList.remove("active");
 
-            evt.target.parentElement.classList.add("active");
+            localLI.classList.add("active");
 
             API.current = no;
 
@@ -400,7 +402,6 @@ function DGPlayer(root) {
 
             for (var i = 0; i < listElements.length; i++)
                 listElements[i].onclick = onSongClick;
-
             playlistLoaded = true;
           
         };
@@ -410,10 +411,18 @@ function DGPlayer(root) {
 
         //Set next on ends
         API.on('trackends', function() {
+            var activeNo = Number($playlist.querySelector("li.active").dataset.no);
             var previous = API.current;
 
             API.current = track + 1 < songs.length ? track + 1 : track;
-            
+            if (songs.length - Number(activeNo) < ADDING_POINT + 2) {
+                try {
+                    outsideCallback.call(null, 'moreTracks?');
+                } catch (error) {
+                    console.error('callback error', error);
+                }
+            }
+
             if(API.current == previous)
                 emit("pause");
             else {
@@ -432,6 +441,13 @@ function DGPlayer(root) {
             API.current = track + 1 < songs.length ? track + 1 : track;
             setActivePlaylist();
             emit("playlist");
+            if (songs.length - Number(track) < ADDING_POINT + 1) {
+                try {
+                    outsideCallback.call(null, 'moreTracks?');
+                } catch (error) {
+                    console.error('callback error', error);
+                }
+            }
         }
 
         showlist.onclick = function(evt) {
@@ -505,8 +521,8 @@ function DGPlayer(root) {
             return current;
         },
         set: function(no) {
-            track = no;
-            current = songs[no];
+            track = +no;
+            current = songs[+no];
         }
     });
 
@@ -517,7 +533,6 @@ function DGPlayer(root) {
         },
         set: function(song) {            
             songs.push(song);
-
             var i = songs.length - 1, songTemplate = "<li data-no='<%= i %>'><a href=''><%= song.name %></a></li>";
 
             //Dummy element
@@ -530,6 +545,10 @@ function DGPlayer(root) {
             $playlist.querySelector("ol").appendChild(dummy);
 
             delete dummy;
+            if (songs.length === 1) {
+                $playlist.querySelector("li").classList.add('active');
+                API.current = i;
+            }
         }
     });
 
