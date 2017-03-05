@@ -12,7 +12,7 @@
     get_cover_by_albumid/1,
     get_random_tracks/1,
     search_albums_by_phrase/1,
-    search_artists_by_phrase/1
+    search_artists_by_phrase/1, search_artists_by_phrase/4
 ]).
 
 -include("ets_names.hrl").
