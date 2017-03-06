@@ -1,0 +1,35 @@
+.aside-right {
+    float: left;
+    width: 20%;
+    #playlist {
+        height: 100vh;
+        background: -webkit-linear-gradient(#202328, #191B1E);
+        background: -moz-linear-gradient(#202328, #191B1E);
+        background: -o-linear-gradient(#202328, #191B1E);
+        ol {
+            padding: 10px;
+            margin: 0;
+            margin-left: 20px;
+            li {
+                &.active {
+                    a {
+                        color:#fff;
+                        text-shadow: rgba(255,255,255,0.2) 0 1px 3px;
+                    }
+                }
+                a {
+                    font-family: Helvetica, Arial, "DejaVu Sans Condensed", sans-serif;
+                    text-decoration: none;
+                    color: #A7AAB1;
+                    -webkit-transition: color 0.75s;
+                    -moz-transition: color 0.75s;
+                    -o-transition: color 0.75s;
+                    &:hover {
+                        color:#fff;
+                        text-shadow: rgba(255,255,255,0.2) 0 1px 3px;
+                    }
+                }
+            }
+        }
+    }
+}
