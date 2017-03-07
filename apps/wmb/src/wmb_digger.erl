@@ -102,7 +102,11 @@ handle_call({parse, File, FileID3Tags}, _From, State) ->
             {ok, AlbumFilesList} = file:list_dir(AlbumPathFull),
             {_, AlbumCover} = find_album_cover(AlbumFilesList, PossibleCoversList),
             ets:insert(?ETS_COVERS, {{album_id, AlbumID}, {cover, AlbumCover}}),
-            io:format("Album Cover is: ~p~n", [AlbumCover]);
+            io:format("Album Cover is: ~p~n", [AlbumCover]),
+            [LetterByte|_] = unicode:characters_to_list(AlbumArtist),
+            LetterBin = unicode:characters_to_binary([LetterByte]),
+            ets:insert(?ETS_ABC, {{letter, LetterBin}, {artist, AlbumArtist}}),
+            io:format("Letters is: ~p~n", [[LetterByte, LetterBin]]);
         ExistedAlbumID ->
             ets:insert(?ETS_TRACKS, {{album_id, ExistedAlbumID}, {{file, FileBasename}, {title, Title}, {track_id, TrackID}}})
     end,

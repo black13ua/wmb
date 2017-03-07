@@ -16,7 +16,6 @@
 ]).
 
 -include("ets_names.hrl").
--include("abc.hrl").
 
 -define(DEFAULT_ITEMS, 10).
 -define(DEFAULT_SKIP,  1).
@@ -242,31 +241,11 @@ search_artists_by_phrase(N, EtsSkip, Q, Acc) ->
             end
     end.
 
-%%% ABC API List
+%%% Get ABC Artists List for API /api/abc/abc
 -spec get_abc_letters() ->
     {ok, []} | {ok, list()}.
 get_abc_letters() ->
-    get_abc_letters(?ABC_EN, 0, []).
-
--spec get_abc_letters(list(), integer(), list()) ->
-    {ok, []} | {ok, list()}.
-get_abc_letters([], EtsSkip, Acc) ->
-    {ok, lists:reverse(Acc)};
-get_abc_letters([Letter|ABCRest], EtsSkip, Acc) ->
-    AlbumID = wmb_helpers:skip_ets_elements(EtsSkip, ?ETS_ARTISTS),
-    case AlbumID of
-        {error, _} ->
-            get_abc_letters(ABCRest, 0, Acc);
-        {album_id, ID} ->
-            [{AlbumID, {artist, AlbumArtist}}] = ets:lookup(?ETS_ARTISTS, AlbumID),
-            LetterBin = unicode:characters_to_binary(Letter),
-            MatchResult = re:run(AlbumArtist, << <<"^">>/binary, LetterBin/binary>>, [caseless, unicode]),
-            case MatchResult of
-                {match, _} ->
-                    io:format("Match Artist: ~p~n", [[Letter, AlbumArtist]]),
-                    get_abc_letters(ABCRest, 0, [LetterBin|Acc]);
-                nomatch ->
-                    get_abc_letters([Letter|ABCRest], EtsSkip+1, Acc)
-            end
-    end.
+    LettersFlat = ets:match(?ETS_ABC, {{letter, '$1'}, '_'}),
+    LettersSorted = lists:flatten(lists:usort(LettersFlat)),
+    {ok, LettersSorted}.
 

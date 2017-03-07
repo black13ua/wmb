@@ -59,7 +59,7 @@ start_link() ->
 %%--------------------------------------------------------------------
 init([]) ->
     self() ! read_all,
-    ets:new(?ETS_ABC, [public, ordered_set, named_table]),
+    ets:new(?ETS_ABC, [public, bag, named_table]),
     ets:new(?ETS_ALBUMS, [public, bag, named_table]),
     ets:new(?ETS_ARTISTS, [public, bag, named_table]),
     ets:new(?ETS_COVERS, [public, bag, named_table]),
