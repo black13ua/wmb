@@ -1,4 +1,5 @@
 %%% ETS Names for WMB
+-define(ETS_ABC, wmb_abc).
 -define(ETS_ALBUMS, wmb_albums).
 -define(ETS_ARTISTS, wmb_artists).
 -define(ETS_COVERS, wmb_covers).
