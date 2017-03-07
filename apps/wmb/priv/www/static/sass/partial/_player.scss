@@ -1,0 +1,79 @@
+.player-container {
+    height: 150px;
+    width: 100%;
+    .player {
+        position: fixed;
+        top: 5px;
+        width: 100%;
+        z-index: 10;
+        .player-item {
+            .avatar-container {
+                float: left;
+                width: 10%;
+                .avatar {
+                    
+                }
+            }
+            .info-container {
+                float: left;
+                max-width: 300px;
+                .title {
+                    font-family: Helvetica, Arial, "DejaVu Sans", sans-serif;
+                    font-weight: 500;
+                    font-size: 20px;
+                    color: white;
+                    margin: 0;
+                    text-shadow: black 0 -1px 0;
+                    display: block;
+                    height: 20px;
+                    line-height: 22px;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                 }
+                .artist {
+                    font-family: Helvetica, Arial, "DejaVu Sans Condensed", sans-serif;
+                    font-size: 17px;
+                    color: #A7AAB1;
+                    text-shadow: black 0 -1px 0;
+                    display: block;
+                    line-height: 35px;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                }
+                .seek {
+
+                }
+            }
+            .controls {
+                height: 100%;
+                width: 50%;
+                float: left;
+                padding: 25px;
+                .button-playlist {
+                    display: none;
+                }
+            }
+        }
+    }
+}
+
+/**
+ * For modern browsers
+ * 1. The space content is one way to avoid an Opera bug when the
+ *    contenteditable attribute is included anywhere else in the document.
+ *    Otherwise it causes space to appear at the top and bottom of elements
+ *    that are clearfixed.
+ * 2. The use of `table` rather than `block` is only necessary if using
+ *    `:before` to contain the top-margins of child elements.
+ */
+.cf:before,
+.cf:after {
+    content: " "; /* 1 */
+    display: table; /* 2 */
+}
+
+.cf:after {
+    clear: both;
+}
