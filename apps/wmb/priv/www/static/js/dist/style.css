@@ -144,7 +144,9 @@ main {
 
 .aside-right {
   float: left;
-  width: 20%; }
+  width: 20%;
+  position: fixed;
+  right: 0; }
   .aside-right #playlist {
     height: 100vh;
     background: -webkit-linear-gradient(#202328, #191B1E);
