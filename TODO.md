@@ -13,3 +13,4 @@
 
 ## CSS
 - bootstrap
+- move random button to player controls
