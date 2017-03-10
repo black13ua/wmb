@@ -12,6 +12,7 @@
     get_cover_by_albumid/1,
     get_random_tracks/1,
     search_albums_by_phrase/1,
+    get_artists_by_letter/1,
     search_artists_by_phrase/1, search_artists_by_phrase/4
 ]).
 
@@ -213,6 +214,14 @@ search_albums_by_phrase(N, EtsSkip, Q, Acc) ->
                     search_albums_by_phrase(N, EtsSkip+1, Q, Acc)
             end
     end.
+
+%%% Get Artists by Letter
+-spec get_artists_by_letter(bitstring()) ->
+    {ok, []} | {ok, list()}.
+get_artists_by_letter(L) ->
+    ArtistsFlat = ets:match(?ETS_ABC, {{letter, L}, {artist, '$1'}}),
+    ArtistsSorted = lists:flatten(lists:usort(ArtistsFlat)),
+    {ok, ArtistsSorted}.
 
 %%% Search Artists in ETS
 -spec search_artists_by_phrase(bitstring()) ->
