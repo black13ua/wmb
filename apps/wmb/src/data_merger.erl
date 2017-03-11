@@ -68,7 +68,7 @@ get_album_by_albumtuple(AlbumTuple) ->
 get_album_by_albumid(AlbumID) ->
     {ok, AlbumTuple} = get_albumtuple_by_albumid(AlbumID),
     [{AlbumTuple, AlbumID}|_] = ets:lookup(?ETS_ALBUMS, AlbumTuple),
-    [{AlbumID, AlbumArtist}] = ets:lookup(?ETS_ARTISTS, AlbumID),
+    [{AlbumID, AlbumArtist, _}] = ets:lookup(?ETS_ARTISTS, AlbumID),
     [{AlbumID, GenreTuple}] = ets:lookup(?ETS_GENRES, AlbumID),
     [{AlbumID, PathTuple}] = ets:lookup(?ETS_PATHS, AlbumID),
     io:format("AlbumID is: ~p~n", [AlbumID]),
@@ -98,7 +98,7 @@ get_tracklist_by_albumtuple(AlbumID) ->
                 Title = proplists:get_value(title, X),
                 TrackID = proplists:get_value(track_id, X),
                 FullPath = <<FilesUrlRoot/binary, AlbumPathBin/binary, <<"/">>/binary, File/binary>>,
-                [{file, FullPath}, {title, Title}, {track_id, TrackID}]  end, TracksList),
+                [{file, FullPath}, {title, Title}, {track_id, TrackID}] end, TracksList),
             {ok, TracksListWithPath}
     end.
 
@@ -172,7 +172,7 @@ get_track_by_trackid(TrackID) ->
     [{AlbumID, {cover, AlbumCover}}] = ets:lookup(?ETS_COVERS, AlbumID),
     [{AlbumID, {path, AlbumPathBin}}] = ets:lookup(?ETS_PATHS, AlbumID),
     [[{AlbumTuple, DateTuple}]] = ets:match(?ETS_ALBUMS, {'$1', AlbumID}),
-    [{AlbumID, AlbumArtist}] = ets:lookup(?ETS_ARTISTS, AlbumID),
+    [{AlbumID, AlbumArtist, _}] = ets:lookup(?ETS_ARTISTS, AlbumID),
     FileBin = unicode:characters_to_binary(File),
     UrlCover = <<FilesUrlRoot/binary, AlbumPathBin/binary, <<"/">>/binary, AlbumCover/binary>>,
     UrlFile  = <<FilesUrlRoot/binary, AlbumPathBin/binary, <<"/">>/binary, FileBin/binary>>,
@@ -219,9 +219,14 @@ search_albums_by_phrase(N, EtsSkip, Q, Acc) ->
 -spec get_artists_by_letter(bitstring()) ->
     {ok, []} | {ok, list()}.
 get_artists_by_letter(L) ->
-    ArtistsFlat = ets:match(?ETS_ABC, {{letter, L}, {artist, '$1'}}),
+    ArtistsFlat = ets:match(?ETS_ABC, {{letter, L}, '$1'}),
     ArtistsSorted = lists:flatten(lists:usort(ArtistsFlat)),
-    {ok, ArtistsSorted}.
+    Artists = lists:map(
+          fun(X) ->
+              [[ArtistID]|_] = ets:match(?ETS_ARTISTS, {'_', X, '$1'}),
+              [ArtistID, X]
+          end, ArtistsSorted),
+    {ok, Artists}.
 
 %%% Search Artists in ETS
 -spec search_artists_by_phrase(bitstring()) ->
@@ -239,7 +244,7 @@ search_artists_by_phrase(N, EtsSkip, Q, Acc) ->
         {error, _} ->
             {ok, Acc};
         {album_id, ID} ->
-            [{AlbumID, {artist, AlbumArtist}}] = ets:lookup(?ETS_ARTISTS, AlbumID),
+            [{AlbumID, {artist, AlbumArtist}, _}] = ets:lookup(?ETS_ARTISTS, AlbumID),
             MatchResult = re:run(AlbumArtist, Q, [caseless, unicode]),
             case MatchResult of
                 {match, _} ->

@@ -92,9 +92,11 @@ handle_call({parse, File, FileID3Tags}, _From, State) ->
             AlbumPathRelBin = unicode:characters_to_binary(filename:dirname(File)),
             AlbumPathFull = filename:dirname(FilePathFull),
             io:format("Files and Tags: ~p~n", [{AlbumPathFull, FileBasename, FileID3Tags}]),
+            ArtistID = get_artist_id(AlbumArtist),
+            io:format("ArtistID is: ~p~n", [ArtistID]),
             AlbumID = ets:update_counter(?ETS_COUNTERS, album_id_counter, 1),
             ets:insert(?ETS_ALBUMS,  {{{album, Album}, {date, Date}}, {album_id, AlbumID}}),
-            ets:insert(?ETS_ARTISTS, {{album_id, AlbumID}, {artist, AlbumArtist}}),
+            ets:insert(?ETS_ARTISTS, {{album_id, AlbumID}, {artist, AlbumArtist}, {artist_id, ArtistID}}),
             ets:insert(?ETS_TRACKS,  {{album_id, AlbumID}, {{file, FileBasename}, {title, Title}, {track_id, TrackID}}}),
             ets:insert(?ETS_GENRES,  {{album_id, AlbumID}, {genre, Genre}}),
             ets:insert(?ETS_PATHS,   {{album_id, AlbumID}, {path, AlbumPathRelBin}}),
@@ -191,6 +193,15 @@ get_album_id(Album, Date) ->
             AlbumID
     end.
 
+get_artist_id(AlbumArtist) ->
+    case ets:match(?ETS_ARTISTS, {'_', {artist, AlbumArtist}, '$1'}) of
+        [] ->
+            ArtistID = ets:update_counter(?ETS_COUNTERS, artist_id_counter, 1),
+            ArtistID;
+        [[{artist_id, ArtistID}]|_] ->
+            ArtistID
+    end.
+
 find_album_cover(AlbumFilesList, [PossibleCover|RestPossibleCovers]) ->
     case lists:member(PossibleCover, AlbumFilesList) of
         true ->
@@ -201,3 +212,4 @@ find_album_cover(AlbumFilesList, [PossibleCover|RestPossibleCovers]) ->
     end;
 find_album_cover(AlbumFilesList, []) ->
     {error, <<"cover_not_found">>}.
+
