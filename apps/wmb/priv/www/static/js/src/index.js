@@ -1,53 +1,69 @@
-import '../../sass/main.scss';
-import {
-    createPlayer,
-    randomAdd,
-    trackToggle,
-    albumToggle
-} from './player';
+import 'babel-polyfill';
 
-function reactingOnClicks(event) {
-    const target = event.target;
-    const id = +target.dataset.id;
-    const already = handleActiveClass(target);
-    const mainClassName = target.className.replace(/active/gi, '').trim();
-    switch (mainClassName) {
-        case 'add-album': {
-            albumToggle(id, already);
-            break;
-        }
-        case 'add-random': {
-            randomAdd();
-            break;
-        }
-        case 'add-track': {
-            trackToggle(id, already);
-            break;
-        }
-        default: {
-            return null;
-        }
-    }
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
+import App from '../../containers/common/App';
+// import DevTools from './containers/DevTools';
+import configureStore from '../../store/live/live-configure-store';
+import RootTime from '../../clock/rootclock';
+import ServiceMenu from '../../containers/common/servicemenu';
+import JackpotContainer from '../../containers/common/jackpot';
+import LiveLeftMenuContainer from '../../containers/live/left-menu/left-menu-container';
+import LiveCenterContainer from '../../containers/live/center/center-container';
+import { DATA_URL_BASKET_LIVE } from '../../constants/live/live';
+
+window.data_url_basket = DATA_URL_BASKET_LIVE; // global variable for basket
+
+const initialState = {};
+const store = configureStore(initialState);
+
+ReactDOM.render(
+  <Provider store={ store }>
+    <App />
+  </Provider>,
+  document.getElementById('sright')
+);
+
+if (document.getElementById('times_place')) {
+  ReactDOM.render(
+    <RootTime />,
+    document.getElementById('times_place')
+  );
 }
 
-function handleActiveClass(target) {
-    const isAlreadyActive = Array.prototype.join.call(target.classList, '').match(/active/gi);
-    let already = false;
-    if (isAlreadyActive) {
-        target.classList.remove('active');
-        already = false;
-    } else {
-        target.classList.add('active');
-        already = true;
-    }
-    return already;
+if (document.getElementById('puthere')) {
+  ReactDOM.render(
+    <Provider store={ store }>
+      <LiveLeftMenuContainer />
+    </Provider>,
+    document.getElementById('puthere')
+  );
 }
 
+if (document.getElementById('livediv')) {
+  ReactDOM.render(
+    <Provider store={ store }>
+      <LiveCenterContainer />
+    </Provider>,
+    document.getElementById('livediv')
+  );
+}
 
-document.addEventListener('DOMContentLoaded', () => {
-    createPlayer();
+if (document.getElementById('servicemenu')) {
+  ReactDOM.render(
+    <Provider store={ store }>
+      <ServiceMenu />
+    </Provider>,
+    document.getElementById('servicemenu')
+  );
+}
 
-    document.addEventListener('click', (event) => {
-        reactingOnClicks(event);
-    });
-});
+if (document.getElementById('jackpot')) {
+  ReactDOM.render(
+    <Provider store={ store }>
+      <JackpotContainer />
+    </Provider>,
+    document.getElementById('jackpot')
+  );
+}

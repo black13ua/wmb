@@ -7,7 +7,7 @@ const config = {
     context: __dirname,
     devtool: 'source-map',
 
-    entry: './js/src/index.js',
+    entry: './_old/js/src/index.js',
 
     output: {
         path    : resolve(__dirname, 'js', 'dist'),
