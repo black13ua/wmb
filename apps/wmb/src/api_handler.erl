@@ -27,6 +27,10 @@ handle(Req, State) ->
             {ok, Album} = data_merger:get_album_by_albumid({album_id, binary_to_integer(APIid)}),
             io:format("Response from /api/albums/id: ~p~n", [Album]),
             Res = jsx:encode(Album);
+        <<"artist">> ->
+            {ok, Albums} = data_merger:get_albumlist_by_artistid(binary_to_integer(APIid)),
+            io:format("Response from /api/artist/id: ~p~n", [Albums]),
+            Res = jsx:encode(Albums);
         <<"letter">> ->
             {ok, Artists} = data_merger:get_artists_by_letter(APIid),
             io:format("Response from /api/letter/L: ~p~n", [Artists]),

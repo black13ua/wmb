@@ -6,6 +6,7 @@
     get_track_by_trackid/1,
     get_album_by_albumid/1,
     get_album_by_albumtuple/1,
+    get_albumlist_by_artistid/1,
     get_albums_by_genre_name/1, get_albums_by_genre_tuple/1,
     get_albums_by_date/1, get_albums_by_date_tuple/1,
     get_albumtuple_by_albumid/1,
@@ -109,6 +110,19 @@ get_albumtuple_by_albumid(AlbumID) ->
     [[AlbumTuple]] = ets:match(?ETS_ALBUMS, {'$1', AlbumID}),
     io:format("AlbumTuple is: ~p~n", [AlbumTuple]),
     {ok, AlbumTuple}.
+
+%%% Get AlbumList by ArtistID
+-spec get_albumlist_by_artistid(integer()) ->
+    {ok, []} | {ok, [proplists:proplist()]}.
+get_albumlist_by_artistid(ArtistID) ->
+    AlbumIDList = lists:flatten(ets:match(?ETS_ARTISTS, {'$1', '_', {artist_id, ArtistID}})),
+    get_albumlist_by_artistid(AlbumIDList, []).
+
+get_albumlist_by_artistid([], Acc) ->
+    {ok, Acc};
+get_albumlist_by_artistid([AlbumID|AlbumIDList], Acc) ->
+    {ok, {A, D}} = get_albumtuple_by_albumid(AlbumID),
+    get_albumlist_by_artistid(AlbumIDList, [[A, D]|Acc]).
 
 %%% Get AlbumList by Genre Name
 -spec get_albums_by_genre_name(bitstring()) ->
