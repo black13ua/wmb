@@ -118,11 +118,13 @@ get_albumlist_by_artistid(ArtistID) ->
     AlbumIDList = lists:flatten(ets:match(?ETS_ARTISTS, {'$1', '_', {artist_id, ArtistID}})),
     get_albumlist_by_artistid(AlbumIDList, []).
 
+-spec get_albumlist_by_artistid(list(), list()) ->
+    {ok, []} | {ok, [proplists:proplist()]}.
 get_albumlist_by_artistid([], Acc) ->
     {ok, Acc};
 get_albumlist_by_artistid([AlbumID|AlbumIDList], Acc) ->
-    {ok, {A, D}} = get_albumtuple_by_albumid(AlbumID),
-    get_albumlist_by_artistid(AlbumIDList, [[A, D]|Acc]).
+    {ok, {ArtistTuple, DateTuple}} = get_albumtuple_by_albumid(AlbumID),
+    get_albumlist_by_artistid(AlbumIDList, [[ArtistTuple, DateTuple]|Acc]).
 
 %%% Get AlbumList by Genre Name
 -spec get_albums_by_genre_name(bitstring()) ->
