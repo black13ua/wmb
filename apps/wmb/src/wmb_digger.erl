@@ -78,7 +78,7 @@ init([]) ->
 %%--------------------------------------------------------------------
 handle_call({parse, File, FileID3Tags}, _From, State) ->
     Album  = maps:get(<<"ALBUM">>,  FileID3Tags, <<"Undef_Album">>),
-    Artist = maps:get(<<"ARTIST">>, FileID3Tags, <<"Undef_Artist">>),
+    %% Artist = maps:get(<<"ARTIST">>, FileID3Tags, <<"Undef_Artist">>),
     AlbumArtist = maps:get(<<"ALBUMARTIST">>, FileID3Tags, <<"Undef_Artist">>),
     Genre  = maps:get(<<"GENRE">>,  FileID3Tags, <<"Undef_Genre">>),
     Date   = maps:get(<<"DATE">>,   FileID3Tags, <<"Undef_Date">>),
@@ -210,6 +210,6 @@ find_album_cover(AlbumFilesList, [PossibleCover|RestPossibleCovers]) ->
         false ->
             find_album_cover(AlbumFilesList, RestPossibleCovers)
     end;
-find_album_cover(AlbumFilesList, []) ->
+find_album_cover(_AlbumFilesList, []) ->
     {error, <<"cover_not_found">>}.
 

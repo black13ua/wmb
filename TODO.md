@@ -1,5 +1,5 @@
 ## Erlang
-- add func for getting artists from ABC filter
+- Add check if AlbumArtist undefined try use Artist
 - add module for periodic rescan flac files
 - add SPEC's to all functions
 - write howto build/run service to README file

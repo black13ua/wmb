@@ -115,9 +115,9 @@ handle_info(read_all, State) ->
     {ok, FilesRoot} = application:get_env(wmb, files_root),
     {ok, FilesPattern} = application:get_env(wmb, files_pattern),
     [ets:insert(?ETS_COUNTERS, {CounterKey, 0}) || CounterKey <- [album_id_counter, artist_id_counter, track_id_counter]],
-    Res = filelib:wildcard(FilesPattern, FilesRoot),
-    io:format("All Files: ~p~n: ", [Res]),
-    [wmb_digger:parse_file(X) || X <- Res],
+    FlacFiles = filelib:wildcard(FilesPattern, FilesRoot),
+    io:format("All Files: ~p~n: ", [FlacFiles]),
+    [wmb_digger:parse_file(FlacFile) || FlacFile <- FlacFiles],
     {noreply, State};
 handle_info(_Info, State) ->
     {noreply, State}.
