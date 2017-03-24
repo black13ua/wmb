@@ -1,5 +1,5 @@
 -module(wmb_helpers).
--export([ceiling/1, skip_ets_elements/2]).
+-export([ceiling/1, get_rel_path/1, skip_ets_elements/2]).
 
 
 %%%%
@@ -37,4 +37,14 @@ skip_ets_elements(Skip, Ets, Key) when is_integer(Skip), is_atom(Ets) ->
         _ ->
             skip_ets_elements(Skip - 1, Ets, Next)
     end.
+
+-spec get_rel_path(string()) ->
+    {ok, string()}.
+get_rel_path(File) ->
+    {ok, Root} = application:get_env(wmb, files_root),
+    FPathList = filename:split(File),
+    SLL = length(filename:split(FPathList)),
+    SRL = length(filename:split(Root)),
+    RFileList = lists:sublist(FPathList, SRL+1, SLL+1),
+    {ok, filename:join(RFileList)}.
 
