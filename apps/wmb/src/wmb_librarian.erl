@@ -11,7 +11,7 @@
 -behaviour(gen_server).
 
 %% API
--export([start_link/0]).
+-export([start_link/1]).
 
 %% gen_server callbacks
 -export([init/1,
@@ -25,7 +25,7 @@
 -define(SERVER, ?MODULE).
 
 -include("ets_names.hrl").
--record(state, {}).
+-record(state, {path = undefined}).
 
 %%%===================================================================
 %%% API
@@ -38,8 +38,8 @@
 %% @spec start_link() -> {ok, Pid} | ignore | {error, Error}
 %% @end
 %%--------------------------------------------------------------------
-start_link() ->
-    gen_server:start_link({local, ?SERVER}, ?MODULE, [], []).
+start_link(Path) ->
+    gen_server:start_link({local, ?SERVER}, ?MODULE, [Path], []).
 
 %%%===================================================================
 %%% gen_server callbacks
@@ -56,9 +56,9 @@ start_link() ->
 %%                     {stop, Reason}
 %% @end
 %%--------------------------------------------------------------------
-init([]) ->
+init(Path) ->
     self() ! scan_library,
-    {ok, #state{}}.
+    {ok, #state{path = Path}}.
 
 %%--------------------------------------------------------------------
 %% @private
@@ -101,11 +101,10 @@ handle_cast(_Msg, State) ->
 %%                                   {stop, Reason, State}
 %% @end
 %%--------------------------------------------------------------------
-handle_info(scan_library, State) ->
-    {ok, FilesRoot} = application:get_env(wmb, files_root),
-    {ok, RootDirList} = file:list_dir(FilesRoot),
+handle_info(scan_library, #state{path = Path} = State) ->
+    {ok, RootDirList} = file:list_dir(Path),
     io:format("RootDirList is: ~p~n: ", [RootDirList]),
-    check_dir_or_file(FilesRoot, RootDirList),
+    check_dir_or_file(Path, RootDirList),
     {noreply, State};
 handle_info(_Info, State) ->
     {noreply, State}.
