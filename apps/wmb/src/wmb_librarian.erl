@@ -39,7 +39,7 @@
 %% @end
 %%--------------------------------------------------------------------
 start_link(Path) ->
-    gen_server:start_link({local, ?SERVER}, ?MODULE, [Path], []).
+    gen_server:start_link(?MODULE, [Path], []).
 
 %%%===================================================================
 %%% gen_server callbacks
@@ -56,7 +56,7 @@ start_link(Path) ->
 %%                     {stop, Reason}
 %% @end
 %%--------------------------------------------------------------------
-init(Path) ->
+init([Path]) ->
     self() ! scan_library,
     {ok, #state{path = Path}}.
 
@@ -142,11 +142,13 @@ code_change(_OldVsn, State, _Extra) ->
 check_dir_or_file(_Path, []) ->
     {ok, done};
 check_dir_or_file(Path, [File|T]) ->
-    case filelib:is_dir(lists:concat([Path, '/', File])) of
+    FullPath = lists:concat([Path, '/', File]),
+    case filelib:is_dir(FullPath) of
         true ->
-            io:format("is dir: ~p~n", [File]);
+            {ok, _} = supervisor:start_child(wmb_librarian_sup, [FullPath]),
+            io:format("is dir: ~p~n", [[File, FullPath]]);
         false ->
-            io:format("isn't dir: ~p~n", [File])
+            io:format("isn't dir: ~p~n", [[File, FullPath]])
     end,
 check_dir_or_file(Path, T).
 
