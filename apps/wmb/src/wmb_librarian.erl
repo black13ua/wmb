@@ -148,6 +148,7 @@ check_dir_or_file(Path, [File|T]) ->
             {ok, _} = supervisor:start_child(wmb_librarian_sup, [FullPath]),
             io:format("is dir: ~p~n", [[File, FullPath]]);
         false ->
+            %spawn(wmb_digger, parse_file, [File, FullPath]),
             io:format("isn't dir: ~p~n", [[File, FullPath]])
     end,
 check_dir_or_file(Path, T).

@@ -171,6 +171,8 @@ code_change(_OldVsn, State, _Extra) ->
 %%%===================================================================
 %%% Exported functions
 %%%===================================================================
+-spec parse_file(string()) ->
+        true | false.
 parse_file(File) ->
     {ok, FilesRoot} = application:get_env(wmb, files_root),
     FilePathFull = lists:concat([FilesRoot, "/", File]),
