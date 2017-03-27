@@ -113,17 +113,18 @@ handle_cast(_Msg, State) ->
 %% @end
 %%--------------------------------------------------------------------
 handle_info(read_all, State) ->
-    {ok, FilesRoot} = application:get_env(wmb, files_root),
-    {ok, FilesPattern} = application:get_env(wmb, files_pattern),
-    FlacFiles = filelib:wildcard(FilesPattern, FilesRoot),
-    LengthFiles = length(FlacFiles),
-    io:format("All Files: ~p~n: ", [[FlacFiles, LengthFiles]]),
-    case LengthFiles > 1000 of
-        true ->
-            [wmb_digger:parse_file(FlacFile) || FlacFile <- FlacFiles];
-        false ->
-            [spawn(wmb_digger, parse_file, [FlacFile]) || FlacFile <- FlacFiles]
-    end,
+%%%%    {ok, FilesRoot} = application:get_env(wmb, files_root),
+%%%%    {ok, FilesPattern} = application:get_env(wmb, files_pattern),
+%%%%    FlacFiles = filelib:wildcard(FilesPattern, FilesRoot),
+%%%%    LengthFiles = length(FlacFiles),
+%%%%    io:format("All Files: ~p~n: ", [[FlacFiles, LengthFiles]]),
+%%%%    case LengthFiles > 1000 of
+%%%%        true ->
+%%%%            [wmb_digger:parse_file(FlacFile) || FlacFile <- FlacFiles];
+%%%%        false ->
+%%%%            false
+%%%%            %[spawn(wmb_digger, parse_file, [FlacFile]) || FlacFile <- FlacFiles]
+%%%%    end,
     {noreply, State};
 handle_info(_Info, State) ->
     {noreply, State}.

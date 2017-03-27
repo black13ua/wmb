@@ -103,7 +103,7 @@ handle_cast(_Msg, State) ->
 %%--------------------------------------------------------------------
 handle_info(scan_library, #state{path = Path} = State) ->
     {ok, RootDirList} = file:list_dir(Path),
-    %io:format("RootDirList is: ~p~n: ", [RootDirList]),
+    io:format("Path now: ~p~n: ", [Path]),
     check_dir_or_file(Path, RootDirList),
     {noreply, State};
 handle_info(_Info, State) ->
@@ -148,8 +148,21 @@ check_dir_or_file(Path, [File|T]) ->
             {ok, _} = supervisor:start_child(wmb_librarian_sup, [FullPath]),
             io:format("is dir: ~p~n", [[File, FullPath]]);
         false ->
-            %spawn(wmb_digger, parse_file, [FullPath]),
-            io:format("isn't dir: ~p~n", [[File, FullPath]])
+            check_file(FullPath)
+            %Result = spawn(wmb_digger, parse_file, [fullpath, FullPath]),
+            %Result = wmb_digger:parse_file(fullpath, FullPath),
+            %io:format("Result: ~p~n", [[Result, FullPath]])
     end,
 check_dir_or_file(Path, T).
+
+-spec check_file(string()) ->
+    {ok, flac} | {ok, cover} | {error, not_interesting}.
+check_file(File) ->
+    case re:run(File, ".*.(flac)$", [caseless, unicode]) of
+        {match, _} ->
+            Result = wmb_digger:parse_file(fullpath, File),
+            io:format("File for Check: ~p~n", [[File, Result]]);
+        nomatch ->
+            io:format("File Not Matched: ~p~n", [File])
+    end.
 

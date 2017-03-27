@@ -43,7 +43,7 @@ skip_ets_elements(Skip, Ets, Key) when is_integer(Skip), is_atom(Ets) ->
 get_rel_path(File) ->
     {ok, Root} = application:get_env(wmb, files_root),
     FPathList = filename:split(File),
-    SLL = length(filename:split(FPathList)),
+    SLL = length(FPathList),
     SRL = length(filename:split(Root)),
     RFileList = lists:sublist(FPathList, SRL+1, SLL+1),
     {ok, filename:join(RFileList)}.

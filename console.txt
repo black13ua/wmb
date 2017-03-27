@@ -1,0 +1,2 @@
+PID State
+sys:get_status(list_to_pid("<0.1012.0>")).
