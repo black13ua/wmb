@@ -25,7 +25,7 @@
 -define(SERVER, ?MODULE).
 
 -include("ets_names.hrl").
--record(state, {path = undefined}).
+-record(state, {path = undefined, files = #{}}).
 
 %%%===================================================================
 %%% API
@@ -102,9 +102,8 @@ handle_cast(_Msg, State) ->
 %% @end
 %%--------------------------------------------------------------------
 handle_info(scan_library, #state{path = Path} = State) ->
-    {ok, RootDirList} = file:list_dir(Path),
     io:format("Path now: ~p~n: ", [Path]),
-    check_dir_or_file(Path, RootDirList),
+    check_dir_or_file(Path, State),
     {noreply, State};
 handle_info(_Info, State) ->
     {noreply, State}.
@@ -137,24 +136,20 @@ code_change(_OldVsn, State, _Extra) ->
 %%%===================================================================
 %%% Internal functions
 %%%===================================================================
--spec check_dir_or_file(string(), list()) ->
-    {ok, done}.
-check_dir_or_file(_Path, []) ->
-    {ok, done};
-check_dir_or_file(Path, [File|T]) ->
-    FullPath = lists:concat([Path, '/', File]),
-    case filelib:is_dir(FullPath) of
-        true ->
-            {ok, _} = supervisor:start_child(wmb_librarian_sup, [FullPath]),
-            io:format("is dir: ~p~n", [[File, FullPath]]);
-        false ->
-            check_file(FullPath)
-            %Result = spawn(wmb_digger, parse_file, [fullpath, FullPath]),
-            %Result = wmb_digger:parse_file(fullpath, FullPath),
-            %io:format("Result: ~p~n", [[Result, FullPath]])
-    end,
-check_dir_or_file(Path, T).
-
+check_dir_or_file(Path, _State) ->
+    {ok, RootDirList} = file:list_dir(Path),
+    lists:foreach(
+        fun(File) ->
+            FullPath = lists:concat([Path, '/', File]),
+                case filelib:is_dir(FullPath) of
+                    true ->
+                        {ok, _} = supervisor:start_child(wmb_librarian_sup, [FullPath]),
+                        io:format("is dir: ~p~n", [[File, FullPath]]);
+                    false ->
+                        check_file(FullPath)
+                end
+        end, RootDirList).
+    
 -spec check_file(string()) ->
     {ok, flac} | {ok, cover} | {error, not_interesting}.
 check_file(File) ->
