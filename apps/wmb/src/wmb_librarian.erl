@@ -57,7 +57,7 @@ start_link(Path) ->
 %% @end
 %%--------------------------------------------------------------------
 init([Path]) ->
-    self() ! scan_library,
+    self() ! scan_directory,
     {ok, #state{path = Path}}.
 
 %%--------------------------------------------------------------------
@@ -101,7 +101,7 @@ handle_cast(_Msg, State) ->
 %%                                   {stop, Reason, State}
 %% @end
 %%--------------------------------------------------------------------
-handle_info(scan_library, #state{path = Path} = State) ->
+handle_info(scan_directory, #state{path = Path} = State) ->
     io:format("Path now: ~p~n: ", [Path]),
     check_dir_or_file(Path, State),
     {noreply, State};
@@ -151,13 +151,15 @@ check_dir_or_file(Path, _State) ->
         end, RootDirList).
     
 -spec check_file(string()) ->
-    {ok, flac} | {ok, cover} | {error, not_interesting}.
-check_file(File) ->
-    case re:run(File, ".*.(flac)$", [caseless, unicode]) of
+    {ok, flac} | {ok, cover} | {error, skip}.
+check_file(FullPath) ->
+    case re:run(FullPath, ".*.(flac)$", [caseless, unicode]) of
         {match, _} ->
-            Result = wmb_digger:parse_file(fullpath, File),
-            io:format("File for Check: ~p~n", [[File, Result]]);
+            Result = wmb_digger:parse_file(fullpath, FullPath),
+            io:format("File for Check: ~p~n", [[FullPath, Result]]),
+            {ok, flac};
         nomatch ->
-            io:format("File Not Matched: ~p~n", [File])
+            io:format("File Not Matched: ~p~n", [FullPath]),
+            {error, skip}
     end.
 
