@@ -24,7 +24,6 @@
 
 -define(SERVER, ?MODULE).
 
--include("ets_names.hrl").
 -record(state, {path = undefined, files = #{}}).
 
 %%%===================================================================
@@ -102,9 +101,9 @@ handle_cast(_Msg, State) ->
 %% @end
 %%--------------------------------------------------------------------
 handle_info(scan_directory, #state{path = Path} = State) ->
-    io:format("Path now: ~p~n: ", [Path]),
-    check_dir_or_file(Path, State),
-    {noreply, State};
+    %%io:format("Path now: ~p~n: ", [Path]),
+    {ok, NewState} = check_dir_or_file_foldl(Path, State),
+    {noreply, NewState};
 handle_info(_Info, State) ->
     {noreply, State}.
 
@@ -136,6 +135,35 @@ code_change(_OldVsn, State, _Extra) ->
 %%%===================================================================
 %%% Internal functions
 %%%===================================================================
+check_dir_or_file_foldl(Path, #state{files = MapFiles} = State) ->
+    {ok, RootDirList} = file:list_dir(Path),
+    io:format("MAP: ~p~n", [MapFiles]),
+    F = fun(File, MapFiles) ->
+            FullPath = lists:concat([Path, '/', File]),
+                case filelib:is_dir(FullPath) of
+                    true ->
+                        {ok, _} = supervisor:start_child(wmb_librarian_sup, [FullPath]),
+                        MapFiles;
+                    false ->
+                        CheckResult = check_file(FullPath),
+                        io:format("CheckResult: ~p~n", [CheckResult]),
+                        case CheckResult of
+                            {ok, {track_id, TrackID}} ->
+                                MapNew = maps:new(),
+                                LastMod = filelib:last_modified(FullPath),
+                                MapTrack = maps:put(last_mod, LastMod, MapNew),
+                                io:format("FLAC: ~p~n", [[File, TrackID, MapFiles]]),
+                                maps:put(File, maps:put(track_id, TrackID, MapTrack), MapFiles);
+                            _ ->
+                                MapFiles
+                        end
+                end
+        end,
+    MapFilesNew = lists:foldl(F, MapFiles, RootDirList),
+    io:format("MapFilesNew: ~p~n", [[MapFilesNew, State]]),
+    {ok, #state{path = Path, files = MapFilesNew}}.
+
+%%
 check_dir_or_file(Path, _State) ->
     {ok, RootDirList} = file:list_dir(Path),
     lists:foreach(
@@ -143,10 +171,11 @@ check_dir_or_file(Path, _State) ->
             FullPath = lists:concat([Path, '/', File]),
                 case filelib:is_dir(FullPath) of
                     true ->
-                        {ok, _} = supervisor:start_child(wmb_librarian_sup, [FullPath]),
-                        io:format("is dir: ~p~n", [[File, FullPath]]);
+                        {ok, _} = supervisor:start_child(wmb_librarian_sup, [FullPath]);
+                        %io:format("is dir: ~p~n", [[File, FullPath]]);
                     false ->
-                        check_file(FullPath)
+                        CheckResult = check_file(FullPath)
+                        %io:format("Check Result: ~p~n", [[FullPath, CheckResult]])
                 end
         end, RootDirList).
     
@@ -156,10 +185,13 @@ check_file(FullPath) ->
     case re:run(FullPath, ".*.(flac)$", [caseless, unicode]) of
         {match, _} ->
             Result = wmb_digger:parse_file(fullpath, FullPath),
-            io:format("File for Check: ~p~n", [[FullPath, Result]]),
-            {ok, flac};
+            %io:format("File for Check: ~p~n", [[FullPath, Result]]),
+            %Self = self(),
+            %Result = spawn(wmb_digger, parse_file, [fullpath, FullPath]),
+            %io:format("File for Check: ~p~n", [[FullPath, Result]]),
+            Result;
         nomatch ->
-            io:format("File Not Matched: ~p~n", [FullPath]),
+            %io:format("File Not Matched: ~p~n", [FullPath]),
             {error, skip}
     end.
 

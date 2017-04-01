@@ -185,7 +185,8 @@ parse_file(fullpath, FilePathFull) ->
     case flactags:get_tags(FilePathFull) of
         {ok, FileMetadata} ->
             FileID3Tags = maps:get(4, FileMetadata),
-            gen_server:call(?SERVER, {parse, FilePathFull, FileID3Tags});
+            add_to_ets(FilePathFull, FileID3Tags);
+            %gen_server:call(?SERVER, {parse, FilePathFull, FileID3Tags});
         {error, Error} ->
             ets:insert(?ETS_ERRORS, {{file, FilePathFull}, {error, Error}})
     end.
@@ -193,6 +194,45 @@ parse_file(fullpath, FilePathFull) ->
 %%%===================================================================
 %%% Internal functions
 %%%===================================================================
+add_to_ets(File, FileID3Tags) ->
+    Album  = maps:get(<<"ALBUM">>,  FileID3Tags, <<"Undef_Album">>),
+    %% Artist = maps:get(<<"ARTIST">>, FileID3Tags, <<"Undef_Artist">>),
+    AlbumArtist = maps:get(<<"ALBUMARTIST">>, FileID3Tags, <<"Undef_Artist">>),
+    Genre  = maps:get(<<"GENRE">>,  FileID3Tags, <<"Undef_Genre">>),
+    Date   = maps:get(<<"DATE">>,   FileID3Tags, <<"Undef_Date">>),
+    Title  = maps:get(<<"TITLE">>,  FileID3Tags, <<"Undef_Title">>),
+    {ok, FileRel} = wmb_helpers:get_rel_path(File),
+    FileBasename = unicode:characters_to_binary(filename:basename(FileRel)),
+    TrackID = ets:update_counter(?ETS_COUNTERS, track_id_counter, 1),
+    case get_album_id(Album, Date) of
+        undefined ->
+            %{ok, FilesRoot} = application:get_env(wmb, files_root),
+            %FilePathFull = lists:concat([FilesRoot, "/", File]),
+            AlbumPathRelBin = unicode:characters_to_binary(filename:dirname(FileRel)),
+            AlbumPathFull = filename:dirname(File),
+            %%%io:format("Files and Tags: ~p~n", [{AlbumPathFull, FileBasename, FileID3Tags}]),
+            ArtistID = get_artist_id(AlbumArtist),
+            %%%io:format("ArtistID is: ~p~n", [ArtistID]),
+            AlbumID = ets:update_counter(?ETS_COUNTERS, album_id_counter, 1),
+            ets:insert(?ETS_ALBUMS,  {{{album, Album}, {date, Date}}, {album_id, AlbumID}}),
+            ets:insert(?ETS_ARTISTS, {{album_id, AlbumID}, {artist, AlbumArtist}, {artist_id, ArtistID}}),
+            ets:insert(?ETS_TRACKS,  {{album_id, AlbumID}, {{file, FileBasename}, {title, Title}, {track_id, TrackID}}}),
+            ets:insert(?ETS_GENRES,  {{album_id, AlbumID}, {genre, Genre}}),
+            ets:insert(?ETS_PATHS,   {{album_id, AlbumID}, {path, AlbumPathRelBin}}),
+            {ok, PossibleCoversList} = application:get_env(wmb, possible_covers_list),
+            {ok, AlbumFilesList} = file:list_dir(AlbumPathFull),
+            {_, AlbumCover} = find_album_cover(AlbumFilesList, PossibleCoversList),
+            ets:insert(?ETS_COVERS, {{album_id, AlbumID}, {cover, AlbumCover}}),
+            %%%io:format("Album Cover is: ~p~n", [AlbumCover]),
+            [LetterByte|_] = unicode:characters_to_list(AlbumArtist),
+            LetterBin = unicode:characters_to_binary([LetterByte]),
+            ets:insert(?ETS_ABC, {{letter, LetterBin}, {artist, AlbumArtist}});
+            %%%io:format("Letters is: ~p~n", [[LetterByte, LetterBin]]);
+        ExistedAlbumID ->
+            ets:insert(?ETS_TRACKS, {{album_id, ExistedAlbumID}, {{file, FileBasename}, {title, Title}, {track_id, TrackID}}})
+    end,
+    {ok, {track_id, TrackID}}.
+
 get_album_id(Album, Date) ->
     case ets:lookup(?ETS_ALBUMS, {{album, Album}, {date, Date}}) of
         [] ->

@@ -12,7 +12,7 @@
   0},
  {<<"flactags">>,
   {git,"git://github.com/black13ua/flactags.git",
-       {ref,"c8a0b229199d3ccee121ad412f2db8a242aa7f49"}},
+       {ref,"6a9b0c882942d1948e81f8cc8864cb318a0dda08"}},
   0},
  {<<"jsone">>,
   {git,"git://github.com/sile/jsone.git",
