@@ -10,7 +10,6 @@
    ]},
   {env,[]},
   {modules, [wmb_sup]},
-
   {maintainers, []},
   {licenses, []},
   {links, []}

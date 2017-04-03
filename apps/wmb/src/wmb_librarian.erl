@@ -102,7 +102,7 @@ handle_cast(_Msg, State) ->
 %%--------------------------------------------------------------------
 handle_info(scan_directory, #state{path = Path} = State) ->
     %%io:format("Path now: ~p~n: ", [Path]),
-    {ok, NewState} = check_dir_or_file_foldl(Path, State),
+    {ok, NewState} = check_dir_or_file(Path, State),
     {noreply, NewState};
 handle_info(_Info, State) ->
     {noreply, State}.
@@ -135,7 +135,7 @@ code_change(_OldVsn, State, _Extra) ->
 %%%===================================================================
 %%% Internal functions
 %%%===================================================================
-check_dir_or_file_foldl(Path, #state{files = MapFiles} = State) ->
+check_dir_or_file(Path, #state{files = MapFiles} = State) ->
     {ok, RootDirList} = file:list_dir(Path),
     io:format("MAP: ~p~n", [MapFiles]),
     F = fun(File, MapFiles) ->
@@ -163,22 +163,6 @@ check_dir_or_file_foldl(Path, #state{files = MapFiles} = State) ->
     io:format("MapFilesNew: ~p~n", [[MapFilesNew, State]]),
     {ok, #state{path = Path, files = MapFilesNew}}.
 
-%%
-check_dir_or_file(Path, _State) ->
-    {ok, RootDirList} = file:list_dir(Path),
-    lists:foreach(
-        fun(File) ->
-            FullPath = lists:concat([Path, '/', File]),
-                case filelib:is_dir(FullPath) of
-                    true ->
-                        {ok, _} = supervisor:start_child(wmb_librarian_sup, [FullPath]);
-                        %io:format("is dir: ~p~n", [[File, FullPath]]);
-                    false ->
-                        CheckResult = check_file(FullPath)
-                        %io:format("Check Result: ~p~n", [[FullPath, CheckResult]])
-                end
-        end, RootDirList).
-    
 -spec check_file(string()) ->
     {ok, flac} | {ok, cover} | {error, skip}.
 check_file(FullPath) ->
