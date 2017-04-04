@@ -24,7 +24,7 @@
 
 -define(SERVER, ?MODULE).
 
--record(state, {path = undefined, files = #{}}).
+-record(state, {path = undefined, timeout = undefined, files = #{}}).
 
 %%%===================================================================
 %%% API
@@ -101,9 +101,18 @@ handle_cast(_Msg, State) ->
 %% @end
 %%--------------------------------------------------------------------
 handle_info(scan_directory, #state{path = Path} = State) ->
-    %%io:format("Path now: ~p~n: ", [Path]),
     {ok, NewState} = check_dir_or_file(Path, State),
-    {noreply, NewState};
+    {ok, RescanTimeout} = application:get_env(wmb, rescan_timeout),
+    DelayRandom = crypto:rand_uniform(1, 30000),
+    Timeout = RescanTimeout * 1000 + DelayRandom,
+    io:format("State Now: ~p~n: ", [[Timeout, NewState#state{timeout = Timeout}, self()]]),
+    timer:send_after(Timeout, rescan_directory),
+    {noreply, NewState#state{timeout = Timeout}};
+handle_info(rescan_directory, #state{path = Path, timeout = Timeout} = State) ->
+    DateNow = calendar:local_time(),
+    io:format("Rescan Path now: ~p~n: ", [[Timeout, DateNow, Path]]),
+    timer:send_after(Timeout, rescan_directory),
+    {noreply, State};
 handle_info(_Info, State) ->
     {noreply, State}.
 
@@ -151,7 +160,7 @@ check_dir_or_file(Path, #state{files = MapFiles} = State) ->
                             {ok, {track_id, TrackID}} ->
                                 MapNew = maps:new(),
                                 LastMod = filelib:last_modified(FullPath),
-                                MapTrack = maps:put(last_mod, LastMod, MapNew),
+                                MapTrack = maps:put(mtime, LastMod, MapNew),
                                 io:format("FLAC: ~p~n", [[File, TrackID, MapFiles]]),
                                 maps:put(File, maps:put(track_id, TrackID, MapTrack), MapFiles);
                             _ ->
