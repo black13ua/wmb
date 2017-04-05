@@ -105,12 +105,14 @@ handle_info(scan_directory, #state{path = Path} = State) ->
     {ok, RescanTimeout} = application:get_env(wmb, rescan_timeout),
     DelayRandom = crypto:rand_uniform(1, 30000),
     Timeout = RescanTimeout * 1000 + DelayRandom,
-    io:format("State Now: ~p~n: ", [[Timeout, NewState#state{timeout = Timeout}, self()]]),
+    io:format("State Now: ~p~n", [[Timeout, NewState#state{timeout = Timeout}, self()]]),
     timer:send_after(Timeout, rescan_directory),
     {noreply, NewState#state{timeout = Timeout}};
-handle_info(rescan_directory, #state{path = Path, timeout = Timeout} = State) ->
-    DateNow = calendar:local_time(),
-    io:format("Rescan Path now: ~p~n: ", [[Timeout, DateNow, Path]]),
+handle_info(rescan_directory, #state{path = Path, timeout = Timeout, files = MapFiles} = State) ->
+    FilesState = maps:keys(MapFiles),
+    %{ok, FilesFS} = file:list_dir(Path),
+    FilesFS = filelib:wildcard("*.flac", Path),
+    %%%io:format("Rescan Path now: ~p~n", [[Path, FilesState, FilesFS]]),
     timer:send_after(Timeout, rescan_directory),
     {noreply, State};
 handle_info(_Info, State) ->
@@ -159,8 +161,8 @@ check_dir_or_file(Path, #state{files = MapFiles} = State) ->
                         case CheckResult of
                             {ok, {track_id, TrackID}} ->
                                 MapNew = maps:new(),
-                                LastMod = filelib:last_modified(FullPath),
-                                MapTrack = maps:put(mtime, LastMod, MapNew),
+                                MTime = filelib:last_modified(FullPath),
+                                MapTrack = maps:put(mtime, MTime, MapNew),
                                 io:format("FLAC: ~p~n", [[File, TrackID, MapFiles]]),
                                 maps:put(File, maps:put(track_id, TrackID, MapTrack), MapFiles);
                             _ ->
@@ -173,7 +175,7 @@ check_dir_or_file(Path, #state{files = MapFiles} = State) ->
     {ok, #state{path = Path, files = MapFilesNew}}.
 
 -spec check_file(string()) ->
-    {ok, flac} | {ok, cover} | {error, skip}.
+    {ok, {track_id, integer()}} | {ok, cover} | {error, skip}.
 check_file(FullPath) ->
     case re:run(FullPath, ".*.(flac)$", [caseless, unicode]) of
         {match, _} ->
@@ -181,10 +183,8 @@ check_file(FullPath) ->
             %io:format("File for Check: ~p~n", [[FullPath, Result]]),
             %Self = self(),
             %Result = spawn(wmb_digger, parse_file, [fullpath, FullPath]),
-            %io:format("File for Check: ~p~n", [[FullPath, Result]]),
             Result;
         nomatch ->
-            %io:format("File Not Matched: ~p~n", [FullPath]),
             {error, skip}
     end.
 
