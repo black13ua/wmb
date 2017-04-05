@@ -13,8 +13,6 @@ import LiveLeftMenuContainer from '../../containers/live/left-menu/left-menu-con
 import LiveCenterContainer from '../../containers/live/center/center-container';
 import { DATA_URL_BASKET_LIVE } from '../../constants/live/live';
 
-window.data_url_basket = DATA_URL_BASKET_LIVE; // global variable for basket
-
 const initialState = {};
 const store = configureStore(initialState);
 
