@@ -3,7 +3,7 @@
 %% @end
 %%%-------------------------------------------------------------------
 
--module(wmb_sup).
+-module(wmb_librarian_sup).
 
 -behaviour(supervisor).
 
@@ -28,16 +28,15 @@ start_link() ->
 
 %% Child :: {Id,StartFunc,Restart,Shutdown,Type,Modules}
 init([]) ->
-    RestartStrategy = one_for_one,
+    RestartStrategy = simple_one_for_one,
     MaxRestarts = 0,
     MaxSecondsBetweenRestarts = 1,
     SupFlags = {RestartStrategy, MaxRestarts, MaxSecondsBetweenRestarts},
     Restart = permanent,
     Shutdown = 5000,
     Type = worker,
-    WmbSrv = {'wmb_srv', {'wmb_srv', start_link, []}, Restart, Shutdown, Type, [wmb_srv]},
-    WmbLibrarian = {'wmb_librarian_sup', {'wmb_librarian_sup', start_link, []}, Restart, Shutdown, supervisor, [wmb_librarian_sup]},
-    {ok, {SupFlags, [WmbSrv, WmbLibrarian]}}.
+    WmbLibrarian = {'wmb_librarian', {'wmb_librarian', start_link, []}, Restart, Shutdown, Type, [wmb_librarian]},
+    {ok, {SupFlags, [WmbLibrarian]}}.
 
 %%====================================================================
 %% Internal functions

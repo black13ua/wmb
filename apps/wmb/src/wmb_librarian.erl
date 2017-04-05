@@ -6,12 +6,12 @@
 %%% @end
 %%% Created : $fulldate
 %%%-------------------------------------------------------------------
--module(wmb_srv).
+-module(wmb_librarian).
 
 -behaviour(gen_server).
 
 %% API
--export([start_link/0]).
+-export([start_link/1]).
 
 %% gen_server callbacks
 -export([init/1,
@@ -19,14 +19,12 @@
          handle_cast/2,
          handle_info/2,
          terminate/2,
-         code_change/3]).
-
-%% Internal Functions
--include("ets_names.hrl").
+         code_change/3
+]).
 
 -define(SERVER, ?MODULE).
 
--record(state, {}).
+-record(state, {path = undefined, timeout = undefined, files = #{}}).
 
 %%%===================================================================
 %%% API
@@ -39,8 +37,8 @@
 %% @spec start_link() -> {ok, Pid} | ignore | {error, Error}
 %% @end
 %%--------------------------------------------------------------------
-start_link() ->
-    gen_server:start_link({local, ?SERVER}, ?MODULE, [], []).
+start_link(Path) ->
+    gen_server:start_link(?MODULE, [Path], []).
 
 %%%===================================================================
 %%% gen_server callbacks
@@ -57,19 +55,9 @@ start_link() ->
 %%                     {stop, Reason}
 %% @end
 %%--------------------------------------------------------------------
-init([]) ->
-    self() ! read_all,
-    ets:new(?ETS_ABC, [public, bag, named_table]),
-    ets:new(?ETS_ALBUMS, [public, bag, named_table]),
-    ets:new(?ETS_ARTISTS, [public, bag, named_table]),
-    ets:new(?ETS_COVERS, [public, bag, named_table]),
-    ets:new(?ETS_COUNTERS, [public, set, named_table]),
-    [ets:insert(?ETS_COUNTERS, {CounterKey, 0}) || CounterKey <- [album_id_counter, artist_id_counter, track_id_counter]],
-    ets:new(?ETS_GENRES, [public, bag, named_table]),
-    ets:new(?ETS_PATHS,  [public, bag, named_table]),
-    ets:new(?ETS_TRACKS, [public, bag, named_table]),
-    ets:new(?ETS_ERRORS, [public, bag, named_table]),
-    {ok, #state{}}.
+init([Path]) ->
+    self() ! scan_directory,
+    {ok, #state{path = Path}}.
 
 %%--------------------------------------------------------------------
 %% @private
@@ -112,19 +100,18 @@ handle_cast(_Msg, State) ->
 %%                                   {stop, Reason, State}
 %% @end
 %%--------------------------------------------------------------------
-handle_info(read_all, State) ->
-%%%%    {ok, FilesRoot} = application:get_env(wmb, files_root),
-%%%%    {ok, FilesPattern} = application:get_env(wmb, files_pattern),
-%%%%    FlacFiles = filelib:wildcard(FilesPattern, FilesRoot),
-%%%%    LengthFiles = length(FlacFiles),
-%%%%    io:format("All Files: ~p~n: ", [[FlacFiles, LengthFiles]]),
-%%%%    case LengthFiles > 1000 of
-%%%%        true ->
-%%%%            [wmb_digger:parse_file(FlacFile) || FlacFile <- FlacFiles];
-%%%%        false ->
-%%%%            false
-%%%%            %[spawn(wmb_digger, parse_file, [FlacFile]) || FlacFile <- FlacFiles]
-%%%%    end,
+handle_info(scan_directory, #state{path = Path} = State) ->
+    {ok, NewState} = check_dir_or_file(Path, State),
+    {ok, RescanTimeout} = application:get_env(wmb, rescan_timeout),
+    DelayRandom = crypto:rand_uniform(1, 30000),
+    Timeout = RescanTimeout * 1000 + DelayRandom,
+    io:format("State Now: ~p~n: ", [[Timeout, NewState#state{timeout = Timeout}, self()]]),
+    timer:send_after(Timeout, rescan_directory),
+    {noreply, NewState#state{timeout = Timeout}};
+handle_info(rescan_directory, #state{path = Path, timeout = Timeout} = State) ->
+    DateNow = calendar:local_time(),
+    io:format("Rescan Path now: ~p~n: ", [[Timeout, DateNow, Path]]),
+    timer:send_after(Timeout, rescan_directory),
     {noreply, State};
 handle_info(_Info, State) ->
     {noreply, State}.
@@ -157,4 +144,47 @@ code_change(_OldVsn, State, _Extra) ->
 %%%===================================================================
 %%% Internal functions
 %%%===================================================================
+check_dir_or_file(Path, #state{files = MapFiles} = State) ->
+    {ok, RootDirList} = file:list_dir(Path),
+    io:format("MAP: ~p~n", [MapFiles]),
+    F = fun(File, MapFiles) ->
+            FullPath = lists:concat([Path, '/', File]),
+                case filelib:is_dir(FullPath) of
+                    true ->
+                        {ok, _} = supervisor:start_child(wmb_librarian_sup, [FullPath]),
+                        MapFiles;
+                    false ->
+                        CheckResult = check_file(FullPath),
+                        io:format("CheckResult: ~p~n", [CheckResult]),
+                        case CheckResult of
+                            {ok, {track_id, TrackID}} ->
+                                MapNew = maps:new(),
+                                LastMod = filelib:last_modified(FullPath),
+                                MapTrack = maps:put(mtime, LastMod, MapNew),
+                                io:format("FLAC: ~p~n", [[File, TrackID, MapFiles]]),
+                                maps:put(File, maps:put(track_id, TrackID, MapTrack), MapFiles);
+                            _ ->
+                                MapFiles
+                        end
+                end
+        end,
+    MapFilesNew = lists:foldl(F, MapFiles, RootDirList),
+    io:format("MapFilesNew: ~p~n", [[MapFilesNew, State]]),
+    {ok, #state{path = Path, files = MapFilesNew}}.
+
+-spec check_file(string()) ->
+    {ok, flac} | {ok, cover} | {error, skip}.
+check_file(FullPath) ->
+    case re:run(FullPath, ".*.(flac)$", [caseless, unicode]) of
+        {match, _} ->
+            Result = wmb_digger:parse_file(fullpath, FullPath),
+            %io:format("File for Check: ~p~n", [[FullPath, Result]]),
+            %Self = self(),
+            %Result = spawn(wmb_digger, parse_file, [fullpath, FullPath]),
+            %io:format("File for Check: ~p~n", [[FullPath, Result]]),
+            Result;
+        nomatch ->
+            %io:format("File Not Matched: ~p~n", [FullPath]),
+            {error, skip}
+    end.
 
