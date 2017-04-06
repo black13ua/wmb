@@ -1,7 +1,9 @@
 const webpack           = require('webpack');
 const { resolve }       = require('path');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const args              = require('minimist')(process.argv);
 
+const reduxLogger       = args.rlg;
 
 const config = {
     context: __dirname,
@@ -45,10 +47,17 @@ const config = {
 
     plugins: [
         new webpack.ProvidePlugin({
-            fetch: 'imports-loader?this=>global!exports-loader?global.fetch!whatwg-fetch'
+            fetch     : 'imports-loader?this=>global!exports-loader?global.fetch!whatwg-fetch',
+            _         : 'lodash',
+            'window._': 'lodash',
         }),
         new ExtractTextPlugin({
             filename: 'style.css'
+        }),
+        new webpack.DefinePlugin({
+            __DEVELOPMENT__    : true,
+            __PRODUCTION__     : false,
+            __REDUX_LOGGER__   : JSON.parse(reduxLogger || false),
         })
     ]
 };

@@ -43,17 +43,24 @@ const config = {
 
     plugins: [
         new webpack.ProvidePlugin({
-            fetch: 'imports-loader?this=>global!exports-loader?global.fetch!whatwg-fetch'
+            fetch     : 'imports-loader?this => global!exports-loader?global.fetch!whatwg-fetch',
+            _         : `lodash`,
+            'window._': `lodash`,
         }),
         new webpack.optimize.UglifyJsPlugin({
-            sourceMap: true,
+            beautify: false,
+            comments: false,
             compress : {
                 warnings    : false,
-                drop_console: true,
+                drop_console: false,
             }
         }),
         new ExtractTextPlugin({
             filename: 'style.css'
+        }),
+        new webpack.DefinePlugin({
+            __DEVELOPMENT__    : false,
+            __PRODUCTION__     : true,
         })
     ]
 };

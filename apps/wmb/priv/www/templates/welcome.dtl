@@ -20,8 +20,6 @@
 </head>
 
 <body>
-    <div id="player--container"></div>
-
-    <div id="app--container"></div>
+    <div id="root"></div>
 </body>
 </html>
