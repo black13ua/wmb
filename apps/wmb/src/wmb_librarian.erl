@@ -188,3 +188,10 @@ check_file(FullPath) ->
             {error, skip}
     end.
 
+scan_dir(Path, State) ->
+    {ok, Files} = file:list_dir(Path),
+    Fun = fun(File, Files) ->
+                  io:format()
+          end,
+    AccOut = filelib:fold_files(Path, ".*.(flac)$", false, Fun, Files).
+
