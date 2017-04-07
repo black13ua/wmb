@@ -1,4 +1,17 @@
 {
   "name": "vendor",
-  "content": {}
+  "content": {
+    "./node_modules/lodash/lodash.js": {
+      "id": 0,
+      "meta": {}
+    },
+    "./node_modules/webpack/buildin/global.js": {
+      "id": 1,
+      "meta": {}
+    },
+    "./node_modules/webpack/buildin/module.js": {
+      "id": 2,
+      "meta": {}
+    }
+  }
 }

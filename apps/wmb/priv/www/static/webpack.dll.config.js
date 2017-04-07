@@ -11,7 +11,7 @@ const config = {
             'react-redux',
             'jquery',
             'lodash',
-            'moment',
+            // 'moment',
             'classnames',
         ],
     },
