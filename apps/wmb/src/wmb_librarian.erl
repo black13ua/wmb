@@ -22,9 +22,11 @@
          code_change/3
 ]).
 
+-export([find_dirs_and_files/1]).
+
 -define(SERVER, ?MODULE).
 
--record(state, {path = undefined, timeout = undefined, files = #{}}).
+-record(state, {path = undefined, timeout = undefined, dirs = [], files = #{}}).
 
 %%%===================================================================
 %%% API
@@ -188,10 +190,23 @@ check_file(FullPath) ->
             {error, skip}
     end.
 
-scan_dir(Path, State) ->
-    {ok, Files} = file:list_dir(Path),
-    Fun = fun(File, Files) ->
-                  io:format()
+-spec find_dirs_and_files(string()) ->
+    {list(), list()}.
+find_dirs_and_files(Path) ->
+    {ok, List} = file:list_dir(Path),
+    Fun = fun(File, {Files, Dirs}) ->
+              FullPath = lists:concat([Path, '/', File]),
+              case filelib:is_dir(FullPath) of
+                  true ->
+                      {Files, [File|Dirs]};
+                  false ->
+                      case re:run(FullPath, ".*.(flac)$", [caseless, unicode]) of
+                          {match, _} ->
+                              {[File|Files], Dirs};
+                          nomatch ->
+                              {Files, Dirs}
+                      end
+              end
           end,
-    AccOut = filelib:fold_files(Path, ".*.(flac)$", false, Fun, Files).
+     lists:foldl(Fun, {[],[]}, List).
 
