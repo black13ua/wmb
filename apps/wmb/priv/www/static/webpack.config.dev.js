@@ -14,18 +14,9 @@ const config = {
 
     entry: {
         main: [
-            'babel-polyfill',
+            'webpack-hot-middleware/client',
             'react-hot-loader/patch',
             './js/index.js',
-        ],
-        vendor: [
-            'react',
-            'redux',
-            'react-redux',
-            'jquery',
-            'lodash',
-            // 'moment',
-            'classnames',
         ],
     },
 
@@ -49,9 +40,6 @@ const config = {
                 exclude: /node_modules/,
                 use    : {
                     loader : 'babel-loader',
-                    // options: {
-                    //     presets: ['es2015']
-                    // }
                 }
             },
             {
@@ -81,12 +69,6 @@ const config = {
             __DEVELOPMENT__    : true,
             __PRODUCTION__     : false,
             __REDUX_LOGGER__   : JSON.parse(reduxLogger || false),
-        }),
-        new HtmlWebpackPlugin({
-            filename: path.join(__dirname, `./html/new.html`),
-            template: `./html/new.template.html`,
-            inject: `body`,
-            hash: true
         }),
     ]
 };

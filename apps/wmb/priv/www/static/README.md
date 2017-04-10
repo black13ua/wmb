@@ -11,7 +11,8 @@ $ npm install # Install dependencies
 
 #### DEV Build
 ```bash
-$ npm run build:dist
+$ npm run build:dll
+$ npm run start [-h 10.1.4.666] [-p 1488]
 ```
 
 #### PROD Build

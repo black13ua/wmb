@@ -10,8 +10,10 @@ class App extends Component {
         return null;
     }
     render() {
-        <h1>Hello from React!</h1>
-        <div>{ this.albumsList }</div>
+        <div class="wrapper--container">
+            <h1>Hello from React!</h1>
+            <div>{ this.albumsList }</div>
+        </div>
     }
 }
 

@@ -10,7 +10,6 @@ const config = {
 
     entry: {
         main: [
-            'babel-polyfill',
             './js/index.js',
         ],
         vendor: [
@@ -25,7 +24,7 @@ const config = {
     },
 
     output: {
-        path    : path.resolve(__dirname, 'js', 'dist'),
+        path         : path.resolve(__dirname, 'js', 'dist'),
         publicPath   : `/static/js/dist/`,
         filename     : `[name].js`,
         chunkFilename: `[id].chunk.js`,
