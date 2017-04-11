@@ -1,15 +1,14 @@
 const webpack           = require('webpack');
-const HtmlWebpackPlugin = require(`html-webpack-plugin`);
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const path              = require('path');
 const args              = require('minimist')(process.argv);
 
 const reduxLogger       = args.rlg;
 
+
 const config = {
     context: __dirname,
     cache  : true,
-    watch  : true,
     devtool: 'source-map',
 
     entry: {
@@ -21,11 +20,11 @@ const config = {
     },
 
     output: {
-        path    : path.resolve(__dirname, 'js', 'dist'),
-        publicPath   : `/static/js/dist/`,
-        filename     : `[name].js`,
-        chunkFilename: `[id].chunk.js`,
-        pathinfo     : true
+        path         : path.resolve(__dirname, 'js', 'dist'),
+        publicPath   : '/assets/',
+        filename     : '[name].js',
+        chunkFilename: '[id].chunk.js',
+        pathinfo     : true,
     },
 
     resolve: {
@@ -39,38 +38,39 @@ const config = {
                 test   : /\.js$/,
                 exclude: /node_modules/,
                 use    : {
-                    loader : 'babel-loader',
-                }
+                    loader: 'babel-loader',
+                },
             },
             {
                 test: /\.scss/,
                 use : ExtractTextPlugin.extract({
                     fallback: 'style-loader',
-                    use     : ['css-loader', 'sass-loader']
-                })
+                    use     : ['css-loader', 'sass-loader'],
+                }),
             },
-        ]
+        ],
     },
 
     plugins: [
+        new webpack.DllReferencePlugin({
+            context : '.',
+            manifest: require('./js/dist/dll/vendors-manifest.json'), // eslint-disable-line
+        }),
+        new webpack.HotModuleReplacementPlugin(),
         new webpack.ProvidePlugin({
             fetch     : 'imports-loader?this=>global!exports-loader?global.fetch!whatwg-fetch',
             _         : 'lodash',
             'window._': 'lodash',
         }),
         new ExtractTextPlugin({
-            filename: 'style.css'
-        }),
-        new webpack.optimize.CommonsChunkPlugin({
-            names: ['vendor'],
-            // minChunks: 2
+            filename: 'style.css',
         }),
         new webpack.DefinePlugin({
-            __DEVELOPMENT__    : true,
-            __PRODUCTION__     : false,
-            __REDUX_LOGGER__   : JSON.parse(reduxLogger || false),
+            __DEVELOPMENT__ : true,
+            __PRODUCTION__  : false,
+            __REDUX_LOGGER__: JSON.parse(reduxLogger || false),
         }),
-    ]
+    ],
 };
 
 module.exports = config;

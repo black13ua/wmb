@@ -1,5 +1,5 @@
 {
-  "name": "mainVendors",
+  "name": "vendors",
   "content": {
     "./node_modules/core-js/modules/_export.js": {
       "id": 0,

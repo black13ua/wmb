@@ -80,7 +80,7 @@ const serverOptions = {
 app.use(require('webpack-dev-middleware')(compiler, serverOptions));
 app.use(require('webpack-hot-middleware')(compiler));
 
-// app.use('/dist', express.static('./dist'));
+app.use('/dist', express.static('./js/dist'));
 // app.use('/static/js/compressed/outer-video-player.js', express.static('../../compressed/outer-video-player.js'));
 
 app.use((req, res, next) => {

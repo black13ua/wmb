@@ -22,4 +22,4 @@ const Render = (Component) => {
 
 Render(App);
 
-if (module.hot) module.hot.accept('./src/containers/App', () => Render(App));
+if (module.hot) module.hot.accept('./src/containers/app', () => Render(App));

@@ -5,7 +5,7 @@ const config = {
     context: __dirname,
     cache  : true,
     entry  : {
-        mainVendors: [path.join(__dirname, 'vendors-src.js')],
+        vendors: [path.join(__dirname, 'vendors-src.js')],
     },
     output: {
         path    : path.join(__dirname, 'js', 'dist', 'dll'),
@@ -20,7 +20,7 @@ const config = {
 
     plugins: [
         new webpack.DllPlugin({
-            path   : path.join(__dirname, 'dist', 'dll', '[name]-manifest.json'),
+            path   : path.join(__dirname, 'js', 'dist', 'dll', '[name]-manifest.json'),
             name   : '[name]',
             context: __dirname,
         }),

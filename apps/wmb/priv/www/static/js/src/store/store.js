@@ -1,6 +1,6 @@
 const configureStore = __DEVELOPMENT__
-    ? require('./configureStore.dev.js').default
-    : require('./configureStore.prod.js').default;
+    ? require('./configureStore.dev').default
+    : require('./configureStore.prod').default;
 
 const store = configureStore();
 

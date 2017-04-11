@@ -1,4 +1,4 @@
-var mainVendors =
+var vendors =
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -8069,7 +8069,7 @@ function isPlainObject(value) {
     funcToString.call(Ctor) == objectCtorString;
 }
 
-/* harmony default export */ __webpack_exports__["default"] = isPlainObject;
+/* harmony default export */ __webpack_exports__["default"] = (isPlainObject);
 
 
 /***/ }),
@@ -11909,7 +11909,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /** Built-in value references. */
 var Symbol = __WEBPACK_IMPORTED_MODULE_0__root_js__["default"].Symbol;
 
-/* harmony default export */ __webpack_exports__["default"] = Symbol;
+/* harmony default export */ __webpack_exports__["default"] = (Symbol);
 
 
 /***/ }),
@@ -14631,11 +14631,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
 
 
-/* harmony default export */ __webpack_exports__["default"] = __WEBPACK_IMPORTED_MODULE_0_react__["PropTypes"].shape({
+/* harmony default export */ __webpack_exports__["default"] = (__WEBPACK_IMPORTED_MODULE_0_react__["PropTypes"].shape({
   subscribe: __WEBPACK_IMPORTED_MODULE_0_react__["PropTypes"].func.isRequired,
   dispatch: __WEBPACK_IMPORTED_MODULE_0_react__["PropTypes"].func.isRequired,
   getState: __WEBPACK_IMPORTED_MODULE_0_react__["PropTypes"].func.isRequired
-});
+}));
 
 /***/ }),
 /* 204 */
@@ -20860,7 +20860,7 @@ function baseGetTag(value) {
     : __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__objectToString_js__["default"])(value);
 }
 
-/* harmony default export */ __webpack_exports__["default"] = baseGetTag;
+/* harmony default export */ __webpack_exports__["default"] = (baseGetTag);
 
 
 /***/ }),
@@ -20872,7 +20872,7 @@ function baseGetTag(value) {
 /** Detect free variable `global` from Node.js. */
 var freeGlobal = typeof global == 'object' && global && global.Object === Object && global;
 
-/* harmony default export */ __webpack_exports__["default"] = freeGlobal;
+/* harmony default export */ __webpack_exports__["default"] = (freeGlobal);
 
 /* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(74)))
 
@@ -20888,7 +20888,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /** Built-in value references. */
 var getPrototype = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__overArg_js__["default"])(Object.getPrototypeOf, Object);
 
-/* harmony default export */ __webpack_exports__["default"] = getPrototype;
+/* harmony default export */ __webpack_exports__["default"] = (getPrototype);
 
 
 /***/ }),
@@ -20943,7 +20943,7 @@ function getRawTag(value) {
   return result;
 }
 
-/* harmony default export */ __webpack_exports__["default"] = getRawTag;
+/* harmony default export */ __webpack_exports__["default"] = (getRawTag);
 
 
 /***/ }),
@@ -20973,7 +20973,7 @@ function objectToString(value) {
   return nativeObjectToString.call(value);
 }
 
-/* harmony default export */ __webpack_exports__["default"] = objectToString;
+/* harmony default export */ __webpack_exports__["default"] = (objectToString);
 
 
 /***/ }),
@@ -20996,7 +20996,7 @@ function overArg(func, transform) {
   };
 }
 
-/* harmony default export */ __webpack_exports__["default"] = overArg;
+/* harmony default export */ __webpack_exports__["default"] = (overArg);
 
 
 /***/ }),
@@ -21014,7 +21014,7 @@ var freeSelf = typeof self == 'object' && self && self.Object === Object && self
 /** Used as a reference to the global object. */
 var root = __WEBPACK_IMPORTED_MODULE_0__freeGlobal_js__["default"] || freeSelf || Function('return this')();
 
-/* harmony default export */ __webpack_exports__["default"] = root;
+/* harmony default export */ __webpack_exports__["default"] = (root);
 
 
 /***/ }),
@@ -21051,7 +21051,7 @@ function isObjectLike(value) {
   return value != null && typeof value == 'object';
 }
 
-/* harmony default export */ __webpack_exports__["default"] = isObjectLike;
+/* harmony default export */ __webpack_exports__["default"] = (isObjectLike);
 
 
 /***/ }),
@@ -48274,7 +48274,7 @@ function createConnect() {
   };
 }
 
-/* harmony default export */ __webpack_exports__["default"] = createConnect();
+/* harmony default export */ __webpack_exports__["default"] = (createConnect());
 
 /***/ }),
 /* 505 */
@@ -48306,7 +48306,7 @@ function whenMapDispatchToPropsIsObject(mapDispatchToProps) {
   }) : undefined;
 }
 
-/* harmony default export */ __webpack_exports__["default"] = [whenMapDispatchToPropsIsFunction, whenMapDispatchToPropsIsMissing, whenMapDispatchToPropsIsObject];
+/* harmony default export */ __webpack_exports__["default"] = ([whenMapDispatchToPropsIsFunction, whenMapDispatchToPropsIsMissing, whenMapDispatchToPropsIsObject]);
 
 /***/ }),
 /* 506 */
@@ -48329,7 +48329,7 @@ function whenMapStateToPropsIsMissing(mapStateToProps) {
   }) : undefined;
 }
 
-/* harmony default export */ __webpack_exports__["default"] = [whenMapStateToPropsIsFunction, whenMapStateToPropsIsMissing];
+/* harmony default export */ __webpack_exports__["default"] = ([whenMapStateToPropsIsFunction, whenMapStateToPropsIsMissing]);
 
 /***/ }),
 /* 507 */
@@ -48386,7 +48386,7 @@ function whenMergePropsIsOmitted(mergeProps) {
   } : undefined;
 }
 
-/* harmony default export */ __webpack_exports__["default"] = [whenMergePropsIsFunction, whenMergePropsIsOmitted];
+/* harmony default export */ __webpack_exports__["default"] = ([whenMergePropsIsFunction, whenMergePropsIsOmitted]);
 /* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(1)))
 
 /***/ }),

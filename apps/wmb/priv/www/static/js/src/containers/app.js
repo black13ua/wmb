@@ -1,29 +1,28 @@
-import React, { PropTypes, Component } from 'react';
-import { connect }  from 'react-redux';
-import { createStructuredSelector } from 'reselect';
+import React, { Component } from 'react';
+// import { connect }  from 'react-redux';
+// import { createStructuredSelector } from 'reselect';
 
-import { getAlbumsIds } from '../../selectors';
+// import { getAlbumsIds } from '../../selectors';
 
 
-class App extends Component {
-    get albumsList() {
-        return null;
-    }
+class App extends Component { // eslint-disable-line
     render() {
-        <div class="wrapper--container">
-            <h1>Hello from React!</h1>
-            <div>{ this.albumsList }</div>
-        </div>
+        return (
+            <div className = "wrapper--container">
+                <h1>{ 'Hello from React!' }</h1>
+            </div>
+        );
     }
 }
 
 
-App.propTypes = {
-    something: PropTypes.any.isRequired,
-}
+// App.propTypes = {
+//     something: PropTypes.any.isRequired,
+// };
 
-const mapStateToProps = createStructuredSelector({
-    albums: getAlbumsIds,
-});
+// const mapStateToProps = createStructuredSelector({
+//     albums: getAlbumsIds,
+// });
 
-export default connect(mapStateToProps)(App);
+// export default connect(mapStateToProps)(App);
+export default App;
