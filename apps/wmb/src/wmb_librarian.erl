@@ -146,46 +146,11 @@ code_change(_OldVsn, State, _Extra) ->
 %%%===================================================================
 -spec scan_directory(string(), #state{}) ->
     {ok, #state{}}.
-scan_directory(Path, #state{timeout = Timeout, dirs = StateDirs, files = StateFilesMap} = _State) ->
+scan_directory(Path, #state{dirs = StateDirs, files = StateFilesMap} = State) ->
     {Files, Dirs} = find_dirs_and_files(Path),
-    StateFiles = maps:keys(StateFilesMap),
-    FunDir = fun(Dir, Acc) ->
-              io:format("Dir and Dirs: ~p~n", [[Dir, StateDirs]]),
-              case lists:member(Dir, StateDirs) of
-                  true ->
-                      io:format("Dir scaned: ~p~n", [Dir]),
-                      [Dir|Acc];
-                  false ->
-                      FullPath = lists:concat([Path, '/', Dir]),
-                      {ok, Pid} = supervisor:start_child(wmb_librarian_sup, [FullPath]),
-                      io:format("Dir not scaned: ~p~n", [[FullPath, Pid]]),
-                      [Dir|Acc]
-              end
-          end,
-    FunFile = fun(File, Acc) ->
-              io:format("File for SCAN: ~p~n", [File]),
-              case lists:member(File, StateFiles) of
-                  true ->
-                      io:format("File scaned: ~p~n", [File]),
-                      Val = maps:get(File, StateFilesMap),
-                      maps:put(File, Val, Acc);
-                  false ->
-                      FullPath = lists:concat([Path, '/', File]),
-                      FlacAddRes = wmb_digger:parse_file(fullpath, FullPath),
-                      case FlacAddRes of
-                          {ok, {track_id, TrackID}} ->
-                              MapNew = maps:new(),
-                              MTime = filelib:last_modified(FullPath),
-                              MapTrack = maps:put(mtime, MTime, MapNew),
-                              maps:put(File, maps:put(track_id, TrackID, MapTrack), Acc);
-                          _ ->
-                              Acc
-                      end
-              end
-          end,
-    ResDir = lists:foldl(FunDir, [], Dirs),
-    ResFile = lists:foldl(FunFile, #{}, Files),
-    {ok, #state{path = Path, timeout = Timeout, dirs = ResDir, files = ResFile}}.
+    ResDir = check_dir_scaned(Path, Dirs, StateDirs),
+    ResFile = check_files_scaned(Path, Files, StateFilesMap),
+    {ok, State#state{path = Path, dirs = ResDir, files = ResFile}}.
 
 -spec find_dirs_and_files(string()) ->
     {list(), list()}.
@@ -206,4 +171,49 @@ find_dirs_and_files(Path) ->
               end
           end,
      lists:foldl(Fun, {[],[]}, List).
+
+-spec check_dir_scaned(string(), list(), list()) ->
+    list().
+check_dir_scaned(Path, Dirs, StateDirs) ->
+    FunD = fun(Dir, Acc) ->
+               io:format("Dir and Dirs: ~p~n", [[Dir, StateDirs]]),
+               case lists:member(Dir, StateDirs) of
+                   true ->
+                       io:format("Dir scaned: ~p~n", [Dir]),
+                       [Dir|Acc];
+                   false ->
+                       FullPath = lists:concat([Path, '/', Dir]),
+                       {ok, Pid} = supervisor:start_child(wmb_librarian_sup, [FullPath]),
+                       io:format("Dir not scaned: ~p~n", [[FullPath, Pid]]),
+                       [Dir|Acc]
+               end
+          end,
+    lists:foldl(FunD, [], Dirs).
+
+-spec check_files_scaned(string(), list(), map()) ->
+    list().
+check_files_scaned(Path, Files, StateFilesMap) ->
+    StateFiles = maps:keys(StateFilesMap),
+    FunF = fun(File, Acc) ->
+               io:format("File for SCAN: ~p~n", [File]),
+               case lists:member(File, StateFiles) of
+                   true ->
+                       io:format("File scaned: ~p~n", [File]),
+                       Val = maps:get(File, StateFilesMap),
+                       maps:put(File, Val, Acc);
+                   false ->
+                       FullPath = lists:concat([Path, '/', File]),
+                       FlacAddRes = wmb_digger:parse_file(fullpath, FullPath),
+                       case FlacAddRes of
+                           {ok, {track_id, TrackID}} ->
+                               MapNew = maps:new(),
+                               MTime = filelib:last_modified(FullPath),
+                               MapTrack = maps:put(mtime, MTime, MapNew),
+                               maps:put(File, maps:put(track_id, TrackID, MapTrack), Acc);
+                           _ ->
+                               Acc
+                       end
+               end
+          end,
+    lists:foldl(FunF, #{}, Files).
 
