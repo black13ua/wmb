@@ -22,8 +22,6 @@
          code_change/3
 ]).
 
--export([find_dirs_and_files/1]).
-
 -define(SERVER, ?MODULE).
 
 -record(state, {path = undefined, timeout = undefined, dirs = [], files = #{}}).
@@ -58,7 +56,7 @@ start_link(Path) ->
 %% @end
 %%--------------------------------------------------------------------
 init([Path]) ->
-    self() ! scan_directory,
+    self() ! scan,
     {ok, #state{path = Path}}.
 
 %%--------------------------------------------------------------------
@@ -102,21 +100,19 @@ handle_cast(_Msg, State) ->
 %%                                   {stop, Reason, State}
 %% @end
 %%--------------------------------------------------------------------
-handle_info(scan_directory, #state{path = Path} = State) ->
-    {ok, NewState} = check_dir_or_file(Path, State),
+handle_info(scan, #state{path = Path} = State) ->
+    {ok, NewState} = scan_directory(Path, State),
     {ok, RescanTimeout} = application:get_env(wmb, rescan_timeout),
     DelayRandom = crypto:rand_uniform(1, 30000),
     Timeout = RescanTimeout * 1000 + DelayRandom,
-    io:format("State Now: ~p~n", [[Timeout, NewState#state{timeout = Timeout}, self()]]),
-    timer:send_after(Timeout, rescan_directory),
-    {noreply, NewState#state{timeout = Timeout}};
-handle_info(rescan_directory, #state{path = Path, timeout = Timeout, files = MapFiles} = State) ->
-    FilesState = maps:keys(MapFiles),
-    %{ok, FilesFS} = file:list_dir(Path),
-    FilesFS = filelib:wildcard("*.flac", Path),
-    %%%io:format("Rescan Path now: ~p~n", [[Path, FilesState, FilesFS]]),
-    timer:send_after(Timeout, rescan_directory),
-    {noreply, State};
+    timer:send_after(Timeout, rescan),
+    {noreply, NewState#state{timeout = Timeout}, hibernate};
+handle_info(rescan, #state{path = Path, timeout = Timeout} = State) ->
+    io:format("Rescan Path/State: ~p~n", [[Path, State]]),
+    {ok, NewState} = scan_directory(Path, State),
+    io:format("Rescan NewState: ~p~n", [[Path, NewState]]),
+    timer:send_after(Timeout, rescan),
+    {noreply, NewState, hibernate};
 handle_info(_Info, State) ->
     {noreply, State}.
 
@@ -148,47 +144,48 @@ code_change(_OldVsn, State, _Extra) ->
 %%%===================================================================
 %%% Internal functions
 %%%===================================================================
-check_dir_or_file(Path, #state{files = MapFiles} = State) ->
-    {ok, RootDirList} = file:list_dir(Path),
-    io:format("MAP: ~p~n", [MapFiles]),
-    F = fun(File, MapFiles) ->
-            FullPath = lists:concat([Path, '/', File]),
-                case filelib:is_dir(FullPath) of
-                    true ->
-                        {ok, _} = supervisor:start_child(wmb_librarian_sup, [FullPath]),
-                        MapFiles;
-                    false ->
-                        CheckResult = check_file(FullPath),
-                        io:format("CheckResult: ~p~n", [CheckResult]),
-                        case CheckResult of
-                            {ok, {track_id, TrackID}} ->
-                                MapNew = maps:new(),
-                                MTime = filelib:last_modified(FullPath),
-                                MapTrack = maps:put(mtime, MTime, MapNew),
-                                io:format("FLAC: ~p~n", [[File, TrackID, MapFiles]]),
-                                maps:put(File, maps:put(track_id, TrackID, MapTrack), MapFiles);
-                            _ ->
-                                MapFiles
-                        end
-                end
-        end,
-    MapFilesNew = lists:foldl(F, MapFiles, RootDirList),
-    io:format("MapFilesNew: ~p~n", [[MapFilesNew, State]]),
-    {ok, #state{path = Path, files = MapFilesNew}}.
-
--spec check_file(string()) ->
-    {ok, {track_id, integer()}} | {ok, cover} | {error, skip}.
-check_file(FullPath) ->
-    case re:run(FullPath, ".*.(flac)$", [caseless, unicode]) of
-        {match, _} ->
-            Result = wmb_digger:parse_file(fullpath, FullPath),
-            %io:format("File for Check: ~p~n", [[FullPath, Result]]),
-            %Self = self(),
-            %Result = spawn(wmb_digger, parse_file, [fullpath, FullPath]),
-            Result;
-        nomatch ->
-            {error, skip}
-    end.
+-spec scan_directory(string(), #state{}) ->
+    {ok, #state{}}.
+scan_directory(Path, #state{timeout = Timeout, dirs = StateDirs, files = StateFilesMap} = _State) ->
+    {Files, Dirs} = find_dirs_and_files(Path),
+    StateFiles = maps:keys(StateFilesMap),
+    FunDir = fun(Dir, Acc) ->
+              io:format("Dir and Dirs: ~p~n", [[Dir, StateDirs]]),
+              case lists:member(Dir, StateDirs) of
+                  true ->
+                      io:format("Dir scaned: ~p~n", [Dir]),
+                      [Dir|Acc];
+                  false ->
+                      FullPath = lists:concat([Path, '/', Dir]),
+                      {ok, Pid} = supervisor:start_child(wmb_librarian_sup, [FullPath]),
+                      io:format("Dir not scaned: ~p~n", [[FullPath, Pid]]),
+                      [Dir|Acc]
+              end
+          end,
+    FunFile = fun(File, Acc) ->
+              io:format("File for SCAN: ~p~n", [File]),
+              case lists:member(File, StateFiles) of
+                  true ->
+                      io:format("File scaned: ~p~n", [File]),
+                      Val = maps:get(File, StateFilesMap),
+                      maps:put(File, Val, Acc);
+                  false ->
+                      FullPath = lists:concat([Path, '/', File]),
+                      FlacAddRes = wmb_digger:parse_file(fullpath, FullPath),
+                      case FlacAddRes of
+                          {ok, {track_id, TrackID}} ->
+                              MapNew = maps:new(),
+                              MTime = filelib:last_modified(FullPath),
+                              MapTrack = maps:put(mtime, MTime, MapNew),
+                              maps:put(File, maps:put(track_id, TrackID, MapTrack), Acc);
+                          _ ->
+                              Acc
+                      end
+              end
+          end,
+    ResDir = lists:foldl(FunDir, [], Dirs),
+    ResFile = lists:foldl(FunFile, #{}, Files),
+    {ok, #state{path = Path, timeout = Timeout, dirs = ResDir, files = ResFile}}.
 
 -spec find_dirs_and_files(string()) ->
     {list(), list()}.
