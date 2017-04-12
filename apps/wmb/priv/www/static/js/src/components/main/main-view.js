@@ -2,7 +2,7 @@ import React from 'react';
 
 const MainView = () =>
     <main className="main--center">
-        <div className="MainView">REACT WILL BE HERE SOON!</div>
+        <h1 className="MainView">REACT WILL BE HERE SOON!</h1>
     </main>;
 
 export default MainView;

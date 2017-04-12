@@ -11,7 +11,6 @@ class App extends Component { // eslint-disable-line
         return (
             <div className = "wrapper--container">
                 <PlayerView />
-                <h1>{ 'Hello from React!' }</h1>
                 <FiltersContainer />
                 <MainContainer />
                 <PlaylistContainer />
