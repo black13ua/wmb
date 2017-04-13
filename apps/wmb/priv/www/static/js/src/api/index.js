@@ -5,9 +5,8 @@ import {
     TRACKS_URL,
     FILTER_ABC_URL,
     FILTER_SEARCH_URL,
-    RANDOM_NUMBER,
-} from './constants';
-
+} from '../constants/urls';
+import { RANDOM_NUMBER } from '../constants/constants';
 
 function fetchRandom() {
     return fetch(`${RANDOM_URL}${RANDOM_NUMBER}`)

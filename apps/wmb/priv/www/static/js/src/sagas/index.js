@@ -1,4 +1,7 @@
-// import alertControlSaga from '../components/AlertControl/saga'
+import filtersSaga from './filters/filters-saga';
+// import contentSaga from './content/content-saga';
 
 export default [
+    filtersSaga,
+    // contentSaga,
 ];

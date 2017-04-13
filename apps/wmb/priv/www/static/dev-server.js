@@ -13,6 +13,7 @@ const proxy = httpProxy.createProxyServer({
 });
 
 const args = require('minimist')(process.argv);
+
 const port = args['p'] || 3000;
 const host = args['h'] || '0.0.0.0';
 const devHost = args['devHost'] || 'wmb.diff.org.ua';
@@ -27,7 +28,6 @@ function replaceTargetDomain(cookie) {
 }
 
 const apiHost = `${remoteProtocol}://${devHost}${devPort}`;
-const accountingHost = `${remoteProtocol}://${devHost}${devPort}`;
 
 
 const options = {

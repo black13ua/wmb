@@ -2,7 +2,7 @@ import { take, fork, cancel } from 'redux-saga/effects';
 import { map } from 'lodash';
 import rootSaga from './index';
 
-export const CANCEL_SAGAS_HMR = `CANCEL_SAGAS_HMR`;
+export const CANCEL_SAGAS_HMR = 'CANCEL_SAGAS_HMR';
 
 function createAbortableSaga(saga) {
     if (process.env.NODE_ENV === `development`) {
@@ -25,9 +25,9 @@ const SagaManager = {
 
     cancelSagas(store) {
         store.dispatch({
-            type: CANCEL_SAGAS_HMR
+            type: CANCEL_SAGAS_HMR,
         });
-    }
+    },
 };
 
 export default SagaManager;
