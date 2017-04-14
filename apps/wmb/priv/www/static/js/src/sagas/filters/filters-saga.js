@@ -14,7 +14,6 @@ function* routineABCFilter() {
     yield put(fetching('abc'));
     const response = yield call(API.fetchFilterABC);
     yield put(fetching('abc'));
-    console.info('ABC', response);
     yield put(receiveABCfilter(response));
 }
 

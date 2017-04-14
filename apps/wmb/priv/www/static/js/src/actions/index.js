@@ -1,7 +1,7 @@
 import actionCreator from '../utils/actionCreatorFactory';
 import * as ActionTypes from '../constants/action-types';
 
-export const receiveABCfilter = () => actionCreator(ActionTypes.RECEIVE_ABC_FILTER);
+export const receiveABCfilter = abc => actionCreator(ActionTypes.RECEIVE_ABC_FILTER, { abc });
 export const fetchABCfilter = () => actionCreator(ActionTypes.FETCH_ABC_FILTER);
 export const fetching = value => actionCreator(ActionTypes.FETCHING, { value });
 // export const toggleBoolField  = key => actionCreator(ActionTypes.TOGGLE_BOOL_FIELD, { key });

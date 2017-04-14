@@ -16,10 +16,9 @@ const config = {
             'react',
             'redux',
             'react-redux',
-            'jquery',
             'lodash',
-            // 'moment',
             'classnames',
+            'whatwg-fetch',
         ],
     },
 
@@ -57,7 +56,7 @@ const config = {
 
     plugins: [
         new webpack.ProvidePlugin({
-            fetch     : 'imports-loader?this => global!exports-loader?global.fetch!whatwg-fetch',
+            // fetch     : 'imports-loader?this => global!exports-loader?global.fetch!whatwg-fetch',
             _         : 'lodash',
             'window._': 'lodash',
         }),

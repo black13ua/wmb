@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 
-const FilterView = () =>
+const FilterView = ({ abc }) =>
     <aside className="aside-left">
         <section className="random">
             <button data-id="5" className="add-random">+5 Random Tracks</button>
@@ -132,20 +132,15 @@ const FilterView = () =>
             <div className="filter-abc">
                 <label htmlFor="filter-abc">
                     <b>9</b><span>Letters:</span>
-                    <select name="filter-abc" id="filter-abc">
-                        <option value="A">A</option>
-                        <option value="B">B</option>
-                        <option value="C">C</option>
-                        <option value="D">D</option>
-                        <option value="E">E</option>
-                        <option value="F">F</option>
-                        <option value="G">G</option>
-                        <option value="H">H</option>
-                        <option value="I">I</option>
-                    </select>
+                    { abc }
                 </label>
             </div>
         </section>
     </aside>;
+
+
+FilterView.propTypes = {
+    abc: PropTypes.node,
+};
 
 export default FilterView;
