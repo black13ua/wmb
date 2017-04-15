@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import MainView from '../../components/main/main-view';
+import MainView from '../../view/main/main-view';
 
 
 class MainContainer extends Component {

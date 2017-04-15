@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 
-import PlayerView from '../components/player/player-view';
-import FiltersContainer from './filters';
+import PlayerView from '../view/player/player-view';
+import RightSidebarContainer from './right-sidebar';
 import MainContainer from './main';
-import PlaylistContainer from './playlist';
+import PlaylistContainer from './left-sidebar';
 
 
 class App extends Component { // eslint-disable-line
@@ -11,7 +11,7 @@ class App extends Component { // eslint-disable-line
         return (
             <div className = "wrapper--container">
                 <PlayerView />
-                <FiltersContainer />
+                <RightSidebarContainer />
                 <MainContainer />
                 <PlaylistContainer />
             </div>

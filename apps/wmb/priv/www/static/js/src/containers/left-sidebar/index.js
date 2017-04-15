@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import PlaylstView from '../../components/playlist/playlist-view';
+import PlaylistView from '../../view/playlist/playlist-view';
 
 
 class PlaylistContainer extends Component {
     render() {
         return (
-            <PlaylstView />
+            <PlaylistView />
         );
     }
 }

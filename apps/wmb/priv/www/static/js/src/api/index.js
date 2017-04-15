@@ -4,6 +4,8 @@ import {
     RANDOM_URL,
     TRACKS_URL,
     FILTER_ABC_URL,
+    FILTER_GENRES_URL,
+    FILTER_DATES_URL,
     FILTER_SEARCH_URL,
 } from '../constants/urls';
 import { RANDOM_NUMBER } from '../constants/constants';
@@ -43,11 +45,27 @@ function fetchFilterABC() {
         .catch(err => console.error(err));
 }
 
+function fetchGenresFilter() {
+    return fetch(`${FILTER_GENRES_URL}`)
+        .then(res => res.json())
+        .then(json => humps.camelizeKeys(json))
+        .catch(err => console.error(err));
+}
+
+function fetchDatesFilter() {
+    return fetch(`${FILTER_DATES_URL}`)
+        .then(res => res.json())
+        .then(json => humps.camelizeKeys(json))
+        .catch(err => console.error(err));
+}
+
 const API = {
     fetchRandom,
     fetchAlbum,
     fetchTrack,
     fetchFilterABC,
+    fetchGenresFilter,
+    fetchDatesFilter,
     fetchSearchResults,
 };
 
