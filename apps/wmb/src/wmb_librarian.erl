@@ -107,7 +107,7 @@ handle_info(scan, #state{path = Path} = State) ->
     Timeout = RescanTimeout * 1000 + DelayRandom,
     timer:send_after(Timeout, rescan),
     {noreply, NewState#state{timeout = Timeout}, hibernate};
-handle_info(rescan, #state{path = Path, timeout = Timeout} = State) ->
+handle_info(rescan, #state{path = Path, timeout = Timeout, files = StateFilesMap} = State) ->
 %    io:format("Rescan Path/State: ~p~n", [[Path, State]]),
     case scan_directory(Path, State) of
         {ok, NewState} ->
@@ -116,6 +116,7 @@ handle_info(rescan, #state{path = Path, timeout = Timeout} = State) ->
             {noreply, NewState, hibernate};
         {error, _} ->
             io:format("There is we stop worker! ~p~n", [Path]),
+            data_merger:del_tracks_by_statemap(StateFilesMap),
             {stop, normal, State}
     end;
 handle_info(_Info, State) ->

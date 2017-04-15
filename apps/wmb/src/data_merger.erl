@@ -1,5 +1,6 @@
 -module(data_merger).
 -export([
+    del_tracks_by_statemap/1,
     get_abc_letters/0,
     get_albums/1, get_albums/3,
     get_tracklist_by_albumid/1, get_tracklist_by_albumtuple/1,
@@ -10,6 +11,8 @@
     get_albums_by_genre_name/1, get_albums_by_genre_tuple/1,
     get_albums_by_date/1, get_albums_by_date_tuple/1,
     get_albumtuple_by_albumid/1,
+    get_all_dates/0,
+    get_all_genres/0,
     get_cover_by_albumid/1,
     get_random_tracks/1,
     search_albums_by_phrase/1,
@@ -278,4 +281,43 @@ get_abc_letters() ->
     LettersFlat = ets:match(?ETS_ABC, {{letter, '$1'}, '_'}),
     LettersSorted = lists:flatten(lists:usort(LettersFlat)),
     {ok, LettersSorted}.
+
+%%% Get Genres List for API
+-spec get_all_genres() ->
+    {ok, []} | {ok, list()}.
+get_all_genres() ->
+    Genres = lists:usort(lists:flatten(ets:match(?ETS_GENRES, {'_',{genre,'$2'}}))),
+    {ok, Genres}.
+
+%%% Get Dates List for API
+-spec get_all_dates() ->
+    {ok, []} | {ok, list()}.
+get_all_dates() ->
+    Dates = lists:usort(lists:flatten(ets:match(?ETS_ALBUMS, {{{album, '_'}, {date, '$1'}}, {album_id, '_'}}))),
+    {ok, Dates}.
+
+%%% DEL Tracks from ETS by tracksMap from State wmb_librarian (if Dir moved or removed)
+-spec del_tracks_by_statemap(map()) ->
+    {ok, empty} | {ok, cleaned}.
+del_tracks_by_statemap(Map) when map_size(Map) == 0 ->
+    {ok, empty};
+del_tracks_by_statemap(Map) ->
+    Files = maps:keys(Map),
+    Fun = fun(File) ->
+              FileMap = maps:get(File, Map),
+              TrackID = maps:get(track_id, FileMap),
+              del_track_by_trackid({track_id, TrackID})
+          end,
+    lists:foreach(Fun, Files),
+    {ok, cleaned}.
+
+del_track_by_trackid(TrackID) ->
+    [[AlbumID, {file, _File}, _Title]] = ets:match(?ETS_TRACKS, {'$1', {'$2', '$3', TrackID}}),
+    [{AlbumID, {cover, AlbumCover}}] = ets:lookup(?ETS_COVERS, AlbumID),
+    [{AlbumID, {path, AlbumPathBin}}] = ets:lookup(?ETS_PATHS, AlbumID),
+    [[{AlbumTuple, DateTuple}]] = ets:match(?ETS_ALBUMS, {'$1', AlbumID}),
+    [{AlbumID, AlbumArtist, _}] = ets:lookup(?ETS_ARTISTS, AlbumID),
+    io:format("del_track: ~p~n", [[TrackID, AlbumID, {cover, AlbumCover}, {path, AlbumPathBin}, DateTuple, AlbumArtist]]).
+
+
 
