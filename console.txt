@@ -1,2 +1,25 @@
 PID State
 sys:get_status(list_to_pid("<0.1012.0>")).
+
+TC
+7> timer:tc(data_merger, get_track_by_trackid, [{track_id, 6361}]).
+{6374,
+ {ok,[{album_id,478},
+      {file,<<"/files/J.J. Johnson & Kai Winding/1956 - Jay & Kai + 6/09 - Jeanne.flac">>},
+      {cover,<<"/files/J.J. Johnson & Kai Winding/1956 - Jay & Kai + 6/cover.jpg">>},
+      {artist,<<"J.J. Johnson & Kai Winding">>},
+      {album,<<"Jay & Kai + 6">>},
+      {date,<<"1956">>},
+      {title,<<"Jeanne">>},
+      {track_id,6361}]}}
+8> timer:tc(data_merger, get_track_by_trackid, [{track_id, 9361}]).
+{6269,
+ {ok,[{album_id,570},
+      {file,<<"/files/Manic Street Preachers/2002 - Forever Delayed/04 - La Tristesse Durera (Screa"...>>},
+      {cover,<<"/files/Manic Street Preachers/2002 - Forever Delayed/cover.jpg">>},
+      {artist,<<"Manic Street Preachers">>},
+      {album,<<"Forever Delayed">>},
+      {date,<<"2002">>},
+      {title,<<"La Tristesse Durera (Scream To A Sigh)">>},
+      {track_id,9361}]}}
+9>

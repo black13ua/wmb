@@ -3,6 +3,8 @@
 - add module for periodic rescan flac files
 - add SPEC's to all functions
 - write howto build/run service to README file
+- Change in ets wmb_tracks key to {track_id,integer()}
+- Add in ets wmb_albums list track_ids
 
 
 ## JS

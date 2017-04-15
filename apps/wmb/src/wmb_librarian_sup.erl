@@ -29,10 +29,10 @@ start_link() ->
 %% Child :: {Id,StartFunc,Restart,Shutdown,Type,Modules}
 init([]) ->
     RestartStrategy = simple_one_for_one,
-    MaxRestarts = 0,
+    MaxRestarts = 10,
     MaxSecondsBetweenRestarts = 1,
     SupFlags = {RestartStrategy, MaxRestarts, MaxSecondsBetweenRestarts},
-    Restart = permanent,
+    Restart = transient,
     Shutdown = 5000,
     Type = worker,
     WmbLibrarian = {'wmb_librarian', {'wmb_librarian', start_link, []}, Restart, Shutdown, Type, [wmb_librarian]},
