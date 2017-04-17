@@ -39,6 +39,14 @@ handle(Req, State) ->
             {ok, Albums} = data_merger:get_albums_by_date_tuple({date, APIid}),
             io:format("Response from /api/date/id: ~p~n", [Albums]),
             Res = jsx:encode(Albums);
+        <<"dates">> ->
+            {ok, Dates} = data_merger:get_all_dates(),
+            io:format("Response from /api/dates/all: ~p~n", [Dates]),
+            Res = jsx:encode(Dates);
+        <<"genres">> ->
+            {ok, Genres} = data_merger:get_all_genres(),
+            io:format("Response from /api/genres/all: ~p~n", [Genres]),
+            Res = jsx:encode(Genres);
         <<"page">> ->
             APIidAtom = binary_to_integer(APIid),
             SkipAlbums = (APIidAtom * 10) - 10,

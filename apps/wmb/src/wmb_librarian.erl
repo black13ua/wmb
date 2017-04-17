@@ -107,12 +107,18 @@ handle_info(scan, #state{path = Path} = State) ->
     Timeout = RescanTimeout * 1000 + DelayRandom,
     timer:send_after(Timeout, rescan),
     {noreply, NewState#state{timeout = Timeout}, hibernate};
-handle_info(rescan, #state{path = Path, timeout = Timeout} = State) ->
-    io:format("Rescan Path/State: ~p~n", [[Path, State]]),
-    {ok, NewState} = scan_directory(Path, State),
-    io:format("Rescan NewState: ~p~n", [[Path, NewState]]),
-    timer:send_after(Timeout, rescan),
-    {noreply, NewState, hibernate};
+handle_info(rescan, #state{path = Path, timeout = Timeout, files = StateFilesMap} = State) ->
+%    io:format("Rescan Path/State: ~p~n", [[Path, State]]),
+    case scan_directory(Path, State) of
+        {ok, NewState} ->
+            %io:format("Rescan NewState: ~p~n", [[Path, NewState]]),
+            timer:send_after(Timeout, rescan),
+            {noreply, NewState, hibernate};
+        {error, _} ->
+            io:format("There is we stop worker! ~p~n", [Path]),
+            data_merger:del_tracks_by_statemap(StateFilesMap),
+            {stop, normal, State}
+    end;
 handle_info(_Info, State) ->
     {noreply, State}.
 
@@ -147,39 +153,50 @@ code_change(_OldVsn, State, _Extra) ->
 -spec scan_directory(string(), #state{}) ->
     {ok, #state{}}.
 scan_directory(Path, #state{dirs = StateDirs, files = StateFilesMap} = State) ->
-    {Files, Dirs} = find_dirs_and_files(Path),
-    ResDir = check_dir_scaned(Path, Dirs, StateDirs),
-    ResFile = check_files_scaned(Path, Files, StateFilesMap),
-    {ok, State#state{path = Path, dirs = ResDir, files = ResFile}}.
+    case find_dirs_and_files(Path) of
+        {ok, {Files, Dirs}} ->
+            ResDir = check_dir_scaned(Path, Dirs, StateDirs),
+            ResFile = check_files_scaned(Path, Files, StateFilesMap),
+            {ok, State#state{path = Path, dirs = ResDir, files = ResFile}};
+        {error, _} ->
+            {error, dir_error}
+    end.
 
 -spec find_dirs_and_files(string()) ->
     {list(), list()}.
 find_dirs_and_files(Path) ->
-    {ok, List} = file:list_dir(Path),
-    Fun = fun(File, {Files, Dirs}) ->
-              FullPath = lists:concat([Path, '/', File]),
-              case filelib:is_dir(FullPath) of
-                  true ->
-                      {Files, [File|Dirs]};
-                  false ->
-                      case re:run(FullPath, ".*.(flac)$", [caseless, unicode]) of
-                          {match, _} ->
-                              {[File|Files], Dirs};
-                          nomatch ->
-                              {Files, Dirs}
+    case file:list_dir(Path) of
+        {ok, List} ->
+            %io:format("Path Found: ~p~n", [Path]),
+            Fun = fun(File, {Files, Dirs}) ->
+                      FullPath = lists:concat([Path, '/', File]),
+                      case filelib:is_dir(FullPath) of
+                          true ->
+                              {Files, [File|Dirs]};
+                          false ->
+                              case re:run(FullPath, ".*.(flac)$", [caseless, unicode]) of
+                                  {match, _} ->
+                                      {[File|Files], Dirs};
+                                  nomatch ->
+                                      {Files, Dirs}
+                              end
                       end
-              end
-          end,
-     lists:foldl(Fun, {[],[]}, List).
+                  end,
+            Res = lists:foldl(Fun, {[],[]}, List),
+            {ok, Res};
+        {error, Error} ->
+            io:format("Path not Found: ~p~n", [Path]),
+            {error, Error}
+    end.
 
 -spec check_dir_scaned(string(), list(), list()) ->
     list().
 check_dir_scaned(Path, Dirs, StateDirs) ->
     FunD = fun(Dir, Acc) ->
-               io:format("Dir and Dirs: ~p~n", [[Dir, StateDirs]]),
+               %io:format("Dir and Dirs: ~p~n", [[Dir, StateDirs]]),
                case lists:member(Dir, StateDirs) of
                    true ->
-                       io:format("Dir scaned: ~p~n", [Dir]),
+                       %io:format("Dir scaned: ~p~n", [Dir]),
                        [Dir|Acc];
                    false ->
                        FullPath = lists:concat([Path, '/', Dir]),
@@ -195,10 +212,10 @@ check_dir_scaned(Path, Dirs, StateDirs) ->
 check_files_scaned(Path, Files, StateFilesMap) ->
     StateFiles = maps:keys(StateFilesMap),
     FunF = fun(File, Acc) ->
-               io:format("File for SCAN: ~p~n", [File]),
+               %io:format("File for SCAN: ~p~n", [File]),
                case lists:member(File, StateFiles) of
                    true ->
-                       io:format("File scaned: ~p~n", [File]),
+                       %io:format("File scaned: ~p~n", [File]),
                        Val = maps:get(File, StateFilesMap),
                        maps:put(File, Val, Acc);
                    false ->
