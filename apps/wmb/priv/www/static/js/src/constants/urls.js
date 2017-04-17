@@ -6,6 +6,7 @@ export const FILTER_ABC_URL      = '/api/abc/abc';
 export const FILTER_GENRES_URL   = '/api/genres/all';
 export const FILTER_DATES_URL    = '/api/dates/all';
 export const FILTER_SEARCH_URL   = '/api/search/';
+export const ALBUMS_BY_PAGE      = '/api/page/';
 
 // POST
 export const DATA_BY_FILTERS_URL = '/api/albums_by_filter/';

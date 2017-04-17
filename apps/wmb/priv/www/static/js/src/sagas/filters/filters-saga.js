@@ -5,7 +5,7 @@ import API from '../../api';
 import {
     FETCH_FILTER_DATA,
     FETCH_RANDOM_TRACKS,
-    FETCH_DATA_BY_FILTERS,
+    FETCH_ALBUMS_BY_FILTERS,
     FETCH_SEARCH_RESULTS,
 } from '../../constants/action-types';
 import {
@@ -64,7 +64,7 @@ function* watchFilterInitData() {
 }
 
 function* watchFiltersChanged() {
-    yield takeEvery(FETCH_DATA_BY_FILTERS, routineDataByFilter);
+    yield takeEvery(FETCH_ALBUMS_BY_FILTERS, routineDataByFilter);
 }
 
 function* watchRandomButton() {

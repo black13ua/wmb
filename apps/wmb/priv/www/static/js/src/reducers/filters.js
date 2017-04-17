@@ -12,8 +12,6 @@ import {
 
 const initialState = Immutable({
     data: {
-        albums : [],
-        songs  : [],
         filters: {
             abc   : ['A', 'B', 'C'],
             genres: ['Rock', 'Folk'],
@@ -21,14 +19,6 @@ const initialState = Immutable({
         },
     },
     viewState: {
-        isFetching: {
-            albums: [],
-            songs : [],
-        },
-        selected: {
-            albums: [],
-            songs : [],
-        },
         filtersCurrentValue: {
             abc   : '',
             genres: '',

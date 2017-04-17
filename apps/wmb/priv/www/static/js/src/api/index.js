@@ -9,6 +9,7 @@ import {
     FILTER_SEARCH_URL,
     DATA_BY_FILTERS_URL,
     DATA_BY_SEARCH_URL,
+    ALBUMS_BY_PAGE,
 } from '../constants/urls';
 import { RANDOM_NUMBER } from '../constants/constants';
 
@@ -32,6 +33,14 @@ function fetchRandom() {
 
 function fetchAlbum(albumId) {
     return fetch(`${ALBUMS_URL}${albumId}`)
+        .then(checkStatus)
+        .then(res => res.json())
+        .then(json => humps.camelizeKeys(json))
+        .catch(error => console.log(`%c ${error.message}`, 'color: deepPink'));
+}
+
+function fetchAlbumsByPage(page) {
+    return fetch(`${ALBUMS_BY_PAGE}${page}`)
         .then(checkStatus)
         .then(res => res.json())
         .then(json => humps.camelizeKeys(json))
@@ -110,6 +119,7 @@ const API = {
     fetchSearchResults,
     fetchDataByFilters,
     fetchDataBySearch,
+    fetchAlbumsByPage,
 };
 
 export default API;

@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 
-const filterSelector = state => state.songs;
+const filterSelector = state => state.filters;
 const filterAlias = (state, props) => props.alias;
 
 
