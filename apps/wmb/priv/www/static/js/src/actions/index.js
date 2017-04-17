@@ -26,6 +26,6 @@ export const setSearchValue    = value          => actionCreator(ActionTypes.SET
 // ******************************************************************************/
 
 export const receiveRandomTracks = tracks => actionCreator(ActionTypes.RECEIVE_RANDOM_TRACKS, { tracks });
+export const fetchAlbumsByPage   = ()     => actionCreator(ActionTypes.FETCH_ALBUMS_BY_PAGE);
 export const receiveAlbums       = albums => actionCreator(ActionTypes.RECEIVE_ALBUMS, { albums });
-export const fetchAlbumsByPage   = page   => actionCreator(ActionTypes.FETCH_ALBUMS_BY_PAGE, { page });
 

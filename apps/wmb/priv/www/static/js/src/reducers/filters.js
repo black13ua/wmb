@@ -57,15 +57,6 @@ export default createReducer(initialState, {
         }, { deep: true });
     },
 
-    [RECEIVE_RANDOM_TRACKS](state, action) {
-        const currentSongs = state.data.songs;
-        return state.merge({
-            data: {
-                songs: [...currentSongs, ...action.payload.tracks],
-            },
-        }, { deep: true });
-    },
-
     [RANDOM_CHECKER_TOGGLE](state) {
         const currentRandomState = state.viewState.isRandomChecked;
         return state.setIn(['viewState', 'isRandomChecked'], !currentRandomState);

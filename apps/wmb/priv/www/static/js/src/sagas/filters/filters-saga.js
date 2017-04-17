@@ -36,7 +36,7 @@ function* routineInitFilter(action) {
 function* routineDataByFilter(action) {
     const { alias, value } = action.payload;
     yield put(setFieldValue(alias, value));
-    const currentFilters = yield select(state => state.songs.viewState.filtersCurrentValue.asMutable());
+    const currentFilters = yield select(state => state.filters.viewState.filtersCurrentValue.asMutable());
     const response = yield call(API.fetchDataByFilters.bind(null, currentFilters));
     console.log('%c dataByFilters', 'color: aqua', response);
     // yield put(receiveData(response));
@@ -48,7 +48,7 @@ function* routineRandomButton() {
 }
 
 function* routineSearchResults() {
-    const search = yield select(state => state.songs.viewState.search);
+    const search = yield select(state => state.filters.viewState.search);
     const response = yield call(API.fetchDataBySearch.bind(null, search));
     console.log('%c dataBySearch', 'color: aqua', response);
     // yield put(receiveData(response));

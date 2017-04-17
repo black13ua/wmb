@@ -2,7 +2,8 @@ import Immutable from 'seamless-immutable';
 
 import createReducer  from '../utils/createReducer';
 import {
-    RECEIVE_DATA,
+    RECEIVE_ALBUMS,
+    RECEIVE_RANDOM_TRACKS,
 } from '../constants/action-types';
 
 
@@ -31,8 +32,26 @@ const initialState = Immutable({
 });
 
 export default createReducer(initialState, {
-    [RECEIVE_DATA](state) {
-        const currentRandomState = state.viewState.isRandomChecked;
-        return state.setIn(['viewState', 'isRandomChecked'], !currentRandomState);
+    [RECEIVE_ALBUMS](state, action) {
+        const { albums } = action.payload;
+        const normalizedAlbums = getNormalizedAlbums(albums);
+        console.info('normalizedAlbums', normalizedAlbums);
+        return state;
+    },
+
+    [RECEIVE_RANDOM_TRACKS](state, action) {
+        console.log('%c fix it! >> RECEIVE_RANDOM_TRACKS', 'color: red');
+        return state;
+        // const currentSongs = state.data.songs;
+        // return state.merge({
+        //     data: {
+        //         songs: [...currentSongs, ...action.payload.tracks],
+        //     },
+        // }, { deep: true });
     },
 });
+
+// HELPERS
+function getNormalizedAlbums(albums) {
+    return albums;
+}

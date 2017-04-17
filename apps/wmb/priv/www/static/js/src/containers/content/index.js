@@ -2,20 +2,20 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 
 import ContentView from '../../view/content/content-view';
-import AlbumContainer from './album';
+// import AlbumContainer from './album';
 
-import { fetchDataByPage } from '../../actions';
+import { fetchAlbumsByPage } from '../../actions';
 import { getAlbumsIds } from '../../selectors';
 
 
 class ContentContainer extends Component {
     componentWillMount() {
-        this.props.fetchDataByPage();
+        this.props.fetchAlbumsByPage();
     }
 
     get albumsList() {
         const list = this.props.albumsIds.map(id =>
-            <AlbumContainer
+            <li
                 id  = {id}
                 key = {id}
             />
@@ -38,8 +38,8 @@ class ContentContainer extends Component {
 
 
 ContentContainer.propTypes = {
-    albumsIds      : PropTypes.arrayOf(PropTypes.number),
-    fetchDataByPage: PropTypes.func.isRequired,
+    albumsIds        : PropTypes.arrayOf(PropTypes.number),
+    fetchAlbumsByPage: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({
@@ -47,7 +47,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    fetchDataByPage: () => dispatch(fetchDataByPage()),
+    fetchAlbumsByPage: () => dispatch(fetchAlbumsByPage()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ContentContainer);

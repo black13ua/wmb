@@ -31,7 +31,7 @@ function fetchRandom() {
         .catch(error => console.log(`%c ${error.message}`, 'color: deepPink'));
 }
 
-function fetchAlbum(albumId) {
+function fetchAlbumById(albumId) {
     return fetch(`${ALBUMS_URL}${albumId}`)
         .then(checkStatus)
         .then(res => res.json())
@@ -111,7 +111,7 @@ function fetchDataBySearch(search) {
 
 const API = {
     fetchRandom,
-    fetchAlbum,
+    fetchAlbumById,
     fetchTrack,
     fetchAbcFilter,
     fetchGenresFilter,

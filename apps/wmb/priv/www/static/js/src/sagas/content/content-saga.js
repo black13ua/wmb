@@ -1,8 +1,8 @@
 import { takeLatest } from 'redux-saga';
-import { put, call, fork } from 'redux-saga/effects';
+import { put, call, fork, select } from 'redux-saga/effects';
 
 import API from '../../api';
-import { FETCH_ALBUMS_BY_FILTERS } from '../../constants/action-types';
+import { FETCH_ALBUMS_BY_PAGE } from '../../constants/action-types';
 import { receiveAlbums } from '../../actions';
 
 
@@ -10,8 +10,8 @@ import { receiveAlbums } from '../../actions';
 // ******************************* ROUTINES *************************************/
 // ******************************************************************************/
 
-function* routineDataByPage(action) {
-    const { page } = action.payload;
+function* routineDataByPage() {
+    const page = yield select(state => state.albums.viewState.currentPage);
     const response = yield call(API.fetchAlbumsByPage.bind(null, page));
     yield put(receiveAlbums(response));
 }
@@ -20,13 +20,13 @@ function* routineDataByPage(action) {
 // ******************************* WATCHERS *************************************/
 // ******************************************************************************/
 
-function* watchDataByPage() {
-    yield takeLatest(FETCH_ALBUMS_BY_FILTERS, routineDataByPage);
+function* watchAlbumsByPage() {
+    yield takeLatest(FETCH_ALBUMS_BY_PAGE, routineDataByPage);
 }
 
 
 export default function* () {
     yield [
-        fork(watchDataByPage),
+        fork(watchAlbumsByPage),
     ];
 }
