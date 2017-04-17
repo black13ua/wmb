@@ -13,13 +13,22 @@
 
         }
     }
-    .filters{
+    section.filters{
         text-align: center;
         font-size: 24px;
         padding: 5px;
-        & > div {
-            margin: 7px 0;
+        & > article {
+            margin: 17px 0;
             text-align: center;
+            label {
+                b {
+                    // margin: 7px;
+                }
+                span {
+                    margin: 5px;
+                    text-transform: uppercase;
+                }
+            }
         }
         .filters-head {
 

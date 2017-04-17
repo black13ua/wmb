@@ -1,5 +1,5 @@
 const webpack           = require('webpack');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+// const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const path              = require('path');
 const args              = require('minimist')(process.argv);
 
@@ -43,10 +43,7 @@ const config = {
             },
             {
                 test: /\.scss/,
-                use : ExtractTextPlugin.extract({
-                    fallback: 'style-loader',
-                    use     : ['css-loader', 'sass-loader'],
-                }),
+                use : ['style-loader', 'css-loader', 'sass-loader'],
             },
         ],
     },
@@ -62,9 +59,9 @@ const config = {
             _         : 'lodash',
             'window._': 'lodash',
         }),
-        new ExtractTextPlugin({
-            filename: 'style.css',
-        }),
+        // new ExtractTextPlugin({
+        //     filename: 'style.css',
+        // }),
         new webpack.DefinePlugin({
             __DEVELOPMENT__ : true,
             __PRODUCTION__  : false,

@@ -1,26 +1,22 @@
 import { createSelector } from 'reselect';
 
 const filterSelector = state => state.songs;
+const filterAlias = (state, props) => props.alias;
 
-export const getAbcFilter = createSelector(
-    filterSelector,
-    state => state.data.filters.abc
+
+export const getFilterDataByAlias = createSelector(
+    [filterSelector, filterAlias],
+    (state, alias) => state.data.filters[alias]
 );
 
-export const getGenresFilter = createSelector(
-    filterSelector,
-    state => state.data.filters.genres
+export const getFilterCurrentValueByAlias = createSelector(
+    [filterSelector, filterAlias],
+    (state, alias) => state.viewState.filtersCurrentValue[alias]
 );
-
-export const getDatesFilter = createSelector(
-    filterSelector,
-    state => state.data.filters.dates
-);
-
 
 export const getSearchValue = createSelector(
     filterSelector,
-    state => state.viewState.filters.search
+    state => state.viewState.search
 );
 
 export const getIsRandomChecked = createSelector(

@@ -2,11 +2,11 @@ import Immutable from 'seamless-immutable';
 
 import createReducer  from '../utils/createReducer';
 import {
-    RECEIVE_ABC_FILTER,
-    RECEIVE_GENRES_FILTER,
-    RECEIVE_DATES_FILTER,
+    RECEIVE_FILTER_DATA,
     RANDOM_CHECKER_TOGGLE,
     RECEIVE_RANDOM_TRACKS,
+    SET_FIELD_VALUE,
+    SAVE_SEARCH_VALUE,
 } from '../constants/action-types';
 
 
@@ -29,27 +29,42 @@ const initialState = Immutable({
             albums: [],
             songs : [],
         },
-        filters: {
-            byGenre: '',
-            byYear : '',
-            search : '',
-            byABC  : '',
+        filtersCurrentValue: {
+            abc   : '',
+            genres: '',
+            dates : '',
         },
+        search         : '',
         isRandomChecked: true,
     },
 });
 
 export default createReducer(initialState, {
-    [RECEIVE_ABC_FILTER](state, action) {
-        return state.setIn(['data', 'filters', 'abc'], action.payload.abc);
+    [RECEIVE_FILTER_DATA](state, action) {
+        const { alias, data } = action.payload;
+        return state.merge({
+            data: {
+                filters: {
+                    [alias]: data,
+                },
+            },
+            viewState: {
+                filtersCurrentValue: {
+                    [alias]: 'All',
+                },
+            },
+        }, { deep: true });
     },
 
-    [RECEIVE_GENRES_FILTER](state, action) {
-        return state.setIn(['data', 'filters', 'genres'], action.payload.genres);
-    },
-
-    [RECEIVE_DATES_FILTER](state, action) {
-        return state.setIn(['data', 'filters', 'dates'], action.payload.dates);
+    [SET_FIELD_VALUE](state, action) {
+        const { alias, value } = action.payload;
+        return state.merge({
+            viewState: {
+                filtersCurrentValue: {
+                    [alias]: value,
+                },
+            },
+        }, { deep: true });
     },
 
     [RECEIVE_RANDOM_TRACKS](state, action) {
@@ -64,5 +79,10 @@ export default createReducer(initialState, {
     [RANDOM_CHECKER_TOGGLE](state) {
         const currentRandomState = state.viewState.isRandomChecked;
         return state.setIn(['viewState', 'isRandomChecked'], !currentRandomState);
+    },
+
+    [SAVE_SEARCH_VALUE](state, action) {
+        const { value } = action.payload;
+        return state.setIn(['viewState', 'search'], value);
     },
 });

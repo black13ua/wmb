@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 
 import SearchView from '../../../view/right-sidebar/filters/search';
@@ -27,7 +27,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
     handleSearchClick : ()    => dispatch(fetchSearchResults()),
-    handleSearchChange: value => dispatch(saveSearchValue(value)),
+    handleSearchChange: event => dispatch(saveSearchValue(event.target.value)),
 });
 
 

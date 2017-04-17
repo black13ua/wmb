@@ -1,36 +1,45 @@
-import { takeLatest, takeEvery } from 'redux-saga';
-import { put, call, fork } from 'redux-saga/effects';
+import { takeEvery, takeLatest } from 'redux-saga';
+import { put, call, fork, select } from 'redux-saga/effects';
 
 import API from '../../api';
 import {
-    FETCH_ABC_FILTER,
-    FETCH_GENRES_FILTER,
-    FETCH_DATES_FILTER,
+    FETCH_FILTER_DATA,
     FETCH_RANDOM_TRACKS,
+    FETCH_DATA_BY_FILTERS,
+    FETCH_SEARCH_RESULTS,
 } from '../../constants/action-types';
 import {
-    receiveABCfilter,
-    receiveGenresFilter,
-    receiveDatesFilter,
+    receiveFilter,
     receiveRandomTracks,
+    setFieldValue,
 } from '../../actions';
 
+
+function fetchFilterDataByAlias(alias) {
+    switch (alias) {
+        case 'abc'   : return API.fetchAbcFilter;
+        case 'genres': return API.fetchGenresFilter;
+        case 'dates' : return API.fetchDatesFilter;
+    }
+}
 
 // ******************************************************************************/
 // ******************************* ROUTINES *************************************/
 // ******************************************************************************/
 
-function* routineInitABCFilter() {
-    const response = yield call(API.fetchFilterABC);
-    yield put(receiveABCfilter(response));
+function* routineInitFilter(action) {
+    const { alias } = action.payload;
+    const response = yield call(fetchFilterDataByAlias(alias));
+    yield put(receiveFilter(alias, response));
 }
-function* routineInitGenresFilter() {
-    const response = yield call(API.fetchGenresFilter);
-    yield put(receiveGenresFilter(response));
-}
-function* routineInitDatesFilter() {
-    const response = yield call(API.fetchDatesFilter);
-    yield put(receiveDatesFilter(response));
+
+function* routineDataByFilter(action) {
+    const { alias, value } = action.payload;
+    yield put(setFieldValue(alias, value));
+    const currentFilters = yield select(state => state.songs.viewState.filtersCurrentValue.asMutable());
+    const response = yield call(API.fetchDataByFilters.bind(null, currentFilters));
+    console.log('%c dataByFilters', 'color: aqua', response);
+    // yield put(receiveData(response));
 }
 
 function* routineRandomButton() {
@@ -38,38 +47,40 @@ function* routineRandomButton() {
     yield put(receiveRandomTracks(response));
 }
 
+function* routineSearchResults() {
+    const search = yield select(state => state.songs.viewState.search);
+    const response = yield call(API.fetchDataBySearch.bind(null, search));
+    console.log('%c dataBySearch', 'color: aqua', response);
+    // yield put(receiveData(response));
+}
+
 
 // ******************************************************************************/
 // ******************************* WATCHERS *************************************/
 // ******************************************************************************/
 
-function* watchInitABCfilter() {
-    yield takeLatest(FETCH_ABC_FILTER, routineInitABCFilter);
+function* watchFilterInitData() {
+    yield takeEvery(FETCH_FILTER_DATA, routineInitFilter);
 }
 
-function* watchInitGenresFilter() {
-    yield takeLatest(FETCH_GENRES_FILTER, routineInitGenresFilter);
-}
-
-function* watchInitDatesFilter() {
-    yield takeLatest(FETCH_DATES_FILTER, routineInitDatesFilter);
+function* watchFiltersChanged() {
+    yield takeEvery(FETCH_DATA_BY_FILTERS, routineDataByFilter);
 }
 
 function* watchRandomButton() {
     yield takeEvery(FETCH_RANDOM_TRACKS, routineRandomButton);
 }
 
-// function* watchSearch() {
-//     yield takeLatest(FETCH_SEARCH_RESULTS, routineSearchResults);
-// }
+function* watchSearch() {
+    yield takeLatest(FETCH_SEARCH_RESULTS, routineSearchResults);
+}
 
 
 export default function* () {
     yield [
-        fork(watchInitABCfilter),
-        fork(watchInitGenresFilter),
-        fork(watchInitDatesFilter),
+        fork(watchFilterInitData),
+        fork(watchFiltersChanged),
         fork(watchRandomButton),
-        // fork(watchSearch),
+        fork(watchSearch),
     ];
 }
