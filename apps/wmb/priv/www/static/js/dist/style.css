@@ -1,0 +1,179 @@
+.player-container {
+  height: 150px;
+  width: 100%; }
+  .player-container .player {
+    position: fixed;
+    top: 5px;
+    width: 100%;
+    z-index: 10; }
+    .player-container .player .player-item .avatar-container {
+      float: left;
+      width: 10%; }
+    .player-container .player .player-item .info-container {
+      float: left;
+      max-width: 300px; }
+      .player-container .player .player-item .info-container .title {
+        font-family: Helvetica, Arial, "DejaVu Sans", sans-serif;
+        font-weight: 500;
+        font-size: 20px;
+        color: white;
+        margin: 0;
+        text-shadow: black 0 -1px 0;
+        display: block;
+        height: 20px;
+        line-height: 22px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap; }
+      .player-container .player .player-item .info-container .artist {
+        font-family: Helvetica, Arial, "DejaVu Sans Condensed", sans-serif;
+        font-size: 17px;
+        color: #A7AAB1;
+        text-shadow: black 0 -1px 0;
+        display: block;
+        line-height: 35px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap; }
+    .player-container .player .player-item .controls {
+      height: 100%;
+      width: 50%;
+      float: left;
+      padding: 25px; }
+      .player-container .player .player-item .controls .button-playlist {
+        display: none; }
+
+/**
+ * For modern browsers
+ * 1. The space content is one way to avoid an Opera bug when the
+ *    contenteditable attribute is included anywhere else in the document.
+ *    Otherwise it causes space to appear at the top and bottom of elements
+ *    that are clearfixed.
+ * 2. The use of `table` rather than `block` is only necessary if using
+ *    `:before` to contain the top-margins of child elements.
+ */
+.cf:before,
+.cf:after {
+  content: " ";
+  /* 1 */
+  display: table;
+  /* 2 */ }
+
+.cf:after {
+  clear: both; }
+
+a:link, a:visited {
+  color: blue; }
+
+img.album_cover {
+  width: 100%; }
+
+table.album {
+  background-color: white;
+  width: 100%; }
+
+table.main {
+  background-color: #DCDCDC;
+  border-collapse: collapse;
+  width: 100%; }
+
+table.main button.add-album {
+  background: #ABC4FF; }
+
+table.main button.add-album.active {
+  background: #3975FF; }
+
+table.tracks {
+  background-color: #F0F8FF;
+  width: 100%; }
+
+table.tracks button.add-track {
+  background: #ABC4FF; }
+
+table.tracks button.add-track.active {
+  background: #3975FF; }
+
+table.tracks button.play-track {
+  background: #ff8080; }
+
+table.tracks button.play-track.active {
+  background: #990000; }
+
+table, td, th {
+  border: 1px solid black; }
+
+#maincontainer {
+  width: 100%;
+  height: 100%; }
+
+#leftcolumn {
+  display: inline-block;
+  text-align: left;
+  width: 75%;
+  height: 100%;
+  background-color: white; }
+
+#contentwrapper {
+  display: inline-block;
+  text-align: right;
+  width: 25%;
+  height: 100%;
+  background-color: white; }
+
+/* new 3-cloumn style */
+main {
+  float: left;
+  width: 60%;
+  margin-left: 20%; }
+
+.aside-left {
+  float: left;
+  width: 20%;
+  position: fixed;
+  left: 0; }
+  .aside-left .random {
+    padding: 5px;
+    text-align: center; }
+  .aside-left section.filters {
+    text-align: center;
+    font-size: 24px;
+    padding: 5px; }
+    .aside-left section.filters > article {
+      margin: 17px 0;
+      text-align: center; }
+      .aside-left section.filters > article label span {
+        margin: 5px;
+        text-transform: uppercase; }
+
+.aside-right {
+  float: left;
+  width: 20%;
+  position: fixed;
+  right: 0; }
+  .aside-right #playlist {
+    height: 100vh;
+    background: -webkit-linear-gradient(#202328, #191B1E);
+    background: -moz-linear-gradient(#202328, #191B1E);
+    background: -o-linear-gradient(#202328, #191B1E); }
+    .aside-right #playlist ol {
+      padding: 10px;
+      margin: 0;
+      margin-left: 20px; }
+      .aside-right #playlist ol li.active a {
+        color: #fff;
+        text-shadow: rgba(255, 255, 255, 0.2) 0 1px 3px; }
+      .aside-right #playlist ol li a {
+        font-family: Helvetica, Arial, "DejaVu Sans Condensed", sans-serif;
+        text-decoration: none;
+        color: #A7AAB1;
+        -webkit-transition: color 0.75s;
+        -moz-transition: color 0.75s;
+        -o-transition: color 0.75s; }
+        .aside-right #playlist ol li a:hover {
+          color: #fff;
+          text-shadow: rgba(255, 255, 255, 0.2) 0 1px 3px; }
+
+html, body {
+  height: 100%; }
+
+/*# sourceMappingURL=style.css.map*/
