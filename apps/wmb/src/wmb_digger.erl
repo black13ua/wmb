@@ -64,7 +64,8 @@ add_to_ets(File, FileID3Tags) ->
             %%%io:format("Album Cover is: ~p~n", [AlbumCover]),
             [LetterByte|_] = unicode:characters_to_list(AlbumArtist),
             LetterBin = unicode:characters_to_binary([LetterByte]),
-            ets:insert(?ETS_ABC, {{letter, LetterBin}, {artist, AlbumArtist}});
+            LetterID = get_letter_id(LetterBin),
+            ets:insert(?ETS_ABC, {{{letter_id, LetterID}, {letter, LetterBin}}, {artist, AlbumArtist}});
             %%%io:format("Letters is: ~p~n", [[LetterByte, LetterBin]]);
         ExistedAlbumID ->
             ets:insert(?ETS_TRACKS, {{album_id, ExistedAlbumID}, {{file, FileBasename}, {title, Title}, {track_id, TrackID}}})
@@ -90,6 +91,16 @@ get_artist_id(AlbumArtist) ->
             ArtistID;
         [[{artist_id, ArtistID}]|_] ->
             ArtistID
+    end.
+
+-spec get_letter_id(bitstring()) ->
+    integer().
+get_letter_id(LetterBin) ->
+    case ets:match(?ETS_ABC, {{'$1', {letter, LetterBin}}, '_'}) of
+        [] ->
+            ets:update_counter(?ETS_COUNTERS, letter_id_counter, 1);
+        [[{letter_id, LetterID}]|_] ->
+            LetterID
     end.
 
 -spec find_album_cover(list(), list()) ->

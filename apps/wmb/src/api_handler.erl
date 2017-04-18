@@ -32,8 +32,8 @@ handle(Req, State) ->
             io:format("Response from /api/artist/id: ~p~n", [Albums]),
             Res = jsx:encode(Albums);
         <<"letter">> ->
-            {ok, Artists} = data_merger:get_artists_by_letter(APIid),
-            io:format("Response from /api/letter/L: ~p~n", [Artists]),
+            {ok, Artists} = data_merger:get_artists_by_letterid(binary_to_integer(APIid)),
+            io:format("Response from /api/letter/id: ~p~n", [Artists]),
             Res = jsx:encode(Artists);
         <<"date">> ->
             {ok, Albums} = data_merger:get_albums_by_date_tuple({date, APIid}),

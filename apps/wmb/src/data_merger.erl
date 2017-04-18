@@ -16,7 +16,7 @@
     get_cover_by_albumid/1,
     get_random_tracks/1,
     search_albums_by_phrase/1,
-    get_artists_by_letter/1,
+    get_artists_by_letterid/1,
     search_artists_by_phrase/1, search_artists_by_phrase/4
 ]).
 
@@ -234,11 +234,11 @@ search_albums_by_phrase(N, EtsSkip, Q, Acc) ->
             end
     end.
 
-%%% Get Artists by Letter
--spec get_artists_by_letter(bitstring()) ->
+%%% Get Artists by Letter ID
+-spec get_artists_by_letterid(bitstring()) ->
     {ok, []} | {ok, list()}.
-get_artists_by_letter(L) ->
-    ArtistsFlat = ets:match(?ETS_ABC, {{letter, L}, '$1'}),
+get_artists_by_letterid(LetterID) ->
+    ArtistsFlat = ets:match(?ETS_ABC, {{{letter_id, LetterID}, '_'}, '$1'}),
     ArtistsSorted = lists:flatten(lists:usort(ArtistsFlat)),
     Artists = lists:map(
           fun(X) ->
@@ -278,15 +278,15 @@ search_artists_by_phrase(N, EtsSkip, Q, Acc) ->
 -spec get_abc_letters() ->
     {ok, []} | {ok, list()}.
 get_abc_letters() ->
-    LettersFlat = ets:match(?ETS_ABC, {{letter, '$1'}, '_'}),
-    LettersSorted = lists:flatten(lists:usort(LettersFlat)),
+    LettersFlat = ets:match(?ETS_ABC, {{'$1', '$2'}, '_'}),
+    LettersSorted = lists:usort(LettersFlat),
     {ok, LettersSorted}.
 
 %%% Get Genres List for API
 -spec get_all_genres() ->
     {ok, []} | {ok, list()}.
 get_all_genres() ->
-    Genres = lists:usort(lists:flatten(ets:match(?ETS_GENRES, {'_',{genre,'$2'}}))),
+    Genres = lists:usort(lists:flatten(ets:match(?ETS_GENRES, {'_', {genre,'$2'}}))),
     {ok, Genres}.
 
 %%% Get Dates List for API
@@ -318,6 +318,5 @@ del_track_by_trackid(TrackID) ->
     [[{AlbumTuple, DateTuple}]] = ets:match(?ETS_ALBUMS, {'$1', AlbumID}),
     [{AlbumID, AlbumArtist, _}] = ets:lookup(?ETS_ARTISTS, AlbumID),
     io:format("del_track: ~p~n", [[TrackID, AlbumID, {cover, AlbumCover}, {path, AlbumPathBin}, DateTuple, AlbumArtist]]).
-
 
 
