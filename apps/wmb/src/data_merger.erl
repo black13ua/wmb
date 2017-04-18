@@ -127,7 +127,7 @@ get_albumlist_by_artistid([], Acc) ->
     {ok, Acc};
 get_albumlist_by_artistid([AlbumID|AlbumIDList], Acc) ->
     {ok, {ArtistTuple, DateTuple}} = get_albumtuple_by_albumid(AlbumID),
-    get_albumlist_by_artistid(AlbumIDList, [[ArtistTuple, DateTuple]|Acc]).
+    get_albumlist_by_artistid(AlbumIDList, [[ArtistTuple, DateTuple, AlbumID]|Acc]).
 
 %%% Get AlbumList by Genre Name
 -spec get_albums_by_genre_name(bitstring()) ->
