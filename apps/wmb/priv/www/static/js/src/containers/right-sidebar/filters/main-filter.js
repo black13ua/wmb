@@ -2,6 +2,7 @@ import React from 'react';
 
 import FiltersView from '../../../view/right-sidebar/filters/main-filter';
 import CommonFilterContainer from './common-filter';
+import AbcFilterContainer from './abc-filter';
 import SearchContainer from './search';
 
 
@@ -16,7 +17,7 @@ const FiltersContainer = () =>
         <SearchContainer />
         <article className="abc">
             <h3 className="filters-header">{ 'Alphabetical:' }</h3>
-            <CommonFilterContainer alias = {'abc'} />
+            <AbcFilterContainer alias = {'abc'} />
         </article>
     </FiltersView>;
 

@@ -4,7 +4,6 @@ import createReducer  from '../utils/createReducer';
 import {
     RECEIVE_FILTER_DATA,
     RANDOM_CHECKER_TOGGLE,
-    RECEIVE_RANDOM_TRACKS,
     SET_FIELD_VALUE,
     SAVE_SEARCH_VALUE,
 } from '../constants/action-types';
@@ -13,10 +12,11 @@ import {
 const initialState = Immutable({
     data: {
         filters: {
-            abc   : ['A', 'B', 'C'],
-            genres: ['Rock', 'Folk'],
-            dates : ['1985', '2017'],
+            abc   : [],
+            genres: [],
+            dates : [],
         },
+        artistByLetter: {},
     },
     viewState: {
         filtersCurrentValue: {
