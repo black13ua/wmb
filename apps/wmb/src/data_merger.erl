@@ -303,20 +303,23 @@ del_tracks_by_statemap(Map) when map_size(Map) == 0 ->
     {ok, empty};
 del_tracks_by_statemap(Map) ->
     Files = maps:keys(Map),
-    Fun = fun(File) ->
+    Fun = fun(File, Acc) ->
               FileMap = maps:get(File, Map),
               TrackID = maps:get(track_id, FileMap),
-              del_track_by_trackid({track_id, TrackID})
+              {ok, AlbumID} = del_track_by_trackid({track_id, TrackID}),
+              [AlbumID|Acc]
           end,
-    lists:foreach(Fun, Files),
+    AlbumIDList = lists:foldl(Fun, [], Files),
+    io:format("AlbumIDList: ~p~n", [AlbumIDList]),
     {ok, cleaned}.
 
 del_track_by_trackid(TrackID) ->
     [[AlbumID, {file, _File}, _Title]] = ets:match(?ETS_TRACKS, {'$1', {'$2', '$3', TrackID}}),
+    Deleted = ets:match_delete(wmb_tracks, {'$1', {'$2', '$3', TrackID}}),
     [{AlbumID, {cover, AlbumCover}}] = ets:lookup(?ETS_COVERS, AlbumID),
     [{AlbumID, {path, AlbumPathBin}}] = ets:lookup(?ETS_PATHS, AlbumID),
     [[{AlbumTuple, DateTuple}]] = ets:match(?ETS_ALBUMS, {'$1', AlbumID}),
     [{AlbumID, AlbumArtist, _}] = ets:lookup(?ETS_ARTISTS, AlbumID),
-    io:format("del_track: ~p~n", [[TrackID, AlbumID, {cover, AlbumCover}, {path, AlbumPathBin}, DateTuple, AlbumArtist]]).
-
+    io:format("del_track: ~p~n", [[TrackID, AlbumID, {cover, AlbumCover}, {path, AlbumPathBin}, DateTuple, AlbumArtist, Deleted]]),
+    {ok, AlbumID}.
 
