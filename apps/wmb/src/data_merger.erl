@@ -309,7 +309,7 @@ del_tracks_by_statemap(Map) ->
               {ok, AlbumID} = del_track_by_trackid({track_id, TrackID}),
               [AlbumID|Acc]
           end,
-    AlbumIDList = lists:foldl(Fun, [], Files),
+    AlbumIDList = lists:usort(lists:foldl(Fun, [], Files)),
     io:format("AlbumIDList: ~p~n", [AlbumIDList]),
     {ok, cleaned}.
 

@@ -53,12 +53,18 @@ add_to_ets(File, FileID3Tags) ->
             %%%io:format("ArtistID is: ~p~n", [ArtistID]),
             AlbumID = ets:update_counter(?ETS_COUNTERS, album_id_counter, 1),
             ets:insert(?ETS_ALBUMS,  {{{album, Album}, {date, Date}}, {album_id, AlbumID}}),
+            % new
+            % ets:insert(?ETS_ALBUMS,  {{{album, Album}, {date, Date}}, {{album_id, AlbumID}, {trackslist, [TrackID]}} }),
             ets:insert(?ETS_ARTISTS, {{album_id, AlbumID}, {artist, AlbumArtist}, {artist_id, ArtistID}}),
             ets:insert(?ETS_TRACKS,  {{album_id, AlbumID}, {{file, FileBasename}, {title, Title}, {track_id, TrackID}}}),
             ets:insert(?ETS_GENRES,  {{album_id, AlbumID}, {genre, Genre}}),
             ets:insert(?ETS_PATHS,   {{album_id, AlbumID}, {path, AlbumPathRelBin}}),
+            %%
+            %% FIXME Overhead!
             {ok, PossibleCoversList} = application:get_env(wmb, possible_covers_list),
             {ok, AlbumFilesList} = file:list_dir(AlbumPathFull),
+            %% !FIXME
+            %% 
             {_, AlbumCover} = find_album_cover(AlbumFilesList, PossibleCoversList),
             ets:insert(?ETS_COVERS, {{album_id, AlbumID}, {cover, AlbumCover}}),
             %%%io:format("Album Cover is: ~p~n", [AlbumCover]),
@@ -79,6 +85,8 @@ get_album_id(Album, Date) ->
         [] ->
             undefined;
         [{_, {album_id, AlbumID}}|_] ->
+        % new
+        % [{_, {{album_id, AlbumID}, _}}|_] ->
             AlbumID
     end.
 
