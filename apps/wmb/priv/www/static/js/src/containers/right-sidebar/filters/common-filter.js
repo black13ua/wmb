@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
+import classnames from 'classnames';
 
 import CommonFilterView from '../../../view/right-sidebar/filters/common-filter';
 
@@ -8,33 +9,59 @@ import { getFilterDataByAlias, getFilterCurrentValueByAlias } from '../../../sel
 
 
 class CommonFilterContainer extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            folded: true,
+        };
+    }
+
     componentWillMount() {
         this.props.fetchFilterByAlias();
     }
 
-    get select() {
-        const list = this.props.filterOptions.map((option, index) =>
-            <option key={index} value={option}>{ option }</option>
-        );
+    get itemsList() {
+        if (this.state.folded) return null;
+        const list = this.props.filterOptions.map((option, index) => {
+            const itemClasses = classnames({ active: this.props.currentValue === option });
+            return (
+                <li
+                    className = {itemClasses}
+                    key       = {index}
+                    onClick   = {this.handleFilterChange.bind(null, option)}
+                >
+                    { option }
+                </li>
+            );
+        });
         return (
-            <select
-                id       = {`filter-${this.props.alias}`}
-                value    = {this.props.currentValue}
-                onChange = {this.props.handleFilterChange}
-            >
-                <option key={-1} value={'All'}>{ 'All' }</option>
-                { list }
-            </select>
+            <ul className = "filter--options">{ list }</ul>
         );
+    }
+
+    handleFilterChange = (value, event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        if (value === this.props.currentValue) return null;
+        this.props.handleFilterChange(value);
+    }
+
+    handleSubMenuClick = (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        this.setState({ folded: !this.state.folded });
     }
 
     render() {
         return (
             <CommonFilterView
+                activeClass   = {!this.state.folded}
                 alias         = {this.props.alias}
                 optionsLength = {_.size(this.props.filterOptions)}
-                select        = {this.select}
-            />
+                onClick       = {this.handleSubMenuClick}
+            >
+                { this.itemsList }
+            </CommonFilterView>
         );
     }
 }
@@ -55,7 +82,7 @@ const mapStateToProps = (state, props) => ({
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
     fetchFilterByAlias: ()    => dispatch(fetchFilter(ownProps.alias)),
-    handleFilterChange: event => dispatch(setFieldValueIO(ownProps.alias, event.target.value)),
+    handleFilterChange: value => dispatch(setFieldValueIO(ownProps.alias, value)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(CommonFilterContainer);

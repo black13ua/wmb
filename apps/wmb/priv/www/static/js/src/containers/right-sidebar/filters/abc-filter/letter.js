@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import LetterView from '../../../../view/right-sidebar/filters/abc-filter/letter';
 import ArtistContainer from './artist';
-import { fetchArtistByLetter } from '../../../../actions';
+import { fetchArtistsByLetter } from '../../../../actions';
 import { getArtistsByLetter } from '../../../../selectors';
 
 
@@ -21,7 +21,7 @@ class LetterContainer extends Component {
         event.stopPropagation();
         this.setState({ folded: !this.state.folded });
         if (!this.props.artists) {
-            this.props.fetchArtistByLetter();
+            this.props.fetchArtistsByLetter();
         }
     }
 
@@ -56,7 +56,7 @@ class LetterContainer extends Component {
 
 
 LetterContainer.propTypes = {
-    fetchArtistByLetter: PropTypes.func.isRequired,
+    fetchArtistsByLetter: PropTypes.func.isRequired,
     letter             : PropTypes.string.isRequired,
 };
 
@@ -65,7 +65,7 @@ const mapStateToProps = (state, props) => ({
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-    fetchArtistByLetter: ()    => dispatch(fetchArtistByLetter(ownProps.id)),
+    fetchArtistsByLetter: ()    => dispatch(fetchArtistsByLetter(ownProps.id)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(LetterContainer);

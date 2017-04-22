@@ -124,6 +124,6 @@ server.listen(port, host, (err) => {
         console.error(err);
         return;
     }
-    console.log(colors.america(`Listening at http://${host}:${port}`));
-    console.log(colors.rainbow(`Proxy to ${apiHost}`));
+    console.log(colors.green(`Listening at http://${host}:${port}`));
+    console.log(colors.blue(`Proxy to ${apiHost}`));
 });

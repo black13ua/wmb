@@ -4,7 +4,8 @@ import translate from '../../../../constants/names';
 const AbcFilterView = ({ onClick, optionsLength, alias, children }) =>
     <div className={`filter-${alias}`}>
         <label htmlFor={`filter-${alias}`}>
-            <b>{ optionsLength }</b><button onClick = {onClick}>{ translate.filterHeaders[alias] || alias }</button>
+            <b>{ optionsLength }</b>
+            <button onClick = {onClick}>{ translate.filterHeaders[alias] || alias }</button>
             { children }
         </label>
     </div>;

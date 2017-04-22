@@ -1,24 +1,22 @@
 import React from 'react';
 
 import FiltersView from '../../../view/right-sidebar/filters/main-filter';
-import CommonFilterContainer from './common-filter';
-import AbcFilterContainer from './abc-filter';
 import SearchContainer from './search';
+// import RcMenuContainer from './rc-menu';
+import CommonFilterContainer from './common-filter';
+// import AbcFilterContainer from './abc-filter';
 
 
 const FiltersContainer = () =>
     <FiltersView>
         <article className="genres--n--dates">
             <h3 className="filters-header"> { 'Filters:' }</h3>
-            <CommonFilterContainer alias = {'genres'} />
-            <CommonFilterContainer alias = {'dates'} />
+            <CommonFilterContainer alias = "genres" />
+            <CommonFilterContainer alias = "dates" />
+            {/* <AbcFilterContainer alias = "abc" />*/}
         </article>
 
         <SearchContainer />
-        <article className="abc">
-            <h3 className="filters-header">{ 'Alphabetical:' }</h3>
-            <AbcFilterContainer alias = {'abc'} />
-        </article>
     </FiltersView>;
 
 

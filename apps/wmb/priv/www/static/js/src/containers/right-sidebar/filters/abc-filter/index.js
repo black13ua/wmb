@@ -58,10 +58,8 @@ class AbcFilterContainer extends Component {
 
 AbcFilterContainer.propTypes = {
     alias             : PropTypes.string.isRequired,
-    // currentValue      : PropTypes.string,
     fetchFilterByAlias: PropTypes.func.isRequired,
     filterOptions     : PropTypes.array,
-    // handleFilterChange: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state, props) => ({

@@ -1,7 +1,7 @@
 import { takeLatest } from 'redux-saga';
 import { put, call, fork, select } from 'redux-saga/effects';
 
-import API from '../../api';
+import * as API from '../../api';
 import { FETCH_ALBUMS_BY_PAGE } from '../../constants/action-types';
 import { receiveAlbums } from '../../actions';
 

@@ -10,6 +10,11 @@ export const getFilterDataByAlias = createSelector(
     (state, alias) => state.data.filters[alias]
 );
 
+export const getFilters = createSelector(
+    filterSelector,
+    state => state.data.filters
+);
+
 export const getFilterCurrentValueByAlias = createSelector(
     [filterSelector, getAlias],
     (state, alias) => state.viewState.filtersCurrentValue[alias]
@@ -25,7 +30,7 @@ export const getIsRandomChecked = createSelector(
     state => state.viewState.isRandomChecked
 );
 
-export const getArtistByLetter = createSelector(
+export const getArtistsByLetter = createSelector(
     [filterSelector, getLetterId],
     (state, letterId) => state.data.artistsByLetter[letterId]
 );

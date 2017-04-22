@@ -16,7 +16,7 @@ const initialState = Immutable({
             genres: [],
             dates : [],
         },
-        artistByLetter: {},
+        artistsByLetter: {},
     },
     viewState: {
         filtersCurrentValue: {
@@ -32,18 +32,7 @@ const initialState = Immutable({
 export default createReducer(initialState, {
     [RECEIVE_FILTER_DATA](state, action) {
         const { alias, data } = action.payload;
-        return state.merge({
-            data: {
-                filters: {
-                    [alias]: data,
-                },
-            },
-            viewState: {
-                filtersCurrentValue: {
-                    [alias]: 'All',
-                },
-            },
-        }, { deep: true });
+        return state.setIn(['data', 'filters', alias], data);
     },
 
     [SET_FIELD_VALUE](state, action) {

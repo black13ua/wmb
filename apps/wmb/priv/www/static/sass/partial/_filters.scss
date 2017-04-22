@@ -20,14 +20,25 @@
         & > article {
             margin: 17px 0;
             text-align: center;
-            label {
+            h3 {
+
+            }
+            .sub--menu--header {
+                display: block;
+                &.active {
+                    background-color: deeppink;
+                }
                 b {
-                    // margin: 7px;
+                    margin-right: 10px;
+                    background-color: aqua;
+                    display: inline-block;
+                    width: 30px;
+                    height: 30px;
+                    border-radius: 15px;
                 }
-                span {
-                    margin: 5px;
-                    text-transform: uppercase;
-                }
+            }
+            ul.filter--options {
+                list-style-type: none;
             }
         }
         .filters-head {
