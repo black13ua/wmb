@@ -93,7 +93,7 @@ get_tracklist_by_albumid(AlbumID) ->
 get_tracklist_by_albumtuple(AlbumID) ->
     FilesUrlRoot = <<"/files/">>,
     {ok, {path, AlbumPathBin}} = get_path_by_albumid(AlbumID),
-    TracksList = ets:match(?ETS_TRACKS, {AlbumID, {'$2', '$1', '$3'}}),
+    TracksList = ets:match(?ETS_TRACKS, {AlbumID, {'$2', '$1', '$3', '_'}}),
     case TracksList of
         [] ->
             {error, trackslist_empty};
@@ -187,7 +187,7 @@ get_random_tracks(N, RandomID, MaxID, Acc) ->
     {ok, [proplists:proplist()]}.
 get_track_by_trackid(TrackID) ->
     FilesUrlRoot = <<"/files/">>,
-    [[AlbumID, {file, File}, Title]] = ets:match(?ETS_TRACKS, {'$1', {'$2', '$3', TrackID}}),
+    [[AlbumID, {file, File}, Title]] = ets:match(?ETS_TRACKS, {'$1', {'$2', '$3', TrackID, '_'}}),
     {ok, {path, AlbumPathBin}} = get_path_by_albumid(AlbumID),
     [[{AlbumTuple, DateTuple}]] = ets:match(?ETS_ALBUMS, {'$1', AlbumID}),
     [{AlbumID, AlbumArtist, _}] = ets:lookup(?ETS_ARTISTS, AlbumID),
@@ -211,7 +211,8 @@ get_cover_by_albumid(AlbumID) ->
 -spec get_path_by_albumid({album_id, integer()}) ->
     {ok, {path, bitstring()}}.
 get_path_by_albumid(AlbumID) ->
-    [{AlbumID, {path, AlbumPathBin}}] = ets:lookup(?ETS_PATHS, AlbumID),
+    io:format("AlbumID is: ~p~n", [AlbumID]),
+    [{AlbumID, {{path, AlbumPathBin}, _}}] = ets:lookup(?ETS_PATHS, AlbumID),
     {ok, {path, AlbumPathBin}}.
 
 %%% Search Albums by Phrase
@@ -320,7 +321,7 @@ del_tracks_by_statemap(Map) ->
     {ok, cleaned}.
 
 del_track_by_trackid(TrackID) ->
-    [[AlbumID, {file, _File}, _Title]] = ets:match(?ETS_TRACKS, {'$1', {'$2', '$3', TrackID}}),
+    [[AlbumID, {file, _File}, _Title]] = ets:match(?ETS_TRACKS, {'$1', {'$2', '$3', TrackID, '_'}}),
     Deleted = ets:match_delete(wmb_tracks, {'$1', {'$2', '$3', TrackID}}),
     {ok, UrlCover} = get_cover_by_albumid(AlbumID),
     {ok, PathTuple} = get_path_by_albumid(AlbumID),
