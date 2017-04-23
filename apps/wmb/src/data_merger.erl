@@ -1,6 +1,7 @@
 -module(data_merger).
 -export([
     del_tracks_by_statemap/1,
+    del_track_by_trackid/1,
     get_abc_letters/0,
     get_albums/1, get_albums/3,
     get_tracklist_by_albumid/1, get_tracklist_by_albumtuple/1,
@@ -212,8 +213,12 @@ get_cover_by_albumid(AlbumID) ->
     {ok, {path, bitstring()}}.
 get_path_by_albumid(AlbumID) ->
     io:format("AlbumID is: ~p~n", [AlbumID]),
-    [{AlbumID, {{path, AlbumPathBin}, _}}] = ets:lookup(?ETS_PATHS, AlbumID),
-    {ok, {path, AlbumPathBin}}.
+    case ets:lookup(?ETS_PATHS, AlbumID) of
+        [{AlbumID, {{path, AlbumPathBin}, _}}] ->
+            {ok, {path, AlbumPathBin}};
+        [_, {AlbumID, {{path, AlbumPathBin}, _}}] ->
+            {ok, {path, AlbumPathBin}}
+    end.
 
 %%% Search Albums by Phrase
 -spec search_albums_by_phrase(bitstring()) ->
@@ -269,7 +274,7 @@ search_artists_by_phrase(N, EtsSkip, Q, Acc) ->
     case AlbumID of
         {error, _} ->
             {ok, Acc};
-        {album_id, ID} ->
+        {album_id, _ID} ->
             [{AlbumID, {artist, AlbumArtist}, _}] = ets:lookup(?ETS_ARTISTS, AlbumID),
             MatchResult = re:run(AlbumArtist, Q, [caseless, unicode]),
             case MatchResult of
@@ -322,7 +327,7 @@ del_tracks_by_statemap(Map) ->
 
 del_track_by_trackid(TrackID) ->
     [[AlbumID, {file, _File}, _Title]] = ets:match(?ETS_TRACKS, {'$1', {'$2', '$3', TrackID, '_'}}),
-    Deleted = ets:match_delete(wmb_tracks, {'$1', {'$2', '$3', TrackID}}),
+    Deleted = ets:match_delete(wmb_tracks, {'$1', {'$2', '$3', TrackID, '$4'}}),
     {ok, UrlCover} = get_cover_by_albumid(AlbumID),
     {ok, PathTuple} = get_path_by_albumid(AlbumID),
     [[{_AlbumTuple, DateTuple}]] = ets:match(?ETS_ALBUMS, {'$1', AlbumID}),
