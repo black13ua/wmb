@@ -115,7 +115,7 @@ handle_info(rescan, #state{path = Path, timeout = Timeout, files = StateFilesMap
             timer:send_after(Timeout, rescan),
             {noreply, NewState, hibernate};
         {error, _} ->
-            io:format("There is we stop worker! ~p~n", [Path]),
+            io:format("Stop worker here! ~p~n", [Path]),
             data_merger:del_tracks_by_statemap(StateFilesMap),
             {stop, normal, State}
     end;

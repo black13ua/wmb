@@ -64,7 +64,7 @@ init([]) ->
     ets:new(?ETS_ARTISTS, [public, bag, named_table]),
     ets:new(?ETS_COVERS, [public, bag, named_table]),
     ets:new(?ETS_COUNTERS, [public, set, named_table]),
-    [ets:insert(?ETS_COUNTERS, {CounterKey, 0}) || CounterKey <- [album_id_counter, artist_id_counter, track_id_counter]],
+    [ets:insert(?ETS_COUNTERS, {CounterKey, 0}) || CounterKey <- [album_id_counter, artist_id_counter, letter_id_counter, path_id_counter, track_id_counter]],
     ets:new(?ETS_GENRES, [public, bag, named_table]),
     ets:new(?ETS_PATHS,  [public, bag, named_table]),
     ets:new(?ETS_TRACKS, [public, bag, named_table]),

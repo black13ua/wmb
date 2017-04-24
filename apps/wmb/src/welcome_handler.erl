@@ -21,8 +21,8 @@ handle(Req, State) ->
     PagesCount = wmb_helpers:ceiling(AlbumsCount / erlang:binary_to_integer(LimitOnPage)),
     PagesList = lists:seq(1, PagesCount),
     SkipAlbums = erlang:binary_to_integer(CurrentPage) * erlang:binary_to_integer(LimitOnPage) - erlang:binary_to_integer(LimitOnPage),
-    GenresList = lists:usort(lists:flatten(ets:match(?ETS_GENRES, {'_',{genre,'$2'}}))),
-    DatesList = lists:usort(lists:flatten(ets:match(?ETS_ALBUMS, {{{album, '_'}, {date, '$1'}}, {album_id, '_'}}))),
+    {ok, GenresList} = data_merger:get_all_genres(),
+    {ok, DatesList} = data_merger:get_all_dates(),
     %%
     
     case FilterGenre of
