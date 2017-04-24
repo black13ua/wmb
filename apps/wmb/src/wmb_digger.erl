@@ -40,9 +40,7 @@ add_to_ets(File, FileID3Tags) ->
     Genre  = maps:get(<<"GENRE">>,  FileID3Tags, <<"Undef_Genre">>),
     Date   = maps:get(<<"DATE">>,   FileID3Tags, <<"Undef_Date">>),
     Title  = maps:get(<<"TITLE">>,  FileID3Tags, <<"Undef_Title">>),
-    {ok, FileRel} = wmb_helpers:get_rel_path(File),
-    FileBasename = unicode:characters_to_binary(filename:basename(FileRel)),
-    AlbumPathRelBin = unicode:characters_to_binary(filename:dirname(FileRel)),
+    {ok, {AlbumPathRelBin, FileBasename}} = wmb_helpers:split_path_and_filename(File),
     TrackID = ets:update_counter(?ETS_COUNTERS, track_id_counter, 1),
     case get_album_id(Album, Date) of
         undefined ->

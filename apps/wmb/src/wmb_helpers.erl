@@ -1,5 +1,5 @@
 -module(wmb_helpers).
--export([ceiling/1, get_rel_path/1, skip_ets_elements/2]).
+-export([ceiling/1, get_rel_path/1, skip_ets_elements/2, split_path_and_filename/1]).
 
 
 %%%%
@@ -37,6 +37,15 @@ skip_ets_elements(Skip, Ets, Key) when is_integer(Skip), is_atom(Ets) ->
         _ ->
             skip_ets_elements(Skip - 1, Ets, Next)
     end.
+
+-spec split_path_and_filename(string()) ->
+    {ok, bitstring(), bitstring()}.
+split_path_and_filename(File) ->
+    {ok, FileRel} = get_rel_path(File),
+    FileBasename = unicode:characters_to_binary(filename:basename(FileRel)),
+    AlbumPathRelBin = unicode:characters_to_binary(filename:dirname(FileRel)),
+    io:format("Path Transform: ~p~n", [[File, FileBasename, AlbumPathRelBin]]),
+    {ok, {AlbumPathRelBin, FileBasename}}.
 
 -spec get_rel_path(string()) ->
     {ok, string()}.
