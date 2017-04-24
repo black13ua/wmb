@@ -2,6 +2,14 @@ PID State
 sys:get_status(list_to_pid("<0.1012.0>")).
 
 TC
+2> timer:tc(wmb_digger, find_album_cover, ["/home/black/my/mtest/Count Basie Orchestra/1955 - April in Paris"]).
+{414,{ok,<<"cover.jpg">>}}
+3> timer:tc(wmb_digger, find_album_cover, ["/home/black/my/mtest/Black Label Society/2004 - Hangover Music Vol VI"]).
+{567,{ok,<<"cover.jpg">>}}
+3> timer:tc(wmb_digger, find_album_cover, ["/home/black/my/mtest/Chris Rea/1999 - The Road To Hell Part 2"]).        
+{311,{ok,<<"cover.jpg">>}}
+4>
+
 7> timer:tc(data_merger, get_track_by_trackid, [{track_id, 6361}]).
 {6374,
  {ok,[{album_id,478},

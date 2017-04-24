@@ -2,6 +2,7 @@
 
 %% Exported Functions
 -export([parse_file/1, parse_file/2]).
+-export([find_album_cover/1, find_album_cover/2]).
 -export([get_path_id/2]).
 
 -include("ets_names.hrl").
@@ -23,7 +24,6 @@ parse_file(fullpath, FilePathFull) ->
         {ok, FileMetadata} ->
             FileID3Tags = maps:get(4, FileMetadata),
             add_to_ets(FilePathFull, FileID3Tags);
-            %gen_server:call(?SERVER, {parse, FilePathFull, FileID3Tags});
         {error, Error} ->
             ets:insert(?ETS_ERRORS, {{file, FilePathFull}, {error, Error}})
     end.
@@ -57,14 +57,7 @@ add_to_ets(File, FileID3Tags) ->
             ets:insert(?ETS_ARTISTS, {{album_id, AlbumID}, {artist, AlbumArtist}, {artist_id, ArtistID}}),
             ets:insert(?ETS_TRACKS, {{album_id, AlbumID}, {{file, FileBasename}, {title, Title}, {track_id, TrackID}, {path_id, PathID}}}),
             ets:insert(?ETS_GENRES, {{album_id, AlbumID}, {genre, Genre}}),
-            %%%%%%%%%%%%%%%ets:insert(?ETS_PATHS, {{album_id, AlbumID}, {path, AlbumPathRelBin}, {path_id, PathID}}),
-            %%
-            %% FIXME Overhead!
-            {ok, PossibleCoversList} = application:get_env(wmb, possible_covers_list),
-            {ok, AlbumFilesList} = file:list_dir(AlbumPathFull),
-            %% !FIXME
-            %% 
-            {_, AlbumCover} = find_album_cover(AlbumFilesList, PossibleCoversList),
+            {ok, AlbumCover} = find_album_cover(AlbumPathFull),
             ets:insert(?ETS_COVERS, {{album_id, AlbumID}, {cover, AlbumCover}}),
             %%%io:format("Album Cover is: ~p~n", [AlbumCover]),
             [LetterByte|_] = unicode:characters_to_list(AlbumArtist),
@@ -123,16 +116,22 @@ get_path_id(AlbumPathRelBin, AlbumID) ->
             PathID
     end.
 
--spec find_album_cover(list(), list()) ->
-    {ok, bitstring()} | {error, bitstring()}.
-find_album_cover(AlbumFilesList, [PossibleCover|RestPossibleCovers]) ->
-    case lists:member(PossibleCover, AlbumFilesList) of
+-spec find_album_cover(bitstring()) ->
+    {ok, bitstring()}.
+find_album_cover(AlbumPathFull) ->
+    {ok, PossibleCoversList} = application:get_env(wmb, possible_covers_list),
+    find_album_cover(AlbumPathFull, PossibleCoversList).
+
+-spec find_album_cover(bitstring(), list()) ->
+    {ok, bitstring()}.
+find_album_cover(AlbumPathFull, [PossibleCover|RestPossibleCovers]) ->
+    case filelib:is_file(lists:concat([AlbumPathFull, '/', PossibleCover])) of
         true ->
             Cover = unicode:characters_to_binary(PossibleCover),
             {ok, Cover};
         false ->
-            find_album_cover(AlbumFilesList, RestPossibleCovers)
+            find_album_cover(AlbumPathFull, RestPossibleCovers)
     end;
-find_album_cover(_AlbumFilesList, []) ->
-    {error, <<"cover_not_found">>}.
+find_album_cover(_AlbumPathFull, []) ->
+    {ok, <<"cover_not_found">>}.
 
