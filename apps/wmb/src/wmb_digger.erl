@@ -113,6 +113,7 @@ get_path_id(AlbumPathRelBin, AlbumID) ->
             ets:insert(?ETS_PATHS, {{album_id, AlbumID}, {{path, AlbumPathRelBin}, {path_id, PathID}}}),
             PathID;
         [[{path_id, PathID}]|_] ->
+            ets:insert(?ETS_PATHS, {{album_id, AlbumID}, {{path, AlbumPathRelBin}, {path_id, PathID}}}),
             PathID
     end.
 
