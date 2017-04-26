@@ -117,6 +117,7 @@ handle_info(rescan, #state{path = Path, timeout = Timeout, files = StateFilesMap
         {error, _} ->
             io:format("Stop worker here! ~p~n", [Path]),
             data_merger:del_tracks_by_statemap(StateFilesMap),
+            %{ok, {AlbumPathRelBin, _}} = wmb_helpers:split_path_and_filename(File),
             {stop, normal, State}
     end;
 handle_info(_Info, State) ->

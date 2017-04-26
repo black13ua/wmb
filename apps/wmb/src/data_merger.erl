@@ -4,8 +4,9 @@
     del_track_by_trackid/1,
     get_abc_letters/0,
     get_albums/1, get_albums/3,
-    get_tracklist_by_albumid/1, get_tracklist_by_albumtuple/1,
+    get_tracklist_by_albumid/1,
     get_track_by_trackid/1,
+    get_track_by_trackid2/1,
     get_album_by_albumid/1,
     get_album_by_albumtuple/1,
     get_albumlist_by_artistid/1,
@@ -16,6 +17,7 @@
     get_all_genres/0,
     get_cover_by_albumid/1,
     get_path_by_albumid/1,
+    get_path_by_pathid/1,
     get_random_tracks/1,
     search_albums_by_phrase/1,
     get_artists_by_letterid/1,
@@ -79,22 +81,17 @@ get_album_by_albumid(AlbumID) ->
     {ok, PathTuple} = get_path_by_albumid(AlbumID),
     io:format("AlbumID is: ~p~n", [AlbumID]),
     {ok, Cover} = get_cover_by_albumid(AlbumID),
-    {ok, TracksList} = get_tracklist_by_albumtuple(AlbumID),
+    {ok, TracksList} = get_tracklist_by_albumid(AlbumID),
     AlbumList = erlang:tuple_to_list(AlbumTuple),
     AlbumResult = [AlbumID, AlbumArtist, {cover, Cover}, GenreTuple, PathTuple, {tracks, TracksList} | AlbumList],
     {ok, AlbumResult}.
 
--spec get_tracklist_by_albumid(integer()) ->
+-spec get_tracklist_by_albumid({album_id, integer()}) ->
     {ok, []} | {ok, [proplists:proplist()]} | {error, atom()}.
 get_tracklist_by_albumid(AlbumID) ->
-    get_tracklist_by_albumtuple({album_id, AlbumID}).
-
--spec get_tracklist_by_albumtuple({album_id, integer()}) ->
-    {ok, []} | {ok, [proplists:proplist()]} | {error, atom()}.
-get_tracklist_by_albumtuple(AlbumID) ->
     FilesUrlRoot = <<"/files/">>,
     {ok, {path, AlbumPathBin}} = get_path_by_albumid(AlbumID),
-    TracksList = ets:match(?ETS_TRACKS, {AlbumID, {'$2', '$1', '$3', '_'}}),
+    TracksList = ets:match(?ETS_TRACKS, {AlbumID, {'$1', '$2', '$3', '_'}}),
     case TracksList of
         [] ->
             {error, trackslist_empty};
@@ -198,6 +195,21 @@ get_track_by_trackid(TrackID) ->
     Res = [AlbumID, {file, UrlFile}, {cover, UrlCover}, AlbumArtist, AlbumTuple, DateTuple, Title, TrackID],
     {ok, Res}.
 
+%%% Get Track by TrackID New
+-spec get_track_by_trackid2({track_id, integer()}) ->
+    {ok, [proplists:proplist()]}.
+get_track_by_trackid2(TrackID) ->
+    FilesUrlRoot = <<"/files/">>,
+    [[AlbumID, {file, File}, Title, PathID]] = ets:match(?ETS_TRACKS, {'$1', {'$2', '$3', TrackID, '$4'}}),
+    {ok, {path, AlbumPathBin}} = get_path_by_pathid(PathID),
+    [[{AlbumTuple, DateTuple}]] = ets:match(?ETS_ALBUMS, {'$1', AlbumID}),
+    [{AlbumID, AlbumArtist, _}] = ets:lookup(?ETS_ARTISTS, AlbumID),
+    FileBin = unicode:characters_to_binary(File),
+    {ok, UrlCover} = get_cover_by_albumid(AlbumID),
+    UrlFile  = <<FilesUrlRoot/binary, AlbumPathBin/binary, <<"/">>/binary, FileBin/binary>>,
+    Res = [AlbumID, {file, UrlFile}, {cover, UrlCover}, AlbumArtist, AlbumTuple, DateTuple, Title, TrackID],
+    {ok, Res}.
+
 %%% Get Cover by AlbumID
 -spec get_cover_by_albumid({album_id, integer()}) ->
     {ok, bitstring()}.
@@ -219,6 +231,14 @@ get_path_by_albumid(AlbumID) ->
         [_, {AlbumID, {{path, AlbumPathBin}, _}}] ->
             {ok, {path, AlbumPathBin}}
     end.
+
+%%% Get Path by PathID
+-spec get_path_by_pathid({path_id, integer()}) ->
+    {ok, {path, bitstring()}}.
+get_path_by_pathid(PathID) ->
+    io:format("PathID is: ~p~n", [PathID]),
+    [[Path]] = ets:match(?ETS_PATHS, {'_', {'$1', PathID}}),
+    {ok, Path}.
 
 %%% Search Albums by Phrase
 -spec search_albums_by_phrase(bitstring()) ->

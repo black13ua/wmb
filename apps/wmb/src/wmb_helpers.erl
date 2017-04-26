@@ -1,5 +1,5 @@
 -module(wmb_helpers).
--export([ceiling/1, get_rel_path/1, skip_ets_elements/2, split_path_and_filename/1]).
+-export([ceiling/1, get_rel_path_by_dirname/1, skip_ets_elements/2, split_path_and_filename/1]).
 
 
 %%%%
@@ -41,15 +41,14 @@ skip_ets_elements(Skip, Ets, Key) when is_integer(Skip), is_atom(Ets) ->
 -spec split_path_and_filename(string()) ->
     {ok, bitstring(), bitstring()}.
 split_path_and_filename(File) ->
-    {ok, FileRel} = get_rel_path(File),
+    {ok, FileRel} = get_rel_path_by_filename(File),
     FileBasename = unicode:characters_to_binary(filename:basename(FileRel)),
     AlbumPathRelBin = unicode:characters_to_binary(filename:dirname(FileRel)),
-    io:format("Path Transform: ~p~n", [[File, FileBasename, AlbumPathRelBin]]),
     {ok, {AlbumPathRelBin, FileBasename}}.
 
--spec get_rel_path(string()) ->
+-spec get_rel_path_by_filename(string()) ->
     {ok, string()}.
-get_rel_path(File) ->
+get_rel_path_by_filename(File) ->
     {ok, Root} = application:get_env(wmb, files_root),
     FPathList = filename:split(File),
     SLL = length(FPathList),
@@ -57,3 +56,12 @@ get_rel_path(File) ->
     RFileList = lists:sublist(FPathList, SRL+1, SLL+1),
     {ok, filename:join(RFileList)}.
 
+-spec get_rel_path_by_dirname(string()) ->
+    {ok, string()}.
+get_rel_path_by_dirname(Dir) ->
+    {ok, Root} = application:get_env(wmb, files_root),
+    FPathList = filename:split(Dir),
+    SLL = length(FPathList),
+    SRL = length(filename:split(Root)),
+    RFileList = lists:sublist(FPathList, SRL+1, SLL+1),
+    {ok, unicode:characters_to_binary(filename:join(RFileList))}.
