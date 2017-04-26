@@ -6,7 +6,6 @@
     get_albums/1, get_albums/3,
     get_tracklist_by_albumid/1,
     get_track_by_trackid/1,
-    get_track_by_trackid2/1,
     get_album_by_albumid/1,
     get_album_by_albumtuple/1,
     get_albumlist_by_artistid/1,
@@ -96,12 +95,14 @@ get_tracklist_by_albumid(AlbumID) ->
         [] ->
             {error, trackslist_empty};
         _ ->
-            TracksListWithPath = lists:map(fun(X) ->
-                File = proplists:get_value(file, X),
-                Title = proplists:get_value(title, X),
-                TrackID = proplists:get_value(track_id, X),
-                FullPath = <<FilesUrlRoot/binary, AlbumPathBin/binary, <<"/">>/binary, File/binary>>,
-                [{file, FullPath}, {title, Title}, {track_id, TrackID}] end, TracksList),
+            Fun = fun(X) ->
+                      File = proplists:get_value(file, X),
+                      Title = proplists:get_value(title, X),
+                      TrackID = proplists:get_value(track_id, X),
+                      FullPath = <<FilesUrlRoot/binary, AlbumPathBin/binary, <<"/">>/binary, File/binary>>,
+                      [{file, FullPath}, {title, Title}, {track_id, TrackID}]
+                  end,
+            TracksListWithPath = lists:map(Fun, TracksList),
             {ok, TracksListWithPath}
     end.
 
@@ -185,21 +186,6 @@ get_random_tracks(N, RandomID, MaxID, Acc) ->
     {ok, [proplists:proplist()]}.
 get_track_by_trackid(TrackID) ->
     FilesUrlRoot = <<"/files/">>,
-    [[AlbumID, {file, File}, Title]] = ets:match(?ETS_TRACKS, {'$1', {'$2', '$3', TrackID, '_'}}),
-    {ok, {path, AlbumPathBin}} = get_path_by_albumid(AlbumID),
-    [[{AlbumTuple, DateTuple}]] = ets:match(?ETS_ALBUMS, {'$1', AlbumID}),
-    [{AlbumID, AlbumArtist, _}] = ets:lookup(?ETS_ARTISTS, AlbumID),
-    FileBin = unicode:characters_to_binary(File),
-    {ok, UrlCover} = get_cover_by_albumid(AlbumID),
-    UrlFile  = <<FilesUrlRoot/binary, AlbumPathBin/binary, <<"/">>/binary, FileBin/binary>>,
-    Res = [AlbumID, {file, UrlFile}, {cover, UrlCover}, AlbumArtist, AlbumTuple, DateTuple, Title, TrackID],
-    {ok, Res}.
-
-%%% Get Track by TrackID New
--spec get_track_by_trackid2({track_id, integer()}) ->
-    {ok, [proplists:proplist()]}.
-get_track_by_trackid2(TrackID) ->
-    FilesUrlRoot = <<"/files/">>,
     [[AlbumID, {file, File}, Title, PathID]] = ets:match(?ETS_TRACKS, {'$1', {'$2', '$3', TrackID, '$4'}}),
     {ok, {path, AlbumPathBin}} = get_path_by_pathid(PathID),
     [[{AlbumTuple, DateTuple}]] = ets:match(?ETS_ALBUMS, {'$1', AlbumID}),
@@ -267,16 +253,16 @@ search_albums_by_phrase(N, EtsSkip, Q, Acc) ->
     end.
 
 %%% Get Artists by Letter ID
--spec get_artists_by_letterid(bitstring()) ->
+-spec get_artists_by_letterid({letter_id, integer()}) ->
     {ok, []} | {ok, list()}.
 get_artists_by_letterid(LetterID) ->
-    ArtistsFlat = ets:match(?ETS_ABC, {{{letter_id, LetterID}, '_'}, '$1'}),
+    ArtistsFlat = ets:match(?ETS_ABC, {{LetterID, '_'}, '$1'}),
     ArtistsSorted = lists:flatten(lists:usort(ArtistsFlat)),
-    Artists = lists:map(
-          fun(X) ->
+    Fun = fun(X) ->
               [[ArtistID]|_] = ets:match(?ETS_ARTISTS, {'_', X, '$1'}),
               [ArtistID, X]
-          end, ArtistsSorted),
+          end,
+    Artists = lists:map(Fun, ArtistsSorted),
     {ok, Artists}.
 
 %%% Search Artists in ETS
