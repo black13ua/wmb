@@ -152,7 +152,7 @@ code_change(_OldVsn, State, _Extra) ->
 %%% Internal functions
 %%%===================================================================
 -spec scan_directory(string(), #state{}) ->
-    {ok, #state{}}.
+    {ok, #state{}} | {error, dir_error}.
 scan_directory(Path, #state{dirs = StateDirs, files = StateFilesMap} = State) ->
     case find_dirs_and_files(Path) of
         {ok, {Files, Dirs}} ->
@@ -164,7 +164,7 @@ scan_directory(Path, #state{dirs = StateDirs, files = StateFilesMap} = State) ->
     end.
 
 -spec find_dirs_and_files(string()) ->
-    {list(), list()}.
+    {ok, {list(), list()}} | {error, string()}.
 find_dirs_and_files(Path) ->
     case file:list_dir(Path) of
         {ok, List} ->

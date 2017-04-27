@@ -39,7 +39,7 @@ skip_ets_elements(Skip, Ets, Key) when is_integer(Skip), is_atom(Ets) ->
     end.
 
 -spec split_path_and_filename(string()) ->
-    {ok, bitstring(), bitstring()}.
+    {ok, {bitstring(), bitstring()}}.
 split_path_and_filename(File) ->
     {ok, FileRel} = get_rel_path_by_filename(File),
     FileBasename = unicode:characters_to_binary(filename:basename(FileRel)),
@@ -57,7 +57,7 @@ get_rel_path_by_filename(File) ->
     {ok, filename:join(RFileList)}.
 
 -spec get_rel_path_by_dirname(string()) ->
-    {ok, string()}.
+    {ok, bitstring()}.
 get_rel_path_by_dirname(Dir) ->
     {ok, Root} = application:get_env(wmb, files_root),
     FPathList = filename:split(Dir),
