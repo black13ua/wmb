@@ -105,13 +105,12 @@ get_letter_id(LetterBin) ->
 -spec get_path_id(bitstring(), integer()) ->
     integer().
 get_path_id(AlbumPathRelBin, AlbumID) ->
-    case ets:match(?ETS_PATHS, {'_', {{path, AlbumPathRelBin}, '$1'}}) of
+    case ets:match(?ETS_PATHS, {'$1', {{path, AlbumPathRelBin}, {album_id, AlbumID}}}) of
         [] ->
             PathID = ets:update_counter(?ETS_COUNTERS, path_id_counter, 1),
-            ets:insert(?ETS_PATHS, {{album_id, AlbumID}, {{path, AlbumPathRelBin}, {path_id, PathID}}}),
+            ets:insert(?ETS_PATHS, {{path_id, PathID}, {{path, AlbumPathRelBin}, {album_id, AlbumID}}}),
             PathID;
-        [[{path_id, PathID}]|_] ->
-            ets:insert(?ETS_PATHS, {{album_id, AlbumID}, {{path, AlbumPathRelBin}, {path_id, PathID}}}),
+        [[{path_id, PathID}]] ->
             PathID
     end.
 

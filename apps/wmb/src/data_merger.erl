@@ -27,7 +27,7 @@
 
 -define(DEFAULT_ITEMS, 10).
 -define(DEFAULT_SKIP,  1).
--define(PATH_STATIC_WEB,  <<"/files/">>).
+-define(PATH_STATIC_WEB, <<"/files/">>).
 
 
 -spec get_albums(atom()) ->
@@ -208,20 +208,16 @@ get_cover_by_albumid(AlbumID) ->
     {ok, {path, bitstring()}}.
 get_path_by_albumid(AlbumID) ->
     io:format("AlbumID is: ~p~n", [AlbumID]),
-    case ets:lookup(?ETS_PATHS, AlbumID) of
-        [{AlbumID, {{path, AlbumPathBin}, _}}] ->
-            {ok, {path, AlbumPathBin}};
-        [_, {AlbumID, {{path, AlbumPathBin}, _}}] ->
-            {ok, {path, AlbumPathBin}}
-    end.
+    [[Path]] = ets:match(?ETS_PATHS, {'_', {'$1', AlbumID}}),
+    {ok, Path}.
 
 %%% Get Path by PathID
 -spec get_path_by_pathid({path_id, integer()}) ->
     {ok, {path, bitstring()}}.
 get_path_by_pathid(PathID) ->
     io:format("PathID is: ~p~n", [PathID]),
-    [[Path]] = ets:match(?ETS_PATHS, {'_', {'$1', PathID}}),
-    {ok, Path}.
+    [{PathID, {{path, AlbumPathBin}, _}}] = ets:lookup(?ETS_PATHS, PathID),
+    {ok, {path, AlbumPathBin}}.
 
 %%% Search Albums by Phrase
 -spec search_albums_by_phrase(bitstring()) ->
