@@ -27,6 +27,7 @@
 
 -define(DEFAULT_ITEMS, 10).
 -define(DEFAULT_SKIP,  1).
+-define(PATH_STATIC_WEB,  <<"/files/">>).
 
 
 -spec get_albums(atom()) ->
@@ -88,7 +89,6 @@ get_album_by_albumid(AlbumID) ->
 -spec get_tracklist_by_albumid({album_id, integer()}) ->
     {ok, []} | {ok, [proplists:proplist()]} | {error, atom()}.
 get_tracklist_by_albumid(AlbumID) ->
-    FilesUrlRoot = <<"/files/">>,
     {ok, {path, AlbumPathBin}} = get_path_by_albumid(AlbumID),
     TracksList = ets:match(?ETS_TRACKS, {AlbumID, {'$1', '$2', '$3', '_'}}),
     case TracksList of
@@ -99,7 +99,7 @@ get_tracklist_by_albumid(AlbumID) ->
                       File = proplists:get_value(file, X),
                       Title = proplists:get_value(title, X),
                       TrackID = proplists:get_value(track_id, X),
-                      FullPath = <<FilesUrlRoot/binary, AlbumPathBin/binary, <<"/">>/binary, File/binary>>,
+                      FullPath = <<?PATH_STATIC_WEB/binary, AlbumPathBin/binary, <<"/">>/binary, File/binary>>,
                       [{file, FullPath}, {title, Title}, {track_id, TrackID}]
                   end,
             TracksListWithPath = lists:map(Fun, TracksList),
@@ -185,14 +185,12 @@ get_random_tracks(N, RandomID, MaxID, Acc) ->
 -spec get_track_by_trackid({track_id, integer()}) ->
     {ok, [proplists:proplist()]}.
 get_track_by_trackid(TrackID) ->
-    FilesUrlRoot = <<"/files/">>,
     [[AlbumID, {file, File}, Title, PathID]] = ets:match(?ETS_TRACKS, {'$1', {'$2', '$3', TrackID, '$4'}}),
     {ok, {path, AlbumPathBin}} = get_path_by_pathid(PathID),
     [[{AlbumTuple, DateTuple}]] = ets:match(?ETS_ALBUMS, {'$1', AlbumID}),
     [{AlbumID, AlbumArtist, _}] = ets:lookup(?ETS_ARTISTS, AlbumID),
-    FileBin = unicode:characters_to_binary(File),
     {ok, UrlCover} = get_cover_by_albumid(AlbumID),
-    UrlFile  = <<FilesUrlRoot/binary, AlbumPathBin/binary, <<"/">>/binary, FileBin/binary>>,
+    UrlFile  = <<?PATH_STATIC_WEB/binary, AlbumPathBin/binary, <<"/">>/binary, File/binary>>,
     Res = [AlbumID, {file, UrlFile}, {cover, UrlCover}, AlbumArtist, AlbumTuple, DateTuple, Title, TrackID],
     {ok, Res}.
 
@@ -200,10 +198,9 @@ get_track_by_trackid(TrackID) ->
 -spec get_cover_by_albumid({album_id, integer()}) ->
     {ok, bitstring()}.
 get_cover_by_albumid(AlbumID) ->
-    FilesUrlRoot = <<"/files/">>,
     [{AlbumID, {cover, AlbumCover}}] = ets:lookup(?ETS_COVERS, AlbumID),
     {ok, {path, AlbumPathBin}} = get_path_by_albumid(AlbumID),
-    UrlCover = <<FilesUrlRoot/binary, AlbumPathBin/binary, <<"/">>/binary, AlbumCover/binary>>,
+    UrlCover = <<?PATH_STATIC_WEB/binary, AlbumPathBin/binary, <<"/">>/binary, AlbumCover/binary>>,
     {ok, UrlCover}.
 
 %%% Get Path by AlbumID

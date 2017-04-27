@@ -16,8 +16,6 @@ handle(Req, State) ->
     {Path, Req1} = cowboy_req:path(Req),
     [_, _, APIType, APIid] = binary:split(Path, [<<"/">>], [global]),
     io:format("Path Elements: ~p~n", [[APIType, APIid]]),
-    FilesUrlRoot = <<"/files/">>,
-
     case APIType of
         <<"abc">> ->
             {ok, Letters} = data_merger:get_abc_letters(),
