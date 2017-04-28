@@ -90,7 +90,7 @@ get_album_by_albumid(AlbumID) ->
     {ok, []} | {ok, [proplists:proplist()]} | {error, atom()}.
 get_tracklist_by_albumid(AlbumID) ->
     {ok, {path, AlbumPathBin}} = get_path_by_albumid(AlbumID),
-    TracksList = ets:match(?ETS_TRACKS, {AlbumID, {'$1', '$2', '$3', '_'}}),
+    TracksList = ets:match(?ETS_TRACKS, {'$1', {AlbumID, '$2', '$3', '$4'}}),
     case TracksList of
         [] ->
             {error, trackslist_empty};
@@ -185,7 +185,7 @@ get_random_tracks(N, RandomID, MaxID, Acc) ->
 -spec get_track_by_trackid({track_id, integer()}) ->
     {ok, [proplists:proplist()]}.
 get_track_by_trackid(TrackID) ->
-    [[AlbumID, {file, File}, Title, PathID]] = ets:match(?ETS_TRACKS, {'$1', {'$2', '$3', TrackID, '$4'}}),
+    [{_, {AlbumID, {file, File}, Title, PathID}}] = ets:lookup(?ETS_TRACKS, TrackID),
     {ok, {path, AlbumPathBin}} = get_path_by_pathid(PathID),
     [[{AlbumTuple, DateTuple}]] = ets:match(?ETS_ALBUMS, {'$1', {AlbumID, '_'}}),
     [{AlbumID, AlbumArtist, _}] = ets:lookup(?ETS_ARTISTS, AlbumID),
