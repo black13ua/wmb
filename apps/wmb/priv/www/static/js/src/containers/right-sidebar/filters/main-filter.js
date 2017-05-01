@@ -4,7 +4,7 @@ import FiltersView from '../../../view/right-sidebar/filters/main-filter';
 import SearchContainer from './search';
 // import RcMenuContainer from './rc-menu';
 import CommonFilterContainer from './common-filter';
-// import AbcFilterContainer from './abc-filter';
+import AbcFilterContainer from './abc-filter';
 
 
 const FiltersContainer = () =>
@@ -13,7 +13,7 @@ const FiltersContainer = () =>
             <h3 className="filters-header"> { 'Filters:' }</h3>
             <CommonFilterContainer alias = "genres" />
             <CommonFilterContainer alias = "dates" />
-            {/* <AbcFilterContainer alias = "abc" />*/}
+            <AbcFilterContainer alias = "abc" />
         </article>
 
         <SearchContainer />

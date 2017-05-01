@@ -8,6 +8,7 @@ import {
     FETCH_ALBUMS_BY_FILTERS,
     FETCH_SEARCH_RESULTS,
     FETCH_ARTISTS_BY_LETTER,
+    FETCH_ALBUMS_BY_ARTIST,
 } from '../../constants/action-types';
 import {
     // receiveFilters,
@@ -15,6 +16,9 @@ import {
     receiveRandomTracks,
     setFieldValue,
     receiveError,
+    setActiveArtistInAbcFilter,
+    receiveArtistsByLetter,
+    receiveAlbumsByArtist,
 } from '../../actions';
 
 
@@ -35,9 +39,11 @@ const filtersApiMethods = {
 // }
 
 function getDataFromApi(apiMethod, args = []) {
-    return API[apiMethod](...args)
-        .then(payload => ({ payload }))
-        .catch(error => ({ error }));
+    return API[apiMethod]
+        ? API[apiMethod](...args)
+            .then(payload => ({ payload }))
+            .catch(error => ({ error }))
+        : new Promise((resolve, reject) => reject());
 }
 
 // ******************************************************************************/
@@ -78,7 +84,6 @@ function* routineRandomButton() {
 
 function* routineInitFilter(action) {
     const { alias } = action.payload;
-    console.info('filtersApiMethods[alias]', filtersApiMethods[alias]);
     const { payload, error } = yield call(getDataFromApi, filtersApiMethods[alias]);
     if (payload) {
         yield put(receiveFilter(alias, payload));
@@ -99,16 +104,26 @@ function* routineSearchResults() {
 }
 
 function* routineAbcFilterLetters(action) {
-    const { letterId } = action;
-    const artistsByLetter = yield select(state => state.filters.artistsByLetter[letterId]);
+    const { letterId } = action.payload;
+    const artistsByLetter = yield select(state => state.filters.data.artistsByLetter[letterId]);
     if (!artistsByLetter) {
-        const { payload, error } = yield call(getDataFromApi, 'fetchArtistByLetter', [letterId]);
+        const { payload, error } = yield call(getDataFromApi, 'fetchArtistsByLetter', [letterId]);
         if (payload) {
-            console.log('%c dataBySearch', 'color: aqua', payload);
-            // yield put(receiveData(payload));
+            yield put(receiveArtistsByLetter(letterId, payload));
         } else {
             yield put(receiveError(error));
         }
+    }
+}
+
+function* routineAbcFilterArtist(action) {
+    const { artistId } = action.payload;
+    const { payload, error } = yield call(getDataFromApi, 'fetchAlbumsByArtist', [artistId]);
+    if (payload) {
+        yield put(setActiveArtistInAbcFilter(artistId));
+        yield put(receiveAlbumsByArtist(payload));
+    } else {
+        yield put(receiveError(error));
     }
 }
 
@@ -116,11 +131,6 @@ function* routineAbcFilterLetters(action) {
 // ******************************************************************************/
 // ******************************* WATCHERS *************************************/
 // ******************************************************************************/
-
-// function* watchFiltersInitData() {
-//     yield takeEvery(FETCH_FILTERS_DATA, routineInitFilters);
-// }
-
 function* watchFilterInitData() {
     yield takeEvery(FETCH_FILTER_DATA, routineInitFilter);
 }
@@ -141,6 +151,10 @@ function* watchAbcFilterLetters() {
     yield takeLatest(FETCH_ARTISTS_BY_LETTER, routineAbcFilterLetters);
 }
 
+function* watchAbcFilterArtist() {
+    yield takeLatest(FETCH_ALBUMS_BY_ARTIST, routineAbcFilterArtist);
+}
+
 
 export default function* () {
     yield [
@@ -150,5 +164,6 @@ export default function* () {
         fork(watchRandomButton),
         fork(watchSearch),
         fork(watchAbcFilterLetters),
+        fork(watchAbcFilterArtist),
     ];
 }

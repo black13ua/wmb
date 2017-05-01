@@ -34,3 +34,8 @@ export const getArtistsByLetter = createSelector(
     [filterSelector, getLetterId],
     (state, letterId) => state.data.artistsByLetter[letterId]
 );
+
+export const getActiveArtist = createSelector(
+    filterSelector,
+    state => state.viewState.activeArtistId
+);

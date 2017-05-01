@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import LetterView from '../../../../view/right-sidebar/filters/abc-filter/letter';
 import ArtistContainer from './artist';
 import { fetchArtistsByLetter } from '../../../../actions';
-import { getArtistsByLetter } from '../../../../selectors';
+import { getArtistsByLetter, getActiveArtist } from '../../../../selectors';
 
 
 class LetterContainer extends Component {
@@ -26,17 +26,17 @@ class LetterContainer extends Component {
     }
 
     get artistList() {
-        if (this.state.folded) return null;
+        if (this.state.folded || _.isEmpty(this.props.artists)) return null;
 
-        const list = this.props.filterOptions.map(artistObj =>
+        const list = this.props.artists.map(artistObj =>
             <ArtistContainer
-                id     = {artistObj.id}
-                key    = {artistObj.id}
-                letter = {artistObj.name}
+                key      = {artistObj.artistId}
+                isActive = {artistObj.artistId === this.props.activeArtist}
+                {...artistObj}
             />
         );
         return (
-            <ul>
+            <ul className="artist--list">
                 { list }
             </ul>
         );
@@ -45,8 +45,9 @@ class LetterContainer extends Component {
     render() {
         return (
             <LetterView
-                letter  = {this.props.letter}
-                onClick = {this.handleUnfoldLetter}
+                artistCount = {_.size(this.props.artists)}
+                letter      = {this.props.letter}
+                onClick     = {this.handleUnfoldLetter}
             >
                 {this.artistList}
             </LetterView>
@@ -56,16 +57,19 @@ class LetterContainer extends Component {
 
 
 LetterContainer.propTypes = {
+    activeArtist        : PropTypes.number.isRequired,
+    artists             : PropTypes.array,
     fetchArtistsByLetter: PropTypes.func.isRequired,
-    letter             : PropTypes.string.isRequired,
+    letter              : PropTypes.string.isRequired,
 };
 
 const mapStateToProps = (state, props) => ({
-    artists: getArtistsByLetter(state, props),
+    activeArtist: getActiveArtist(state, props),
+    artists     : getArtistsByLetter(state, props),
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-    fetchArtistsByLetter: ()    => dispatch(fetchArtistsByLetter(ownProps.id)),
+    fetchArtistsByLetter: ()    => dispatch(fetchArtistsByLetter(ownProps.letterId)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(LetterContainer);

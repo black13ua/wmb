@@ -4,6 +4,7 @@ import createReducer  from '../utils/createReducer';
 import {
     RECEIVE_ALBUMS,
     RECEIVE_RANDOM_TRACKS,
+    RECEIVE_ALBUMS_BY_ARTIST,
 } from '../constants/action-types';
 
 
@@ -33,6 +34,13 @@ const initialState = Immutable({
 
 export default createReducer(initialState, {
     [RECEIVE_ALBUMS](state, action) {
+        const { albums } = action.payload;
+        const normalizedAlbums = getNormalizedAlbums(albums);
+        console.info('normalizedAlbums', normalizedAlbums);
+        return state;
+    },
+
+    [RECEIVE_ALBUMS_BY_ARTIST](state, action) {
         const { albums } = action.payload;
         const normalizedAlbums = getNormalizedAlbums(albums);
         console.info('normalizedAlbums', normalizedAlbums);

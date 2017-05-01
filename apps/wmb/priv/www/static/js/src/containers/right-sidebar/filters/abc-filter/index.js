@@ -36,7 +36,7 @@ class AbcFilterContainer extends Component {
             />
         );
         return (
-            <ul>
+            <ul className="letter--list">
                 { list }
             </ul>
         );
@@ -45,6 +45,7 @@ class AbcFilterContainer extends Component {
     render() {
         return (
             <AbcFilterView
+                activeClass   = {!this.state.folded}
                 alias         = {this.props.alias}
                 optionsLength = {_.size(this.props.filterOptions)}
                 onClick       = {this.handleUnfoldList}

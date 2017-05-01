@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import classnames from 'classnames';
 
+import FilterItemView from '../../../view/right-sidebar/filters/common-filter-item';
 import CommonFilterView from '../../../view/right-sidebar/filters/common-filter';
 
 import { fetchFilter, setFieldValueIO } from '../../../actions';
@@ -22,18 +22,15 @@ class CommonFilterContainer extends Component {
 
     get itemsList() {
         if (this.state.folded) return null;
-        const list = this.props.filterOptions.map((option, index) => {
-            const itemClasses = classnames({ active: this.props.currentValue === option });
-            return (
-                <li
-                    className = {itemClasses}
-                    key       = {index}
-                    onClick   = {this.handleFilterChange.bind(null, option)}
-                >
-                    { option }
-                </li>
-            );
-        });
+        const list = this.props.filterOptions.map((option, index) =>
+            <FilterItemView
+                activeClass = {this.props.currentValue === option}
+                key         = {index}
+                onClick     = {this.handleFilterChange.bind(null, option)}
+            >
+                { option }
+            </FilterItemView>
+        );
         return (
             <ul className = "filter--options">{ list }</ul>
         );
