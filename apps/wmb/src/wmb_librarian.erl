@@ -117,6 +117,7 @@ handle_info(rescan, #state{path = Path, timeout = Timeout, files = StateFilesMap
         {error, _} ->
             io:format("Stop worker here! ~p~n", [Path]),
             data_merger:del_tracks_by_statemap(StateFilesMap),
+            %{ok, {AlbumPathRelBin, _}} = wmb_helpers:split_path_and_filename(File),
             {stop, normal, State}
     end;
 handle_info(_Info, State) ->
@@ -151,7 +152,7 @@ code_change(_OldVsn, State, _Extra) ->
 %%% Internal functions
 %%%===================================================================
 -spec scan_directory(string(), #state{}) ->
-    {ok, #state{}}.
+    {ok, #state{}} | {error, dir_error}.
 scan_directory(Path, #state{dirs = StateDirs, files = StateFilesMap} = State) ->
     case find_dirs_and_files(Path) of
         {ok, {Files, Dirs}} ->
@@ -163,7 +164,7 @@ scan_directory(Path, #state{dirs = StateDirs, files = StateFilesMap} = State) ->
     end.
 
 -spec find_dirs_and_files(string()) ->
-    {list(), list()}.
+    {ok, {list(), list()}} | {error, string()}.
 find_dirs_and_files(Path) ->
     case file:list_dir(Path) of
         {ok, List} ->

@@ -16,8 +16,6 @@ handle(Req, State) ->
     {Path, Req1} = cowboy_req:path(Req),
     [_, _, APIType, APIid] = binary:split(Path, [<<"/">>], [global]),
     io:format("Path Elements: ~p~n", [[APIType, APIid]]),
-    FilesUrlRoot = <<"/files/">>,
-
     case APIType of
         <<"abc">> ->
             {ok, Letters} = data_merger:get_abc_letters(),
@@ -32,7 +30,7 @@ handle(Req, State) ->
             io:format("Response from /api/artist/id: ~p~n", [Albums]),
             Res = jsx:encode(Albums);
         <<"letter">> ->
-            {ok, Artists} = data_merger:get_artists_by_letterid(binary_to_integer(APIid)),
+            {ok, Artists} = data_merger:get_artists_by_letterid({letter_id, binary_to_integer(APIid)}),
             io:format("Response from /api/letter/id: ~p~n", [Artists]),
             Res = jsx:encode(Artists);
         <<"date">> ->
