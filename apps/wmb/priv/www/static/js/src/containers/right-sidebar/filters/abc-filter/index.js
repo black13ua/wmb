@@ -1,10 +1,16 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 
-import AbcFilterView from '../../../../view/right-sidebar/filters/abc-filter';
+import CSSModules from 'react-css-modules';
+import { badge, listGroup } from 'bootstrap-css';
+
+import CommonFilterView from '../../../../view/right-sidebar/filters/common-filter';
 import LetterContainer from './letter';
 import { fetchFilter, setFieldValueIO } from '../../../../actions';
 import { getFilterDataByAlias, getFilterCurrentValueByAlias } from '../../../../selectors';
+
+const styles = {};
+Object.assign(styles, badge, listGroup);
 
 
 class AbcFilterContainer extends Component {
@@ -36,22 +42,20 @@ class AbcFilterContainer extends Component {
             />
         );
         return (
-            <ul className="letter--list">
-                { list }
-            </ul>
+            <div styleName="list-group">{ list }</div>
         );
     }
 
     render() {
         return (
-            <AbcFilterView
+            <CommonFilterView
                 activeClass   = {!this.state.folded}
                 alias         = {this.props.alias}
                 optionsLength = {_.size(this.props.filterOptions)}
                 onClick       = {this.handleUnfoldList}
             >
                 {this.abcList}
-            </AbcFilterView>
+            </CommonFilterView>
         );
     }
 }
@@ -73,4 +77,5 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     handleFilterChange: event => dispatch(setFieldValueIO(ownProps.alias, event.target.value)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(AbcFilterContainer);
+const styledAbcFilterContainer = CSSModules(AbcFilterContainer, styles, { allowMultiple: true });
+export default connect(mapStateToProps, mapDispatchToProps)(styledAbcFilterContainer);

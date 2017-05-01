@@ -1,21 +1,26 @@
 import React, { PropTypes } from 'react';
 import CSSModules from 'react-css-modules';
-import { alert, buttons, jumbotron, normalize } from 'bootstrap-css';
+import { badge, listGroup } from 'bootstrap-css';
 
 const styles = {};
-Object.assign(styles, alert, normalize, jumbotron, buttons);
+Object.assign(styles, badge, listGroup);
 
 const LetterView = ({ onClick, children, letter, artistCount }) =>
-    /* <li className="filter--item" >
-        <b>{ artistCount || '?' }</b>
-        <span onClick = {onClick}>{ letter }</span>
-        { children }
-    </li>;*/
-
-    <div styleName="jumbotron">
-        <h1>Hello, world!</h1>
-        <a styleName="btn btn-primary btn-lg">Learn more</a>
-        <div styleName="alert alert-info">...</div>
+    <div styleName="list-group">
+        <button
+            type = "button"
+            className="button--hover"
+            styleName="list-group-item"
+            onClick = {onClick}
+        >
+            <span styleName="badge">{`${artistCount || '?'}`}</span>
+            {`${letter}`}
+        </button>
+        <div
+            className="second--sub--menu"
+        >
+            { children }
+        </div>
     </div>;
 
 LetterView.propTypes = {

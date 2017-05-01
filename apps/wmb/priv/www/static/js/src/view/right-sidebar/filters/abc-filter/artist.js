@@ -1,13 +1,21 @@
 import React, { PropTypes } from 'react';
 import classnames from 'classnames';
+import CSSModules from 'react-css-modules';
+import { badge, listGroup } from 'bootstrap-css';
 
+const styles = {};
+Object.assign(styles, badge, listGroup);
 
 const ArtistView = ({ onClick, activeClass, artist }) => {
-    const itemClasses = classnames('filter--item', { active: activeClass });
+    const itemClasses = classnames('list-group-item', { active: activeClass });
     return (
-        <li className={itemClasses} >
+        <button
+            type = "button"
+            className="button--hover"
+            styleName={itemClasses}
+        >
             <span onClick = {onClick}>{ artist }</span>
-        </li>
+        </button>
     );
 };
 
@@ -18,4 +26,4 @@ ArtistView.propTypes = {
     onClick    : PropTypes.func.isRequired,
 };
 
-export default ArtistView;
+export default CSSModules(ArtistView, styles, { allowMultiple: true });

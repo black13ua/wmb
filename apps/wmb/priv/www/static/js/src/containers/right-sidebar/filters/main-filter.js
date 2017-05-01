@@ -1,10 +1,14 @@
 import React from 'react';
+import { alert, listGroup, badge } from 'bootstrap-css';
+import CSSModules from 'react-css-modules';
 
 import FiltersView from '../../../view/right-sidebar/filters/main-filter';
 import SearchContainer from './search';
-// import RcMenuContainer from './rc-menu';
 import CommonFilterContainer from './common-filter';
 import AbcFilterContainer from './abc-filter';
+
+const styles = {};
+Object.assign(styles, alert, listGroup, badge);
 
 
 const FiltersContainer = () =>
@@ -20,4 +24,4 @@ const FiltersContainer = () =>
     </FiltersView>;
 
 
-export default FiltersContainer;
+export default CSSModules(FiltersContainer, styles, { allowMultiple: true });
