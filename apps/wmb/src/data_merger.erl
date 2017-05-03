@@ -5,8 +5,9 @@
     get_abc_letters/0,
     get_albums/1, get_albums/3,
     get_tracklist_by_albumid/1,
+    get_tracklist_for_web/2,
     get_track_by_trackid/1,
-    get_album_by_albumid/1,
+    get_album_by_albumid/1, get_album_by_albumid/3,
     get_album_by_albumtuple/1,
     get_albumlist_by_artistid/1,
     get_albums_by_genre_name/1, get_albums_by_genre_tuple/1,
@@ -69,7 +70,37 @@ get_tpl(AlbumTuple, Items, ResultAcc) ->
     {ok, [proplists:proplist()]}.
 get_album_by_albumtuple(AlbumTuple) ->
     [{AlbumTuple, {AlbumID, AlbumTrackIDList}}|_] = ets:lookup(?ETS_ALBUMS, AlbumTuple),
-    get_album_by_albumid(AlbumID).
+    io:format("Tracks List is: ~p~n", [AlbumTrackIDList]),
+    get_album_by_albumid(AlbumID, AlbumTuple, AlbumTrackIDList).
+
+-spec get_album_by_albumid({album_id, integer()}, {{album, bitstring()}, {date, bitstring()}}, {tracks, list()}) ->
+    {ok, [proplists:proplist()]}.
+get_album_by_albumid(AlbumID, {{album, Album}, {date, AlbumDate}}, AlbumTrackIDList) ->
+    AlbumArtist = ets:lookup_element(?ETS_ARTISTS, AlbumID, 2),
+    GenreTuple = ets:lookup_element(?ETS_GENRES, AlbumID, 2),
+    {ok, PathTuple} = get_path_by_albumid(AlbumID),
+    io:format("Tracks List is: ~p~n", [AlbumTrackIDList]),
+    {ok, Cover} = get_cover_by_albumid(AlbumID),
+    {ok, TracksList} = get_tracklist_for_web(AlbumID, AlbumTrackIDList),
+    AlbumResult = [AlbumID, AlbumArtist, {cover, Cover}, GenreTuple, PathTuple, {tracks, TracksList}, {album, Album}, {date, AlbumDate}],
+    {ok, AlbumResult}.
+
+-spec get_tracklist_for_web({album_id, integer()}, {tracks, list()}) ->
+    {ok, []} | {ok, [proplists:proplist()]} | {error, atom()}.
+get_tracklist_for_web(AlbumID, {tracks, TracksList}) ->
+    case TracksList of
+        [] ->
+            {error, trackslist_empty};
+        _ ->
+            Fun = fun(X) ->
+                      {_, {file, File}, {title, Title}, {path_id, PathID}} = ets:lookup_element(?ETS_TRACKS, {track_id, X}, 2),
+                      {ok, {path, Path}} = get_path_by_pathid({path_id, PathID}),
+                      FullPath = <<?PATH_STATIC_WEB/binary, Path/binary, <<"/">>/binary, File/binary>>,
+                      [{file, FullPath}, {title, Title}, {track_id, X}]
+                  end,
+            TracksListWithPath = lists:map(Fun, TracksList),
+            {ok, TracksListWithPath}
+    end.
 
 -spec get_album_by_albumid({album_id, integer()}) ->
     {ok, [proplists:proplist()]}.
@@ -208,7 +239,15 @@ get_cover_by_albumid(AlbumID) ->
     {ok, {path, bitstring()}}.
 get_path_by_albumid(AlbumID) ->
     io:format("AlbumID is: ~p~n", [AlbumID]),
-    [[Path]] = ets:match(?ETS_PATHS, {'_', {'$1', AlbumID}}),
+    %[[Path]] = ets:match(?ETS_PATHS, {'_', {'$1', AlbumID}}),
+    % FIXME
+    case ets:match(?ETS_PATHS, {'_', {'$1', AlbumID}}) of
+        [[Path]] ->
+            io:format("Good Path: ~p~n", [Path]);
+        [_,[Path]] ->
+            io:format("Broken Path: ~p~n", [Path])
+    end,
+    % !FIXME
     {ok, Path}.
 
 %%% Get Path by PathID
@@ -324,6 +363,8 @@ del_tracks_by_statemap(Map) ->
     io:format("AlbumIDList: ~p~n", [AlbumIDList]),
     {ok, cleaned}.
 
+-spec del_track_by_trackid({track_id, integer()}) ->
+    {ok, {album_id, integer()}}.
 del_track_by_trackid(TrackID) ->
     [[AlbumID, {file, _File}, _Title]] = ets:match(?ETS_TRACKS, {'$1', {'$2', '$3', TrackID, '_'}}),
     Deleted = ets:match_delete(wmb_tracks, {'$1', {'$2', '$3', TrackID, '$4'}}),
