@@ -50,7 +50,7 @@ add_to_ets(File, FileID3Tags) ->
             PathID = get_path_id(AlbumPathRelBin, AlbumID),
             {ok, AlbumCover} = find_album_cover(AlbumPathFull),
             io:format("Path & PathID is: ~p~n", [[AlbumPathRelBin, PathID]]),
-            ets:insert(?ETS_ALBUMS, {{{album, Album}, {date, Date}}, {{album_id, AlbumID}, {tracks, [TrackID]}, {path_id, PathID}, {genre, Genre}, {cover, AlbumCover}}}),
+            ets:insert(?ETS_ALBUMS, {{album_id, AlbumID}, {{album, Album}, {date, Date}, {tracks, [TrackID]}, {path_id, PathID}, {genre, Genre}, {cover, AlbumCover}}}),
             ets:insert(?ETS_ARTISTS, {{album_id, AlbumID}, {artist, AlbumArtist}, {artist_id, ArtistID}}),
             ets:insert(?ETS_TRACKS, {{track_id, TrackID}, {{album_id, AlbumID}, {file, FileBasename}, {title, Title}, {path_id, PathID}}}),
             ets:insert(?ETS_GENRES, {{album_id, AlbumID}, {genre, Genre}}),
@@ -62,8 +62,8 @@ add_to_ets(File, FileID3Tags) ->
             ets:insert(?ETS_ABC, {{{letter_id, LetterID}, {letter, LetterBin}}, {artist, AlbumArtist}});
             %%%io:format("Letters is: ~p~n", [[LetterByte, LetterBin]]);
         ExistedAlbumID ->
-            {AlbumIDTuple, {tracks, TrackIDList}, PathIDTuple, GenreTuple, CoverTuple} = ets:lookup_element(?ETS_ALBUMS, {{album, Album}, {date, Date}}, 2),
-            ets:update_element(?ETS_ALBUMS, {{album, Album}, {date, Date}}, {2, {AlbumIDTuple, {tracks, [TrackID|TrackIDList]}, PathIDTuple, GenreTuple, CoverTuple}}),
+            {{album, Album}, {date, Date}, {tracks, TrackIDList}, PathIDTuple, GenreTuple, CoverTuple} = ets:lookup_element(?ETS_ALBUMS, {album_id, ExistedAlbumID}, 2),
+            ets:update_element(?ETS_ALBUMS, {album_id, ExistedAlbumID}, {2, {{album, Album}, {date, Date}, {tracks, [TrackID|TrackIDList]}, PathIDTuple, GenreTuple, CoverTuple}}),
             PathID = get_path_id(AlbumPathRelBin, ExistedAlbumID),
             ets:insert(?ETS_TRACKS, {{track_id, TrackID}, {{album_id, ExistedAlbumID}, {file, FileBasename}, {title, Title}, {path_id, PathID}}})
     end,
@@ -72,12 +72,10 @@ add_to_ets(File, FileID3Tags) ->
 -spec get_album_id(bitstring(), bitstring()) ->
     undefined | integer().
 get_album_id(Album, Date) ->
-    case ets:lookup(?ETS_ALBUMS, {{album, Album}, {date, Date}}) of
+    case ets:match(?ETS_ALBUMS, {'$1', {{album, Album}, {date, Date}, '_', '_', '_', '_'}}) of
         [] ->
             undefined;
-        % [{_, {album_id, AlbumID}}|_] ->
-        % new
-        [{_, {{album_id, AlbumID}, _, _, _, _}}|_] ->
+        [[{album_id, AlbumID}]] ->
             AlbumID
     end.
 

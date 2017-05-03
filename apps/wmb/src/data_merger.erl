@@ -41,13 +41,13 @@ get_albums(Format) ->
 -spec get_albums(atom(), integer(), integer()) ->
     {ok, [proplists:proplist()]}.
 get_albums(Format, Skip, Items) ->
-    FirstAlbumTuple = wmb_helpers:skip_ets_elements(Skip, ?ETS_ALBUMS),
+    FirstAlbumKey = wmb_helpers:skip_ets_elements(Skip, ?ETS_ALBUMS),
     io:format("Albums Format Selected: ~p~n", [[Format, Skip, Items]]),
     case Format of
         json ->
             io:format("JSON Format Selected: ~p~n", [[Format, Items]]); 
         tpl ->
-            Result = get_tpl(FirstAlbumTuple, Items, []),
+            Result = get_tpl(FirstAlbumKey, Items, []),
             Result;
         _ -> 
             io:format("Unknown Albums Format Selected: ~p~n", [[Format, Items]])
@@ -56,7 +56,8 @@ get_albums(Format, Skip, Items) ->
 -spec get_tpl({{album, bitstring()}, {date, bitstring()}}, integer(), list()) ->
     {ok, [proplists:proplist()]}.
 get_tpl(AlbumTuple, 1, ResultAcc) ->
-    {ok, ResultFromEts} = get_album_by_albumtuple(AlbumTuple),
+    %{ok, ResultFromEts} = get_album_by_albumtuple(AlbumTuple),
+    {ok, ResultFromEts} = get_album_by_albumkey(AlbumTuple),
     {ok, lists:reverse([ResultFromEts | ResultAcc])};
 get_tpl(AlbumTuple, Items, ResultAcc) ->
     %{ok, ResultFromEts} = get_album_by_albumtuple(AlbumTuple),
@@ -70,7 +71,7 @@ get_tpl(AlbumTuple, Items, ResultAcc) ->
 
 %%
 %%
--spec get_album_by_albumkey({{album, bitstring()}, {date, bitstring()}}) ->
+-spec get_album_by_albumkey({album_id, integer()}) ->
     {ok, [proplists:proplist()]}.
 get_album_by_albumkey(AlbumKey) ->
     [{AlbumKey, AlbumValue}|_] = ets:lookup(?ETS_ALBUMS, AlbumKey),
@@ -79,7 +80,7 @@ get_album_by_albumkey(AlbumKey) ->
 
 %%-spec get_album_by_albumvalue({{album_id, integer()}, {{album, bitstring()}, {date, bitstring()}}, {tracks, list()}}) ->
 %%    {ok, [proplists:proplist()]}.
-get_album_by_albumrow({AlbumTuple, DateTuple}, {AlbumID, AlbumTrackIDList, PathTuple, GenreTuple, CoverTuple}) ->
+get_album_by_albumrow(AlbumID, {AlbumTuple, DateTuple, AlbumTrackIDList, PathTuple, GenreTuple, CoverTuple}) ->
     AlbumArtist = ets:lookup_element(?ETS_ARTISTS, AlbumID, 2),
     io:format("Tracks List is: ~p~n", [AlbumTrackIDList]),
     {ok, Cover} = join_path_and_cover(PathTuple, CoverTuple),
