@@ -8,6 +8,7 @@
     get_tracklist_for_web/2,
     get_track_by_trackid/1,
     get_album_by_albumid/1, get_album_by_albumid/3,
+    get_album_by_albumkey/1,
     get_album_by_albumtuple/1,
     get_albumlist_by_artistid/1,
     get_albums_by_genre_name/1, get_albums_by_genre_tuple/1,
@@ -58,7 +59,8 @@ get_tpl(AlbumTuple, 1, ResultAcc) ->
     {ok, ResultFromEts} = get_album_by_albumtuple(AlbumTuple),
     {ok, lists:reverse([ResultFromEts | ResultAcc])};
 get_tpl(AlbumTuple, Items, ResultAcc) ->
-    {ok, ResultFromEts} = get_album_by_albumtuple(AlbumTuple),
+    %{ok, ResultFromEts} = get_album_by_albumtuple(AlbumTuple),
+    {ok, ResultFromEts} = get_album_by_albumkey(AlbumTuple),
     case ets:next(?ETS_ALBUMS, AlbumTuple) of
         '$end_of_table' ->
             {ok, lists:reverse([ResultFromEts | ResultAcc])};
@@ -66,10 +68,37 @@ get_tpl(AlbumTuple, Items, ResultAcc) ->
             get_tpl(AlbumTupleNext, Items - 1, [ResultFromEts | ResultAcc])
     end.
 
+%%
+%%
+-spec get_album_by_albumkey({{album, bitstring()}, {date, bitstring()}}) ->
+    {ok, [proplists:proplist()]}.
+get_album_by_albumkey(AlbumKey) ->
+    [{AlbumKey, AlbumValue}|_] = ets:lookup(?ETS_ALBUMS, AlbumKey),
+    io:format("AlbumValue: ~p~n", [AlbumValue]),
+    get_album_by_albumrow(AlbumKey, AlbumValue).
+
+%%-spec get_album_by_albumvalue({{album_id, integer()}, {{album, bitstring()}, {date, bitstring()}}, {tracks, list()}}) ->
+%%    {ok, [proplists:proplist()]}.
+get_album_by_albumrow({AlbumTuple, DateTuple}, {AlbumID, AlbumTrackIDList, PathTuple, GenreTuple, CoverTuple}) ->
+    AlbumArtist = ets:lookup_element(?ETS_ARTISTS, AlbumID, 2),
+    io:format("Tracks List is: ~p~n", [AlbumTrackIDList]),
+    {ok, Cover} = join_path_and_cover(PathTuple, CoverTuple),
+    {ok, TracksList} = get_tracklist_for_web(AlbumID, AlbumTrackIDList),
+    AlbumResult = [AlbumID, AlbumArtist, Cover, GenreTuple, PathTuple, {tracks, TracksList}, AlbumTuple, DateTuple],
+    {ok, AlbumResult}.
+
+join_path_and_cover(PathTuple, {cover, Cover}) ->
+    {ok, {path, Path}} = get_path_by_pathid(PathTuple),
+    UrlCover = <<?PATH_STATIC_WEB/binary, Path/binary, <<"/">>/binary, Cover/binary>>,
+    io:format("Cover is: ~p~n", [UrlCover]),
+    {ok, {cover, UrlCover}}.
+%%
+%%
+
 -spec get_album_by_albumtuple({{album, bitstring()}, {date, bitstring()}}) ->
     {ok, [proplists:proplist()]}.
 get_album_by_albumtuple(AlbumTuple) ->
-    [{AlbumTuple, {AlbumID, AlbumTrackIDList}}|_] = ets:lookup(?ETS_ALBUMS, AlbumTuple),
+    [{AlbumTuple, {AlbumID, AlbumTrackIDList, PathTuple, GenreTuple, CoverTuple}}|_] = ets:lookup(?ETS_ALBUMS, AlbumTuple),
     io:format("Tracks List is: ~p~n", [AlbumTrackIDList]),
     get_album_by_albumid(AlbumID, AlbumTuple, AlbumTrackIDList).
 
@@ -106,7 +135,8 @@ get_tracklist_for_web(AlbumID, {tracks, TracksList}) ->
     {ok, [proplists:proplist()]}.
 get_album_by_albumid(AlbumID) ->
     {ok, AlbumTuple} = get_albumtuple_by_albumid(AlbumID),
-    [{AlbumTuple, {AlbumID, AlbumTrackIDList}}|_] = ets:lookup(?ETS_ALBUMS, AlbumTuple),
+    %[{AlbumTuple, {AlbumID, AlbumTrackIDList}}|_] = ets:lookup(?ETS_ALBUMS, AlbumTuple),
+    [{AlbumTuple, {AlbumID, AlbumTrackIDList, PathTuple, GenreTuple, CoverTuple}}|_] = ets:lookup(?ETS_ALBUMS, AlbumTuple),
     [{AlbumID, AlbumArtist, _}] = ets:lookup(?ETS_ARTISTS, AlbumID),
     [{AlbumID, GenreTuple}] = ets:lookup(?ETS_GENRES, AlbumID),
     {ok, PathTuple} = get_path_by_albumid(AlbumID),
@@ -141,7 +171,7 @@ get_tracklist_by_albumid(AlbumID) ->
 -spec get_albumtuple_by_albumid({album_id, integer()}) ->
     {ok, {{album, bitstring()}, {date, bitstring()}}}.
 get_albumtuple_by_albumid(AlbumID) ->
-    [[AlbumTuple]] = ets:match(?ETS_ALBUMS, {'$1', {AlbumID, '_'}}),
+    [[AlbumTuple]] = ets:match(?ETS_ALBUMS, {'$1', {AlbumID, '_', '_', '_', '_'}}),
     io:format("AlbumTuple is: ~p~n", [AlbumTuple]),
     {ok, AlbumTuple}.
 
@@ -192,7 +222,7 @@ get_albums_by_date(Date) ->
 -spec get_albums_by_date_tuple({date, bitstring()}) ->
     {ok, []} | {ok, [proplists:proplist()]}.
 get_albums_by_date_tuple(DateTuple) ->
-    AlbumIDList = ets:match(?ETS_ALBUMS, {{'_', DateTuple}, {'$1', '_'}}),
+    AlbumIDList = ets:match(?ETS_ALBUMS, {{'_', DateTuple}, {'$1', '_', '_', '_', '_'}}),
     get_albums_by_albumtuplelist(AlbumIDList, []).
 
 %%% Get TrackList with N Random Tracks
@@ -218,7 +248,7 @@ get_random_tracks(N, RandomID, MaxID, Acc) ->
 get_track_by_trackid(TrackID) ->
     [{_, {AlbumID, {file, File}, Title, PathID}}] = ets:lookup(?ETS_TRACKS, TrackID),
     {ok, {path, AlbumPathBin}} = get_path_by_pathid(PathID),
-    [[{AlbumTuple, DateTuple}]] = ets:match(?ETS_ALBUMS, {'$1', {AlbumID, '_'}}),
+    [[{AlbumTuple, DateTuple}]] = ets:match(?ETS_ALBUMS, {'$1', {AlbumID, '_', '_', '_', '_'}}),
     [{AlbumID, AlbumArtist, _}] = ets:lookup(?ETS_ARTISTS, AlbumID),
     {ok, UrlCover} = get_cover_by_albumid(AlbumID),
     UrlFile  = <<?PATH_STATIC_WEB/binary, AlbumPathBin/binary, <<"/">>/binary, File/binary>>,
@@ -343,7 +373,7 @@ get_all_genres() ->
 -spec get_all_dates() ->
     {ok, []} | {ok, list()}.
 get_all_dates() ->
-    Dates = lists:usort(lists:flatten(ets:match(?ETS_ALBUMS, {{{album, '_'}, {date, '$1'}}, {{album_id, '_'}, {tracks, '_'}}}))),
+    Dates = lists:usort(lists:flatten(ets:match(?ETS_ALBUMS, {{{album, '_'}, {date, '$1'}}, {{album_id, '_'}, {tracks, '_'}, {path_id, '_'}, {genre, '_'}, {cover, '_'}}}))),
     {ok, Dates}.
 
 %%% DEL Tracks from ETS by tracksMap from State wmb_librarian (if Dir moved or removed)
@@ -370,7 +400,7 @@ del_track_by_trackid(TrackID) ->
     Deleted = ets:match_delete(wmb_tracks, {'$1', {'$2', '$3', TrackID, '$4'}}),
     {ok, UrlCover} = get_cover_by_albumid(AlbumID),
     {ok, PathTuple} = get_path_by_albumid(AlbumID),
-    [[{_AlbumTuple, DateTuple}]] = ets:match(?ETS_ALBUMS, {'$1', {AlbumID, '_'}}),
+    [[{_AlbumTuple, DateTuple}]] = ets:match(?ETS_ALBUMS, {'$1', {AlbumID, '_', '_', '_', '_'}}),
     [{AlbumID, AlbumArtist, _}] = ets:lookup(?ETS_ARTISTS, AlbumID),
     io:format("del_track: ~p~n", [[TrackID, AlbumID, {cover, UrlCover}, PathTuple, DateTuple, AlbumArtist, Deleted]]),
     {ok, AlbumID}.

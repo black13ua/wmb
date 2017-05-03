@@ -47,13 +47,13 @@ add_to_ets(File, FileID3Tags) ->
             AlbumPathFull = filename:dirname(File),
             ArtistID = get_artist_id(AlbumArtist),
             AlbumID = ets:update_counter(?ETS_COUNTERS, album_id_counter, 1),
-            ets:insert(?ETS_ALBUMS,  {{{album, Album}, {date, Date}}, {{album_id, AlbumID}, {tracks, [TrackID]}} }),
             PathID = get_path_id(AlbumPathRelBin, AlbumID),
+            {ok, AlbumCover} = find_album_cover(AlbumPathFull),
             io:format("Path & PathID is: ~p~n", [[AlbumPathRelBin, PathID]]),
+            ets:insert(?ETS_ALBUMS, {{{album, Album}, {date, Date}}, {{album_id, AlbumID}, {tracks, [TrackID]}, {path_id, PathID}, {genre, Genre}, {cover, AlbumCover}}}),
             ets:insert(?ETS_ARTISTS, {{album_id, AlbumID}, {artist, AlbumArtist}, {artist_id, ArtistID}}),
             ets:insert(?ETS_TRACKS, {{track_id, TrackID}, {{album_id, AlbumID}, {file, FileBasename}, {title, Title}, {path_id, PathID}}}),
             ets:insert(?ETS_GENRES, {{album_id, AlbumID}, {genre, Genre}}),
-            {ok, AlbumCover} = find_album_cover(AlbumPathFull),
             ets:insert(?ETS_COVERS, {{album_id, AlbumID}, {cover, AlbumCover}}),
             %%%io:format("Album Cover is: ~p~n", [AlbumCover]),
             [LetterByte|_] = unicode:characters_to_list(AlbumArtist),
@@ -62,8 +62,8 @@ add_to_ets(File, FileID3Tags) ->
             ets:insert(?ETS_ABC, {{{letter_id, LetterID}, {letter, LetterBin}}, {artist, AlbumArtist}});
             %%%io:format("Letters is: ~p~n", [[LetterByte, LetterBin]]);
         ExistedAlbumID ->
-            {AlbumIDTuple, {tracks, TrackIDList}} = ets:lookup_element(wmb_albums, {{album, Album}, {date, Date}}, 2),
-            ets:update_element(wmb_albums, {{album, Album}, {date, Date}}, {2, {AlbumIDTuple, {tracks, [TrackID|TrackIDList]}}}),
+            {AlbumIDTuple, {tracks, TrackIDList}, PathIDTuple, GenreTuple, CoverTuple} = ets:lookup_element(?ETS_ALBUMS, {{album, Album}, {date, Date}}, 2),
+            ets:update_element(?ETS_ALBUMS, {{album, Album}, {date, Date}}, {2, {AlbumIDTuple, {tracks, [TrackID|TrackIDList]}, PathIDTuple, GenreTuple, CoverTuple}}),
             PathID = get_path_id(AlbumPathRelBin, ExistedAlbumID),
             ets:insert(?ETS_TRACKS, {{track_id, TrackID}, {{album_id, ExistedAlbumID}, {file, FileBasename}, {title, Title}, {path_id, PathID}}})
     end,
@@ -77,7 +77,7 @@ get_album_id(Album, Date) ->
             undefined;
         % [{_, {album_id, AlbumID}}|_] ->
         % new
-        [{_, {{album_id, AlbumID}, _}}|_] ->
+        [{_, {{album_id, AlbumID}, _, _, _, _}}|_] ->
             AlbumID
     end.
 
