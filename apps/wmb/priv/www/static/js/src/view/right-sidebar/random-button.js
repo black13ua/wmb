@@ -1,22 +1,39 @@
 import React, { PropTypes } from 'react';
+import { Button, FormGroup } from 'react-bootstrap';
 
-const RandomButtonView = ({ checked, onRandomButtonClick, onRandomCheckToggle }) =>
-    <section className="random">
-        <button
-            className = "add-random"
-            onClick   = {onRandomButtonClick}
-        >
-            { '+5 Random Tracks' }
-        </button>
-        <label htmlFor="autoload">
-            <span>{ 'autoload' }</span>
-            <input
-                checked  = {checked}
-                type     = "checkbox"
-                onChange = {onRandomCheckToggle}
-            />
-        </label>
-    </section>;
+import Switch from 'react-bootstrap-switch';
+
+const RandomButtonView = ({ checked, onRandomButtonClick, onRandomCheckToggle }) => {
+    function onButtonClick(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        onRandomButtonClick();
+    }
+
+    return (
+        <section className="random">
+            <FormGroup>
+                <Button
+                    bsStyle = "info"
+                    onClick = {onButtonClick}
+                >
+                    { '+5 Random Tracks' }
+                </Button>
+            </FormGroup>
+            <FormGroup>
+                <Switch
+                    animate
+                    defaultValue
+                    labelText = {'autoload'}
+                    offColor  = {'warning'}
+                    value     = {checked}
+                    onChange  = {onRandomCheckToggle}
+                    onColor   = {'success'}
+                />
+            </FormGroup>
+        </section>
+    );
+};
 
 
 RandomButtonView.propTypes = {

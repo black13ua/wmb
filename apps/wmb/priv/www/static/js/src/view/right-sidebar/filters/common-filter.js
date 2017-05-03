@@ -1,24 +1,23 @@
 import React, { PropTypes } from 'react';
 import classnames from 'classnames';
-import CSSModules from 'react-css-modules';
-import { alert, listGroup, badge } from 'bootstrap-css';
 import translate from '../../../constants/names';
-
-const styles = {};
-Object.assign(styles, alert, listGroup, badge);
 
 
 const FilterView = ({ children, optionsLength, alias, onClick, activeClass }) => {
-    const styleName = classnames('list-group-item', { active: activeClass });
+    const styleNames = classnames('list-group-item', 'button--hover', { active: activeClass });
     return (
-        <div styleName="list-group">
+        <div className="list-group">
             <button
-                className="button--hover"
-                styleName={styleName}
+                className={styleNames}
                 onClick = {onClick}
             >
-                <span styleName="badge">{`${optionsLength || '?'}`}</span>
+                <span
+                    className="badge"
+                >
+                    {`${optionsLength || '?'}`}
+                </span>
                 {`${translate.filterHeaders[alias] || alias}`}
+                <i className="fa fa-caret-down" />
             </button>
             <div className="second--sub--menu">
                 { children }
@@ -36,4 +35,4 @@ FilterView.propTypes = {
     onClick      : PropTypes.func.isRequired,
 };
 
-export default CSSModules(FilterView, styles, { allowMultiple: true });
+export default FilterView;

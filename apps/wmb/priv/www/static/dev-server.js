@@ -81,7 +81,7 @@ app.use(require('webpack-dev-middleware')(compiler, serverOptions));
 app.use(require('webpack-hot-middleware')(compiler));
 
 app.use('/dist', express.static('./js/dist'));
-// app.use('/static/js/compressed/outer-video-player.js', express.static('../../compressed/outer-video-player.js'));
+app.use('/static/sass/react-bootstrap-switch.css', express.static('./sass/react-bootstrap-switch.css'));
 
 app.use((req, res, next) => {
     if (PHPSESSID && (req.headers.cookie || '').indexOf(PHPSESSID) === -1) {

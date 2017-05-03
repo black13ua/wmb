@@ -1,18 +1,13 @@
 import React, { PropTypes } from 'react';
 import classnames from 'classnames';
-import CSSModules from 'react-css-modules';
-import { badge, listGroup } from 'bootstrap-css';
 
-const styles = {};
-Object.assign(styles, badge, listGroup);
 
 const ArtistView = ({ onClick, activeClass, artist }) => {
-    const itemClasses = classnames('list-group-item', { active: activeClass });
+    const itemClasses = classnames('list-group-item', 'button--hover', { active: activeClass });
     return (
         <button
-            type = "button"
-            className="button--hover"
-            styleName={itemClasses}
+            className = {itemClasses}
+            type      = "button"
         >
             <span onClick = {onClick}>{ artist }</span>
         </button>
@@ -26,4 +21,4 @@ ArtistView.propTypes = {
     onClick    : PropTypes.func.isRequired,
 };
 
-export default CSSModules(ArtistView, styles, { allowMultiple: true });
+export default ArtistView;

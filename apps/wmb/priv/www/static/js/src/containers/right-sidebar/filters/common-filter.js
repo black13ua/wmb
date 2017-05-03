@@ -1,16 +1,11 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import CSSModules from 'react-css-modules';
-import { listGroup } from 'bootstrap-css';
 
 import FilterItemView from '../../../view/right-sidebar/filters/common-filter-item';
 import CommonFilterView from '../../../view/right-sidebar/filters/common-filter';
 
 import { fetchFilter, setFieldValueIO } from '../../../actions';
 import { getFilterDataByAlias, getFilterCurrentValueByAlias } from '../../../selectors';
-
-const styles = {};
-Object.assign(styles, listGroup);
 
 
 class CommonFilterContainer extends Component {
@@ -37,7 +32,7 @@ class CommonFilterContainer extends Component {
             </FilterItemView>
         );
         return (
-            <div styleName="list-group">{ list }</div>
+            <div className="list-group">{ list }</div>
         );
     }
 
@@ -86,5 +81,5 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     fetchFilterByAlias: ()    => dispatch(fetchFilter(ownProps.alias)),
     handleFilterChange: value => dispatch(setFieldValueIO(ownProps.alias, value)),
 });
-const styledCommonFilterContainer = CSSModules(CommonFilterContainer, styles, { allowMultiple: true });
-export default connect(mapStateToProps, mapDispatchToProps)(styledCommonFilterContainer);
+
+export default connect(mapStateToProps, mapDispatchToProps)(CommonFilterContainer);

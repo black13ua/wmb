@@ -1,16 +1,10 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 
-import CSSModules from 'react-css-modules';
-import { badge, listGroup } from 'bootstrap-css';
-
 import CommonFilterView from '../../../../view/right-sidebar/filters/common-filter';
 import LetterContainer from './letter';
 import { fetchFilter, setFieldValueIO } from '../../../../actions';
 import { getFilterDataByAlias, getFilterCurrentValueByAlias } from '../../../../selectors';
-
-const styles = {};
-Object.assign(styles, badge, listGroup);
 
 
 class AbcFilterContainer extends Component {
@@ -42,7 +36,7 @@ class AbcFilterContainer extends Component {
             />
         );
         return (
-            <div styleName="list-group">{ list }</div>
+            <div className="list-group">{ list }</div>
         );
     }
 
@@ -77,5 +71,4 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     handleFilterChange: event => dispatch(setFieldValueIO(ownProps.alias, event.target.value)),
 });
 
-const styledAbcFilterContainer = CSSModules(AbcFilterContainer, styles, { allowMultiple: true });
-export default connect(mapStateToProps, mapDispatchToProps)(styledAbcFilterContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(AbcFilterContainer);

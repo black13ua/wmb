@@ -1,33 +1,34 @@
 import React, { PropTypes } from 'react';
-import CSSModules from 'react-css-modules';
-import { badge, listGroup } from 'bootstrap-css';
+import classnames from 'classnames';
 
-const styles = {};
-Object.assign(styles, badge, listGroup);
 
-const LetterView = ({ onClick, children, letter, artistCount }) =>
-    <div styleName="list-group">
-        <button
-            type = "button"
-            className="button--hover"
-            styleName="list-group-item"
-            onClick = {onClick}
-        >
-            <span styleName="badge">{`${artistCount || '?'}`}</span>
-            {`${letter}`}
-        </button>
-        <div
-            className="second--sub--menu"
-        >
-            { children }
+const LetterView = ({ onClick, children, letter, artistCount, activeClass }) => {
+    const classNames = classnames('list-group-item', 'button--hover', { active: activeClass });
+
+    return (
+        <div styleName="list-group">
+            <button
+                className={classNames}
+                onClick = {onClick}
+            >
+                <span className="badge">{`${artistCount || '?'}`}</span>
+                {`${letter}`}
+            </button>
+            <div
+                className="second--sub--menu"
+            >
+                { children }
+            </div>
         </div>
-    </div>;
+    );
+};
 
 LetterView.propTypes = {
+    activeClass: PropTypes.bool,
     artistCount: PropTypes.number,
     children   : PropTypes.node,
     letter     : PropTypes.string.isRequired,
     onClick    : PropTypes.func.isRequired,
 };
 
-export default CSSModules(LetterView, styles, { allowMultiple: true });
+export default LetterView;
