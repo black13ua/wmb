@@ -1,16 +1,17 @@
 import React, { PropTypes } from 'react';
 import classnames from 'classnames';
-
+import { ListGroupItem } from 'react-bootstrap';
 
 const ArtistView = ({ onClick, activeClass, artist }) => {
-    const itemClasses = classnames('list-group-item', 'button--hover', { active: activeClass });
+    const itemClasses = classnames({ active: activeClass });
     return (
-        <button
+        <ListGroupItem
             className = {itemClasses}
             type      = "button"
+            onClick   = {onClick}
         >
-            <span onClick = {onClick}>{ artist }</span>
-        </button>
+            { artist }
+        </ListGroupItem>
     );
 };
 

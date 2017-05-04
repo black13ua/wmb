@@ -26,9 +26,9 @@ const SearchView = ({ search, onSearchClick, onSearchChange }) => {
                         onChange    = {onSearchChange}
                     />
                     <FormControl.Feedback />
-                    <HelpBlock>3 characters minimum</HelpBlock>
+                    <HelpBlock>{ '3 characters minimum' }</HelpBlock>
                     <Button
-                        bsStyle  = "info"
+                        bsStyle  = {search.length < 3 ? 'default' : 'success'}
                         disabled = {search.length < 3}
                         onClick  = {onSearchClick}
                     >

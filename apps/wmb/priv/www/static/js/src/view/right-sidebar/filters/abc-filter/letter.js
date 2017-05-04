@@ -1,25 +1,23 @@
 import React, { PropTypes } from 'react';
 import classnames from 'classnames';
-
+import { ListGroup, ListGroupItem } from 'react-bootstrap';
 
 const LetterView = ({ onClick, children, letter, artistCount, activeClass }) => {
-    const classNames = classnames('list-group-item', 'button--hover', { active: activeClass });
+    const classNames = classnames({ active: activeClass });
 
     return (
-        <div styleName="list-group">
-            <button
+        <ListGroup>
+            <ListGroupItem
                 className={classNames}
                 onClick = {onClick}
             >
-                <span className="badge">{`${artistCount || '?'}`}</span>
+                { artistCount ? <span className="badge">{`${artistCount}`}</span> : null }
                 {`${letter}`}
-            </button>
-            <div
-                className="second--sub--menu"
-            >
+            </ListGroupItem>
+            <div className="second--sub--menu" >
                 { children }
             </div>
-        </div>
+        </ListGroup>
     );
 };
 

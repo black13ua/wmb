@@ -1,22 +1,18 @@
 import React, { PropTypes } from 'react';
 import classnames from 'classnames';
-import CSSModules from 'react-css-modules';
-import { listGroup } from 'bootstrap-css';
+import { ListGroupItem } from 'react-bootstrap';
 
-const styles = {};
-Object.assign(styles, listGroup);
 
 const FilterItemView = ({ children, activeClass, onClick }) => {
-    const itemClasses = classnames('list-group-item', { active: activeClass });
+    const itemClasses = classnames({ active: activeClass });
     return (
-        <button
-            className = "button--hover"
-            styleName = {itemClasses}
+        <ListGroupItem
+            className = {itemClasses}
             type      = "button"
             onClick   = {onClick}
         >
             { children }
-        </button>
+        </ListGroupItem>
     );
 };
 
@@ -27,4 +23,4 @@ FilterItemView.propTypes = {
     onClick    : PropTypes.func.isRequired,
 };
 
-export default CSSModules(FilterItemView, styles, { allowMultiple: true });
+export default FilterItemView;
