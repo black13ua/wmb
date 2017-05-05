@@ -3,7 +3,7 @@
 %% Exported Functions
 -export([parse_file/1, parse_file/2]).
 -export([find_album_cover/1, find_album_cover/2]).
--export([get_path_id/2]).
+-export([get_album_id/2, get_path_id/2]).
 
 -include("ets_names.hrl").
 
@@ -49,12 +49,11 @@ add_to_ets(File, FileID3Tags) ->
             AlbumID = ets:update_counter(?ETS_COUNTERS, album_id_counter, 1),
             PathID = get_path_id(AlbumPathRelBin, AlbumID),
             {ok, AlbumCover} = find_album_cover(AlbumPathFull),
-            io:format("Path & PathID is: ~p~n", [[AlbumPathRelBin, PathID]]),
+            %io:format("Path & PathID is: ~p~n", [[AlbumPathRelBin, PathID]]),
             ets:insert(?ETS_ALBUMS, {{album_id, AlbumID}, {{album, Album}, {date, Date}, {tracks, [TrackID]}, {path_id, PathID}, {genre, Genre}, {cover, AlbumCover}}}),
-            ets:insert(?ETS_ARTISTS, {{album_id, AlbumID}, {artist, AlbumArtist}, {artist_id, ArtistID}}),
+            ets:insert(?ETS_ARTISTS, {{album_id, AlbumID}, {{artist, AlbumArtist}, {artist_id, ArtistID}}}),
             ets:insert(?ETS_TRACKS, {{track_id, TrackID}, {{album_id, AlbumID}, {file, FileBasename}, {title, Title}, {path_id, PathID}}}),
             ets:insert(?ETS_GENRES, {{album_id, AlbumID}, {genre, Genre}}),
-            ets:insert(?ETS_COVERS, {{album_id, AlbumID}, {cover, AlbumCover}}),
             %%%io:format("Album Cover is: ~p~n", [AlbumCover]),
             [LetterByte|_] = unicode:characters_to_list(AlbumArtist),
             LetterBin = unicode:characters_to_binary([LetterByte]),
@@ -76,13 +75,16 @@ get_album_id(Album, Date) ->
         [] ->
             undefined;
         [[{album_id, AlbumID}]] ->
+            AlbumID;
+        [[{album_id, AlbumID}]|_] ->
+            io:format("ERROR, can't get AlbumID: ~p~n", [[Album, Date]]),
             AlbumID
     end.
 
 -spec get_artist_id(bitstring()) ->
     integer().
 get_artist_id(AlbumArtist) ->
-    case ets:match(?ETS_ARTISTS, {'_', {artist, AlbumArtist}, '$1'}) of
+    case ets:match(?ETS_ARTISTS, {'_', {{artist, AlbumArtist}, '$1'}}) of
         [] ->
             ArtistID = ets:update_counter(?ETS_COUNTERS, artist_id_counter, 1),
             ArtistID;
