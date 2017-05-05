@@ -130,7 +130,7 @@ get_albums_by_genre_name(GenreName) ->
 -spec get_albums_by_genreid({genre, bitstring()}) ->
     {ok, []} | {ok, [proplists:proplist()]}.
 get_albums_by_genreid(GenreTuple) ->
-    AlbumIDList = ets:match(?ETS_GENRES, {'$1', GenreTuple}),
+    AlbumIDList = ets:match(?ETS_ALBUMS, {'$1', {'_', '_', '_', '_', GenreTuple, '_'}}),
     get_albums_by_albumidlist(AlbumIDList, []).
 
 %%% Get AlbumList by Date Bin
