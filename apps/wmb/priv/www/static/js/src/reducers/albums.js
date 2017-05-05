@@ -36,7 +36,9 @@ export default createReducer(initialState, {
     [RECEIVE_ALBUMS](state, action) {
         const { albums } = action.payload;
         const normalizedAlbums = getNormalizedAlbums(albums);
+        const normalizedTracks = getNormalizedTracks(albums);
         console.info('normalizedAlbums', normalizedAlbums);
+        console.info('normalizedTracks', normalizedTracks);
         return state;
     },
 
@@ -61,5 +63,19 @@ export default createReducer(initialState, {
 
 // HELPERS
 function getNormalizedAlbums(albums) {
-    return albums;
+    return _(albums)
+        .map(album => ({ ...album, 'trackIds': _(album.tracks).map(track => track.trackId).compact().value() }))
+        .reduce((acum, album) => ({
+            ids     : [...acum.ids, album.albumId],
+            dataById: { ...acum.dataById, [album.albumId]: album },
+        }), { ids: [], dataById: {} });
+}
+
+function getNormalizedTracks(albums) {
+    return _(albums)
+        .flatMap('tracks')
+        .reduce((acum, track) => ({
+            ids     : [...acum.ids, track.trackId],
+            dataById: { ...acum.dataById, [track.trackId]: track },
+        }), { ids: [], dataById: {} });
 }

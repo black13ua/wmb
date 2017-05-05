@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Grid, Row } from 'react-bootstrap';
+import { Grid, Row, Pagination } from 'react-bootstrap';
 
 import PlayerView from '../view/player/player-view';
 import RightSidebarContainer from './right-sidebar';
@@ -11,11 +11,25 @@ class App extends Component { // eslint-disable-line
     render() {
         return (
             <Grid>
-                <PlayerView />
+                <Row>
+                    <PlayerView />
+                </Row>
                 <Row>
                     <RightSidebarContainer />
                     <ContentContainer />
                     <PlaylistContainer />
+                </Row>
+                <Row>
+                    <Pagination
+                        prev
+                        next
+                        first
+                        last
+                        ellipsis
+                        boundaryLinks
+                        items={20}
+                        maxButtons={5}
+                    />
                 </Row>
             </Grid>
         );
