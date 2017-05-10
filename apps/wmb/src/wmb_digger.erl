@@ -1,11 +1,46 @@
 -module(wmb_digger).
 
+%% Gen Server
+-behaviour(gen_server).
+-export([start_link/0]).
+-export([init/1, handle_call/3, handle_cast/2, handle_info/2,
+         terminate/2, code_change/3]).
+-define(SERVER, ?MODULE).
+-record(state, {}).
+%%
+
 %% Exported Functions
 -export([parse_file/1, parse_file/2]).
 -export([find_album_cover/1, find_album_cover/2]).
 -export([get_album_id/2, get_path_id/2]).
 
 -include("ets_names.hrl").
+
+
+start_link() ->
+        gen_server:start_link({local, ?SERVER}, ?MODULE, [], []).
+
+init([]) ->
+        {ok, #state{}}.
+
+handle_call({File, FileID3Tags}, _From, State) ->
+    Result = add_to_ets(File, FileID3Tags),
+    {reply, Result, State};
+handle_call(_Request, _From, State) ->
+    Reply = ok,
+    {reply, Reply, State}.
+
+handle_cast(_Msg, State) ->
+    {noreply, State}.
+
+handle_info(_Info, State) ->
+    {noreply, State}.
+
+terminate(_Reason, _State) ->
+    ok.
+
+code_change(_OldVsn, State, _Extra) ->
+    {ok, State}.
 
 %%%===================================================================
 %%% Exported functions
@@ -23,7 +58,9 @@ parse_file(fullpath, FilePathFull) ->
     case flactags:get_tags(FilePathFull) of
         {ok, FileMetadata} ->
             FileID3Tags = maps:get(4, FileMetadata),
-            add_to_ets(FilePathFull, FileID3Tags);
+            ResultGenServer = gen_server:call(?SERVER, {FilePathFull, FileID3Tags}, 30000),
+            ResultGenServer;
+            %add_to_ets(FilePathFull, FileID3Tags);
         {error, Error} ->
             ets:insert(?ETS_ERRORS, {{file, FilePathFull}, {error, Error}})
     end.
@@ -44,9 +81,9 @@ add_to_ets(File, FileID3Tags) ->
     TrackID = ets:update_counter(?ETS_COUNTERS, track_id_counter, 1),
     case get_album_id(Album, Date) of
         undefined ->
+            AlbumID = ets:update_counter(?ETS_COUNTERS, album_id_counter, 1),
             AlbumPathFull = filename:dirname(File),
             ArtistID = get_artist_id(AlbumArtist),
-            AlbumID = ets:update_counter(?ETS_COUNTERS, album_id_counter, 1),
             PathID = get_path_id(AlbumPathRelBin, AlbumID),
             {ok, AlbumCover} = find_album_cover(AlbumPathFull),
             %io:format("Path & PathID is: ~p~n", [[AlbumPathRelBin, PathID]]),
@@ -62,9 +99,9 @@ add_to_ets(File, FileID3Tags) ->
         ExistedAlbumID ->
             {{album, Album}, {date, Date}, {tracks, TrackIDList}, PathIDTuple, GenreTuple, CoverTuple} = ets:lookup_element(?ETS_ALBUMS, {album_id, ExistedAlbumID}, 2),
             ets:update_element(?ETS_ALBUMS, {album_id, ExistedAlbumID}, {2, {{album, Album}, {date, Date}, {tracks, [TrackID|TrackIDList]}, PathIDTuple, GenreTuple, CoverTuple}}),
-            PathID = get_path_id(AlbumPathRelBin, ExistedAlbumID),
-            ets:insert_new(?ETS_TRACKS, {{track_id, TrackID}, {{album_id, ExistedAlbumID}, {file, FileBasename}, {title, Title}, {path_id, PathID}}})
+            ets:insert_new(?ETS_TRACKS, {{track_id, TrackID}, {{album_id, ExistedAlbumID}, {file, FileBasename}, {title, Title}, PathIDTuple}})
     end,
+    io:format("File Added: ~p~n", [[TrackID, File]]),
     {ok, {track_id, TrackID}}.
 
 -spec get_album_id(bitstring(), bitstring()) ->

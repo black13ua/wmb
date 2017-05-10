@@ -101,7 +101,7 @@ join_path_and_cover(PathTuple, {cover, Cover}) ->
 get_tracklist_for_web(_AlbumID, {tracks, TracksList}) ->
     case TracksList of
         [] ->
-            {error, trackslist_empty};
+            {ok, []};
         _ ->
             Fun = fun(X) ->
                       [{_, {_, {file, File}, {title, Title}, {path_id, PathID}}}] = ets:lookup(?ETS_TRACKS, {track_id, X}),
