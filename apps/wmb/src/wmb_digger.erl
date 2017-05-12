@@ -62,7 +62,7 @@ parse_file(fullpath, FilePathFull) ->
             ResultGenServer;
             %add_to_ets(FilePathFull, FileID3Tags);
         {error, Error} ->
-            ets:insert(?ETS_ERRORS, {{file, FilePathFull}, {error, Error}})
+            ets:insert_new(?ETS_ERRORS, {{file, FilePathFull}, {error, Error}})
     end.
 
 %%%===================================================================
@@ -86,8 +86,9 @@ add_to_ets(File, FileID3Tags) ->
             ArtistID = get_artist_id(AlbumArtist),
             PathID = get_path_id(AlbumPathRelBin, AlbumID),
             {ok, AlbumCover} = find_album_cover(AlbumPathFull),
+            CoverID = get_cover_id(AlbumCover),
             %io:format("Path & PathID is: ~p~n", [[AlbumPathRelBin, PathID]]),
-            ets:insert_new(?ETS_ALBUMS, {{album_id, AlbumID}, {{album, Album}, {date, Date}, {tracks, [TrackID]}, {path_id, PathID}, {genre, Genre}, {cover, AlbumCover}}}),
+            ets:insert_new(?ETS_ALBUMS, {{album_id, AlbumID}, {{album, Album}, {date, Date}, {tracks, [TrackID]}, {path_id, PathID}, {genre, Genre}, {cover_id, CoverID}}}),
             ets:insert_new(?ETS_ARTISTS, {{album_id, AlbumID}, {{artist, AlbumArtist}, {artist_id, ArtistID}}}),
             ets:insert_new(?ETS_TRACKS, {{track_id, TrackID}, {{album_id, AlbumID}, {file, FileBasename}, {title, Title}, {path_id, PathID}}}),
             %%%io:format("Album Cover is: ~p~n", [AlbumCover]),
@@ -128,6 +129,18 @@ get_artist_id(AlbumArtist) ->
             ArtistID
     end.
 
+-spec get_cover_id(bitstring()) ->
+    integer().
+get_cover_id(Cover) ->
+    case ets:match(?ETS_COVERS, {'$1', {cover, Cover}}) of
+        [] ->
+            CoverID = ets:update_counter(?ETS_COUNTERS, cover_id_counter, 1),
+            ets:insert_new(?ETS_COVERS, {{cover_id, CoverID}, {cover, Cover}}),
+            CoverID;
+        [[{cover_id, CoverID}]|_] ->
+            CoverID
+    end.
+
 -spec get_letter_id(bitstring()) ->
     integer().
 get_letter_id(LetterBin) ->
@@ -144,7 +157,7 @@ get_path_id(AlbumPathRelBin, AlbumID) ->
     case ets:match(?ETS_PATHS, {'$1', {{path, AlbumPathRelBin}, {album_id, AlbumID}}}) of
         [] ->
             PathID = ets:update_counter(?ETS_COUNTERS, path_id_counter, 1),
-            ets:insert(?ETS_PATHS, {{path_id, PathID}, {{path, AlbumPathRelBin}, {album_id, AlbumID}}}),
+            ets:insert_new(?ETS_PATHS, {{path_id, PathID}, {{path, AlbumPathRelBin}, {album_id, AlbumID}}}),
             PathID;
         [[{path_id, PathID}]] ->
             PathID

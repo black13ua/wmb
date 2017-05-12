@@ -88,10 +88,11 @@ get_album_by_albumrow(AlbumID, {AlbumTuple, DateTuple, AlbumTrackIDList, PathTup
     AlbumResult = [AlbumID, AlbumArtist, Cover, GenreTuple, PathTuple, {tracks, TracksList}, AlbumTuple, DateTuple],
     {ok, AlbumResult}.
 
--spec join_path_and_cover({path_id, integer()}, {cover, bitstring()}) ->
+-spec join_path_and_cover({path_id, integer()}, {cover_id, integer()}) ->
     {ok, {cover, bitstring()}}.
-join_path_and_cover(PathTuple, {cover, Cover}) ->
+join_path_and_cover(PathTuple, CoverTuple) ->
     {ok, {path, Path}} = get_path_by_pathid(PathTuple),
+    [{_, {cover, Cover}}] = ets:lookup(?ETS_COVERS, CoverTuple),
     UrlCover = <<?PATH_STATIC_WEB/binary, Path/binary, <<"/">>/binary, Cover/binary>>,
     io:format("Cover is: ~p~n", [UrlCover]),
     {ok, {cover, UrlCover}}.
