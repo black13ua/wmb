@@ -79,7 +79,7 @@
                     <b>{{ genres_list|length }}</b><span>Genres:</span>
                     <select id="filter-genres">
                         {% for genre in genres_list %}
-                            <option value="{{ genre }}">{{ genre }}</option>
+                            <option value="{{ genre.genre }}">{{ genre.genre }}</option>
                         {% endfor %}
                     </select>
                 </label>

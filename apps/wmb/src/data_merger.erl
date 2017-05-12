@@ -12,6 +12,7 @@
     get_albums_by_genre_name/1, get_albums_by_genreid/1,
     get_albums_by_date/1, get_albums_by_date_tuple/1,
     get_artists_by_letterid/1,
+    get_genre_by_genreid/1,
     get_path_by_albumid/1,
     get_path_by_pathid/1,
     get_random_tracks/1,
@@ -79,20 +80,21 @@ get_album_by_albumid(AlbumKey) ->
     get_album_by_albumrow(AlbumKey, AlbumValue).
 
 -spec get_album_by_albumrow({album_id, integer()}, {{album, bitstring()}, {date, bitstring()},
-                            {tracks, list()}, {path_id, integer()}, {genre, bitstring()}, {cover, bitstring()}}) ->
+                            {tracks, list()}, {path_id, integer()}, {genre_id, bitstring()}, {cover_id, bitstring()}}) ->
     {ok, [proplists:proplist()]}.
-get_album_by_albumrow(AlbumID, {AlbumTuple, DateTuple, AlbumTrackIDList, PathTuple, GenreTuple, CoverTuple}) ->
+get_album_by_albumrow(AlbumID, {AlbumTuple, DateTuple, AlbumTrackIDList, PathID, GenreID, CoverID}) ->
     [{_, {AlbumArtist, _}}] = ets:lookup(?ETS_ARTISTS, AlbumID),
-    {ok, Cover} = join_path_and_cover(PathTuple, CoverTuple),
+    {ok, Cover} = join_path_and_cover(PathID, CoverID),
+    {ok, GenreTuple} = get_genre_by_genreid(GenreID),
     {ok, TracksList} = get_tracklist_for_web(AlbumID, AlbumTrackIDList),
-    AlbumResult = [AlbumID, AlbumArtist, Cover, GenreTuple, PathTuple, {tracks, TracksList}, AlbumTuple, DateTuple],
+    AlbumResult = [AlbumID, AlbumArtist, Cover, GenreTuple, {tracks, TracksList}, AlbumTuple, DateTuple],
     {ok, AlbumResult}.
 
 -spec join_path_and_cover({path_id, integer()}, {cover_id, integer()}) ->
     {ok, {cover, bitstring()}}.
-join_path_and_cover(PathTuple, CoverTuple) ->
-    {ok, {path, Path}} = get_path_by_pathid(PathTuple),
-    [{_, {cover, Cover}}] = ets:lookup(?ETS_COVERS, CoverTuple),
+join_path_and_cover(PathID, CoverID) ->
+    {ok, {path, Path}} = get_path_by_pathid(PathID),
+    [{_, {cover, Cover}}] = ets:lookup(?ETS_COVERS, CoverID),
     UrlCover = <<?PATH_STATIC_WEB/binary, Path/binary, <<"/">>/binary, Cover/binary>>,
     io:format("Cover is: ~p~n", [UrlCover]),
     {ok, {cover, UrlCover}}.
@@ -125,13 +127,14 @@ get_albums_by_artistid(ArtistID) ->
 -spec get_albums_by_genre_name(bitstring()) ->
     {ok, []} | {ok, [proplists:proplist()]}.
 get_albums_by_genre_name(GenreName) ->
-    get_albums_by_genreid({genre, GenreName}).
+    [[GenreID]] = ets:match(?ETS_GENRES, {'$1', {genre, GenreName}}),
+    get_albums_by_genreid(GenreID).
 
 %%% Get AlbumList by GenreID
--spec get_albums_by_genreid({genre, bitstring()}) ->
+-spec get_albums_by_genreid({genre_id, bitstring()}) ->
     {ok, []} | {ok, [proplists:proplist()]}.
-get_albums_by_genreid(GenreTuple) ->
-    AlbumIDList = ets:match(?ETS_ALBUMS, {'$1', {'_', '_', '_', '_', GenreTuple, '_'}}),
+get_albums_by_genreid(GenreID) ->
+    AlbumIDList = ets:match(?ETS_ALBUMS, {'$1', {'_', '_', '_', '_', GenreID, '_'}}),
     get_albums_by_albumidlist(AlbumIDList, []).
 
 %%% Get AlbumList by Date Bin
@@ -169,11 +172,12 @@ get_random_tracks(N, RandomID, MaxID, Acc) ->
     {ok, [proplists:proplist()]}.
 get_track_by_trackid(TrackID) ->
     [{_, {AlbumID, {file, File}, Title, PathID}}] = ets:lookup(?ETS_TRACKS, TrackID),
-    [{_, {AlbumTuple, DateTuple, _AlbumTrackIDList, PathTuple, GenreTuple, CoverTuple}}] = ets:lookup(?ETS_ALBUMS, AlbumID),
-    {ok, {path, FilePathBin}} = get_path_by_pathid(PathID),
+    [{_, {AlbumTuple, DateTuple, _AlbumTrackIDList, _, GenreID, CoverID}}] = ets:lookup(?ETS_ALBUMS, AlbumID),
+    {ok, {path, PathBin}} = get_path_by_pathid(PathID),
+    {ok, GenreTuple} = get_genre_by_genreid(GenreID),
     [{AlbumID, {AlbumArtist, _}}] = ets:lookup(?ETS_ARTISTS, AlbumID),
-    {ok, Cover} = join_path_and_cover(PathTuple, CoverTuple),
-    UrlFile  = <<?PATH_STATIC_WEB/binary, FilePathBin/binary, <<"/">>/binary, File/binary>>,
+    {ok, Cover} = join_path_and_cover(PathID, CoverID),
+    UrlFile  = <<?PATH_STATIC_WEB/binary, PathBin/binary, <<"/">>/binary, File/binary>>,
     Res = [AlbumID, {file, UrlFile}, Cover, AlbumArtist, AlbumTuple, DateTuple, GenreTuple, Title, TrackID],
     {ok, Res}.
 
@@ -192,6 +196,13 @@ get_path_by_albumid(AlbumID) ->
     end,
     % !FIXME
     {ok, Path}.
+
+%%% Get Genre by GenreID
+-spec get_genre_by_genreid({genre_id, integer()}) ->
+    {ok, {genre, bitstring()}}.
+get_genre_by_genreid(GenreID) ->
+    [{GenreID, GenreTuple}] = ets:lookup(?ETS_GENRES, GenreID),
+    {ok, GenreTuple}.
 
 %%% Get Path by PathID
 -spec get_path_by_pathid({path_id, integer()}) ->
@@ -279,14 +290,14 @@ get_all_letters() ->
 -spec get_all_genres() ->
     {ok, []} | {ok, list()}.
 get_all_genres() ->
-    Genres = lists:usort(lists:flatten(ets:match(?ETS_ALBUMS, {{album_id, '_'}, {{album, '_'}, {date, '_'}, {tracks, '_'}, {path_id, '_'}, {genre, '$1'}, {cover, '_'}}}))),
+    Genres = ets:match(?ETS_GENRES, {'$1', '$2'}),
     {ok, Genres}.
 
 %%% Get Dates List for API
 -spec get_all_dates() ->
     {ok, []} | {ok, list()}.
 get_all_dates() ->
-    Dates = lists:usort(lists:flatten(ets:match(?ETS_ALBUMS, {{album_id, '_'}, {{album, '_'}, {date, '$1'}, {tracks, '_'}, {path_id, '_'}, {genre, '_'}, {cover, '_'}}}))),
+    Dates = lists:usort(lists:flatten(ets:match(?ETS_ALBUMS, {'_', {'_', {date, '$1'}, '_', '_', '_', '_'}}))),
     {ok, Dates}.
 
 %%% DEL Tracks from ETS by tracksMap from State wmb_librarian (if Dir moved or removed)
@@ -313,11 +324,11 @@ del_track_by_trackid({track_id, ID}) ->
     io:format("TrackID: ~p~n", [TrackID]),
     [{_, {AlbumID, {file, _File}, Title, PathID}}] = ets:lookup(?ETS_TRACKS, TrackID),
     DeletedTrack = ets:delete(?ETS_TRACKS, TrackID),
-    {{album, Album}, {date, Date}, {tracks, TrackIDList}, PathIDTuple, GenreTuple, CoverTuple} = ets:lookup_element(?ETS_ALBUMS, AlbumID, 2),
+    {{album, Album}, {date, Date}, {tracks, TrackIDList}, PathIDTuple, GenreID, CoverID} = ets:lookup_element(?ETS_ALBUMS, AlbumID, 2),
     NewTrackIDList = lists:delete(ID, TrackIDList),
-    DeletedAlb = ets:update_element(?ETS_ALBUMS, AlbumID, {2, {{album, Album}, {date, Date}, {tracks, NewTrackIDList}, PathIDTuple, GenreTuple, CoverTuple}}),
+    DeletedAlb = ets:update_element(?ETS_ALBUMS, AlbumID, {2, {{album, Album}, {date, Date}, {tracks, NewTrackIDList}, PathIDTuple, GenreID, CoverID}}),
     {ok, PathTuple} = get_path_by_pathid(PathID),
-    [{_, {AlbumTuple, DateTuple, _AlbumTrackIDList, _, _GenreTuple, _CoverTuple}}] = ets:lookup(?ETS_ALBUMS, AlbumID),
+    [{_, {AlbumTuple, DateTuple, _AlbumTrackIDList, _, _GenreID, _CoverID}}] = ets:lookup(?ETS_ALBUMS, AlbumID),
     [{AlbumID, {AlbumArtist, _}}] = ets:lookup(?ETS_ARTISTS, AlbumID),
     io:format("del_track: ~p~n", [[TrackID, Title, AlbumID, AlbumTuple, PathTuple, DateTuple, AlbumArtist, {tracks, TrackIDList}, DeletedTrack, DeletedAlb]]),
     {ok, AlbumID}.

@@ -63,6 +63,7 @@ init([]) ->
     ets:new(?ETS_ARTISTS, [public, bag, named_table]),
     ets:new(?ETS_COUNTERS, [public, set, named_table]),
     ets:new(?ETS_COVERS, [public, ordered_set, named_table]),
+    ets:new(?ETS_GENRES, [public, ordered_set, named_table]),
     ets:new(?ETS_PATHS,  [public, ordered_set, named_table]),
     ets:new(?ETS_TRACKS, [public, ordered_set, named_table]),
     ets:new(?ETS_ERRORS, [public, bag, named_table]),

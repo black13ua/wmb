@@ -84,11 +84,12 @@ add_to_ets(File, FileID3Tags) ->
             AlbumID = ets:update_counter(?ETS_COUNTERS, album_id_counter, 1),
             AlbumPathFull = filename:dirname(File),
             ArtistID = get_artist_id(AlbumArtist),
+            GenreID = get_genre_id(Genre),
             PathID = get_path_id(AlbumPathRelBin, AlbumID),
             {ok, AlbumCover} = find_album_cover(AlbumPathFull),
             CoverID = get_cover_id(AlbumCover),
             %io:format("Path & PathID is: ~p~n", [[AlbumPathRelBin, PathID]]),
-            ets:insert_new(?ETS_ALBUMS, {{album_id, AlbumID}, {{album, Album}, {date, Date}, {tracks, [TrackID]}, {path_id, PathID}, {genre, Genre}, {cover_id, CoverID}}}),
+            ets:insert_new(?ETS_ALBUMS, {{album_id, AlbumID}, {{album, Album}, {date, Date}, {tracks, [TrackID]}, {path_id, PathID}, {genre_id, GenreID}, {cover_id, CoverID}}}),
             ets:insert_new(?ETS_ARTISTS, {{album_id, AlbumID}, {{artist, AlbumArtist}, {artist_id, ArtistID}}}),
             ets:insert_new(?ETS_TRACKS, {{track_id, TrackID}, {{album_id, AlbumID}, {file, FileBasename}, {title, Title}, {path_id, PathID}}}),
             %%%io:format("Album Cover is: ~p~n", [AlbumCover]),
@@ -139,6 +140,18 @@ get_cover_id(Cover) ->
             CoverID;
         [[{cover_id, CoverID}]|_] ->
             CoverID
+    end.
+
+-spec get_genre_id(bitstring()) ->
+    integer().
+get_genre_id(Genre) ->
+    case ets:match(?ETS_GENRES, {'$1', {genre, Genre}}) of
+        [] ->
+            GenreID = ets:update_counter(?ETS_COUNTERS, genre_id_counter, 1),
+            ets:insert_new(?ETS_GENRES, {{genre_id, GenreID}, {genre, Genre}}),
+            GenreID;
+        [[{genre_id, GenreID}]|_] ->
+            GenreID
     end.
 
 -spec get_letter_id(bitstring()) ->
