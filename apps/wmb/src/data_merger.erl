@@ -13,7 +13,6 @@
     get_albums_by_date/1, get_albums_by_date_tuple/1,
     get_artists_by_letterid/1,
     get_genre_by_genreid/1,
-    get_path_by_albumid/1,
     get_path_by_pathid/1,
     get_random_tracks/1,
     get_track_by_trackid/1,
@@ -180,22 +179,6 @@ get_track_by_trackid(TrackID) ->
     UrlFile  = <<?PATH_STATIC_WEB/binary, PathBin/binary, <<"/">>/binary, File/binary>>,
     Res = [AlbumID, {file, UrlFile}, Cover, AlbumArtist, AlbumTuple, DateTuple, GenreTuple, Title, TrackID],
     {ok, Res}.
-
-%%% Get Path by AlbumID
--spec get_path_by_albumid({album_id, integer()}) ->
-    {ok, {path, bitstring()}}.
-get_path_by_albumid(AlbumID) ->
-    io:format("AlbumID is: ~p~n", [AlbumID]),
-    %[[Path]] = ets:match(?ETS_PATHS, {'_', {'$1', AlbumID}}),
-    % FIXME
-    case ets:match(?ETS_PATHS, {'_', {'$1', AlbumID}}) of
-        [[Path]] ->
-            io:format("Good Path: ~p~n", [Path]);
-        [_,[Path]] ->
-            io:format("Broken Path: ~p~n", [Path])
-    end,
-    % !FIXME
-    {ok, Path}.
 
 %%% Get Genre by GenreID
 -spec get_genre_by_genreid({genre_id, integer()}) ->
