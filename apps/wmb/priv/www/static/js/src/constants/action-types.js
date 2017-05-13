@@ -41,5 +41,6 @@ export const RECEIVE_ALBUMS_BY_FILTERS = 'RECEIVE_ALBUMS_BY_FILTERS';
 // ********************************** VIEW **************************************/
 // ******************************************************************************/
 
-export const SELECT_ALBUM = 'SELECT_ALBUM';
-export const SELECT_TRACK = 'SELECT_TRACK';
+export const SELECT_ALBUM   = 'SELECT_ALBUM';
+export const SELECT_TRACK   = 'SELECT_TRACK';
+export const CLEAR_PLAYLIST = 'CLEAR_PLAYLIST';

@@ -44,5 +44,6 @@ export const receiveAlbums       = albums => actionCreator(ActionTypes.RECEIVE_A
 // ******************************************************************************/
 // ******************************** VIEW ****************************************/
 // ******************************************************************************/
-export const selectAlbum = (albumId, selected) => actionCreator(ActionTypes.SELECT_ALBUM, { albumId, selected });
-export const selectTrack = (trackId, albumId, selected) => actionCreator(ActionTypes.SELECT_TRACK, { trackId, albumId, selected });
+export const selectAlbum   = (albumId, selected)          => actionCreator(ActionTypes.SELECT_ALBUM, { albumId, selected });
+export const selectTrack   = (trackId, albumId, selected) => actionCreator(ActionTypes.SELECT_TRACK, { trackId, albumId, selected });
+export const clearPlaylist = ()                           => actionCreator(ActionTypes.CLEAR_PLAYLIST);

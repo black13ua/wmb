@@ -8,6 +8,7 @@ import {
     RECEIVE_ALBUMS_BY_ARTIST,
     SELECT_TRACK,
     SELECT_ALBUM,
+    CLEAR_PLAYLIST,
 } from '../constants/action-types';
 
 
@@ -55,6 +56,11 @@ export default createReducer(initialState, {
     [FETCH_RANDOM_TRACKS](state) {
         return state
             .setIn(['viewState', 'fetching', 'random'], true);
+    },
+
+    [CLEAR_PLAYLIST](state) {
+        return state
+            .setIn(['viewState', 'selected', 'tracks'], []);
     },
 
     [SELECT_TRACK](state, action) {
