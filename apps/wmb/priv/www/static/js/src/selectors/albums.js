@@ -1,15 +1,15 @@
 import { createSelector } from 'reselect';
 
-const albumsSelector = state => state.albums;
-const getAlbumId = (state, props) => props.id;
+const musicSelector = state => state.music;
+// const getAlbumId = (state, props) => props.id;
 
 
 export const getAlbumsIds = createSelector(
-    albumsSelector,
+    musicSelector,
     state => state.data.albums.ids
 );
 
 export const getCurrentPage = createSelector(
-    albumsSelector,
+    musicSelector,
     state => state.viewState.currentPage
 );

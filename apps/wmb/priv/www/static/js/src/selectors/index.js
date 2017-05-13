@@ -1,4 +1,5 @@
-// export * from './main-selectors.js';
-export * from './album-selector.js';
-// export * from './song-selector.js';
-export * from './filter-selector.js';
+// export * from './main';
+export * from './albums';
+// export * from './tracks';
+export * from './filters';
+export * from './veiw';

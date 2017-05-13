@@ -1,11 +1,11 @@
 import { combineReducers } from 'redux';
 
-import albumsReduces from './albums';
+import musicReduces from './music';
 import filtersReduces from './filters';
 
 
 const rootReducer = combineReducers({
-    albums : albumsReduces,
+    music  : musicReduces,
     filters: filtersReduces,
 });
 

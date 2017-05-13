@@ -3,7 +3,12 @@ import { Button, FormGroup } from 'react-bootstrap';
 
 import Switch from 'react-bootstrap-switch';
 
-const RandomButtonView = ({ checked, onRandomButtonClick, onRandomCheckToggle }) => {
+const RandomButtonView = ({
+    checked,
+    onRandomButtonClick,
+    onRandomCheckToggle,
+    disabled,
+}) => {
     function onButtonClick(event) {
         event.preventDefault();
         event.stopPropagation();
@@ -14,8 +19,9 @@ const RandomButtonView = ({ checked, onRandomButtonClick, onRandomCheckToggle })
         <section className="random">
             <FormGroup>
                 <Button
-                    bsStyle = "info"
-                    onClick = {onButtonClick}
+                    bsStyle  = "info"
+                    disabled = {disabled}
+                    onClick  = {onButtonClick}
                 >
                     { '+5 Random Tracks' }
                 </Button>
@@ -38,6 +44,7 @@ const RandomButtonView = ({ checked, onRandomButtonClick, onRandomCheckToggle })
 
 RandomButtonView.propTypes = {
     checked            : PropTypes.bool.isRequired,
+    disabled           : PropTypes.object.isRequired,
     onRandomButtonClick: PropTypes.func.isRequired,
     onRandomCheckToggle: PropTypes.func.isRequired,
 };

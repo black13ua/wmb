@@ -2,6 +2,7 @@ import Immutable from 'seamless-immutable';
 
 import createReducer  from '../utils/createReducer';
 import {
+    FETCH_RANDOM_TRACKS,
     RECEIVE_ALBUMS,
     RECEIVE_RANDOM_TRACKS,
     RECEIVE_ALBUMS_BY_ARTIST,
@@ -14,19 +15,19 @@ const initialState = Immutable({
             ids     : [],
             dataById: {},
         },
-        songs: {
-            ids     : [],
+        tracks: {
             dataById: {},
         },
     },
     viewState: {
-        isFetching: {
+        fetching: {
             albums: [],
-            songs : [],
+            tracks: [],
+            random: false,
         },
         selected: {
             albums: [],
-            songs : [],
+            tracks: [],
         },
         currentPage: 1,
     },
@@ -36,28 +37,44 @@ export default createReducer(initialState, {
     [RECEIVE_ALBUMS](state, action) {
         const { albums } = action.payload;
         const normalizedAlbums = getNormalizedAlbums(albums);
-        const normalizedTracks = getNormalizedTracks(albums);
-        console.info('normalizedAlbums', normalizedAlbums);
-        console.info('normalizedTracks', normalizedTracks);
-        return state;
+        const normalizedDataTracks = getNormalizedDataTracks(albums);
+        return state
+            .setIn(['data', 'albums'], normalizedAlbums)
+            .setIn(['data', 'tracks', 'dataById'], normalizedDataTracks);
     },
 
     [RECEIVE_ALBUMS_BY_ARTIST](state, action) {
         const { albums } = action.payload;
         const normalizedAlbums = getNormalizedAlbums(albums);
-        console.info('normalizedAlbums', normalizedAlbums);
-        return state;
+        return state
+            .setIn(['data', 'albums'], normalizedAlbums);
+    },
+
+    [FETCH_RANDOM_TRACKS](state) {
+        return state
+            .setIn(['viewState', 'fetching', 'random'], true);
     },
 
     [RECEIVE_RANDOM_TRACKS](state, action) {
-        console.log('%c fix it! >> RECEIVE_RANDOM_TRACKS', 'color: red');
-        return state;
-        // const currentSongs = state.data.songs;
-        // return state.merge({
-        //     data: {
-        //         songs: [...currentSongs, ...action.payload.tracks],
-        //     },
-        // }, { deep: true });
+        const { tracks } = action.payload;
+        const normalizedTracks = getNormalizedTracks(tracks);
+        const newSelectedTrackIds = state.viewState.selected.tracks.concat(normalizedTracks.ids);
+        return state
+            .merge({
+                data: {
+                    tracks: {
+                        dataById: normalizedTracks.dataById,
+                    },
+                },
+            }, { deep: true })
+            .merge({
+                viewState: {
+                    selected: {
+                        tracks: newSelectedTrackIds,
+                    },
+                },
+            }, { deep: true })
+            .setIn(['viewState', 'fetching', 'random'], false);
     },
 });
 
@@ -65,15 +82,21 @@ export default createReducer(initialState, {
 function getNormalizedAlbums(albums) {
     return _(albums)
         .map(album => ({ ...album, 'trackIds': _(album.tracks).map(track => track.trackId).compact().value() }))
+        .map(album => _.omit(album, 'tracks'))
         .reduce((acum, album) => ({
             ids     : [...acum.ids, album.albumId],
             dataById: { ...acum.dataById, [album.albumId]: album },
         }), { ids: [], dataById: {} });
 }
 
-function getNormalizedTracks(albums) {
+function getNormalizedDataTracks(albums) {
     return _(albums)
         .flatMap('tracks')
+        .reduce((acum, track) => ({ ...acum, [track.trackId]: track }), {});
+}
+
+function getNormalizedTracks(tracks) {
+    return _(tracks)
         .reduce((acum, track) => ({
             ids     : [...acum.ids, track.trackId],
             dataById: { ...acum.dataById, [track.trackId]: track },
