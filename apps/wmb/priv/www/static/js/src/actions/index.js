@@ -41,3 +41,8 @@ export const receiveRandomTracks = tracks => actionCreator(ActionTypes.RECEIVE_R
 export const fetchAlbumsByPage   = ()     => actionCreator(ActionTypes.FETCH_ALBUMS_BY_PAGE);
 export const receiveAlbums       = albums => actionCreator(ActionTypes.RECEIVE_ALBUMS, { albums });
 
+// ******************************************************************************/
+// ******************************** VIEW ****************************************/
+// ******************************************************************************/
+export const selectAlbum = (albumId, selected) => actionCreator(ActionTypes.SELECT_ALBUM, { albumId, selected });
+export const selectTrack = (trackId, albumId, selected) => actionCreator(ActionTypes.SELECT_TRACK, { trackId, albumId, selected });

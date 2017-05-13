@@ -1,18 +1,25 @@
 import React, { PropTypes } from 'react';
 // import classnames from 'classnames';
-import { Media, Image } from 'react-bootstrap';
+import { Media, Image, Button } from 'react-bootstrap';
 
-const AlbumView = ({ onClick, children, album, artist, cover, date, genre }) => {
+const AlbumView = ({ onClick, children, album, artist, cover, date, genre, selected }) => {
     // const classNames = classnames({ active: activeClass });
 
     return (
         <Media>
             <Media.Left>
-                <Image width={64} height={64} src={encodeURI(cover)} alt={album} circle />
+                <Image width={150} height={150} src={encodeURI(cover)} alt={album} circle />
             </Media.Left>
             <Media.Body>
                 <Media.Heading>
-                    { `${artist} | ${album} | ${date} | ${genre}` }
+                    <span>{ `${artist} | ${album} | ${date} | ${genre}` }</span>
+                    <Button
+                        bsSize  = "xsmall"
+                        bsStyle = {selected ? 'warnign' : 'info'}
+                        onClick = {onClick}
+                    >
+                        { selected ? 'remove' : 'add' }
+                    </Button>
                 </Media.Heading>
                 <Media.Body>
                     { children }
@@ -30,6 +37,7 @@ AlbumView.propTypes = {
     cover   : PropTypes.string.isRequired,
     date    : PropTypes.string.isRequired,
     genre   : PropTypes.string.isRequired,
+    selected: PropTypes.bool.isRequired,
     onClick : PropTypes.func.isRequired,
 };
 

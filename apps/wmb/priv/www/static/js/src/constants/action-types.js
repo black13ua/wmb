@@ -22,7 +22,7 @@ export const RECEIVE_ALBUMS_BY_ARTIST        = 'RECEIVE_ALBUMS_BY_ARTIST';
 export const SET_ACTIVE_ARTIST_IN_ABC_FILTER = 'SET_ACTIVE_ARTIST_IN_ABC_FILTER';
 
 // ******************************************************************************/
-// ******************************* ALBUMS ***********************************/
+// ********************************* ALBUMS *************************************/
 // ******************************************************************************/
 
 export const FETCHING                  = 'FETCHING';
@@ -36,3 +36,10 @@ export const RECEIVE_RANDOM_TRACKS     = 'RECEIVE_RANDOM_TRACKS';
 
 export const FETCH_ALBUMS_BY_FILTERS   = 'FETCH_ALBUMS_BY_FILTERS';
 export const RECEIVE_ALBUMS_BY_FILTERS = 'RECEIVE_ALBUMS_BY_FILTERS';
+
+// ******************************************************************************/
+// ********************************** VIEW **************************************/
+// ******************************************************************************/
+
+export const SELECT_ALBUM = 'SELECT_ALBUM';
+export const SELECT_TRACK = 'SELECT_TRACK';

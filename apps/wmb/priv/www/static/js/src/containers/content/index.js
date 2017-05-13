@@ -5,7 +5,7 @@ import ContentView from '../../view/content/content-view';
 import AlbumContainer from './album';
 
 import { fetchAlbumsByPage } from '../../actions';
-import { getAlbumsIds } from '../../selectors';
+import { getAlbumsIds, getSelectedAlbumIds } from '../../selectors';
 
 
 class ContentContainer extends Component {
@@ -14,10 +14,13 @@ class ContentContainer extends Component {
     }
 
     get albumsList() {
-        const list = this.props.albumsIds.map(id =>
+        const { albumIds, selectedAlbumIds } = this.props;
+
+        const list = albumIds.map(albumId =>
             <AlbumContainer
-                id  = {id}
-                key = {id}
+                albumId  = {albumId}
+                key      = {albumId}
+                selected = {_.includes(selectedAlbumIds, albumId)}
             />
         );
         return (
@@ -38,12 +41,14 @@ class ContentContainer extends Component {
 
 
 ContentContainer.propTypes = {
-    albumsIds        : PropTypes.arrayOf(PropTypes.number),
+    albumIds         : PropTypes.arrayOf(PropTypes.number),
     fetchAlbumsByPage: PropTypes.func.isRequired,
+    selectedAlbumIds : PropTypes.arrayOf(PropTypes.number).isRequired,
 };
 
 const mapStateToProps = state => ({
-    albumsIds: getAlbumsIds(state),
+    albumIds        : getAlbumsIds(state),
+    selectedAlbumIds: getSelectedAlbumIds(state),
 });
 
 const mapDispatchToProps = dispatch => ({

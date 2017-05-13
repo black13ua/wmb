@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect';
 
 const musicSelector = state => state.music;
-const getAlbumId = (state, props) => props.id;
+const getAlbumId = (state, props) => props.albumId;
 
 
 export const getAlbumsIds = createSelector(
@@ -9,9 +9,9 @@ export const getAlbumsIds = createSelector(
     state => state.data.albums.ids
 );
 
-export const getCurrentPage = createSelector(
+export const getSelectedAlbumIds = createSelector(
     musicSelector,
-    state => state.viewState.currentPage
+    state => state.viewState.selected.albums,
 );
 
 export const makeSelectAlbumDatabyId = () => createSelector(
