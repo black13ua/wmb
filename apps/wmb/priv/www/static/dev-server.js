@@ -105,6 +105,12 @@ app.all('*/static/*', (req, res) => {
     });
 });
 
+app.all('*/files/*', (req, res) => {
+    proxy.web(req, res, {
+        target: apiHost,
+    });
+});
+
 app.all('*/api/*', (req, res) => {
     proxy.web(req, res, {
         target: apiHost,

@@ -18,7 +18,7 @@ handle(Req, State) ->
     io:format("Path Elements: ~p~n", [[APIType, APIid]]),
     case APIType of
         <<"abc">> ->
-            {ok, Letters} = data_merger:get_abc_letters(),
+            {ok, Letters} = data_merger:get_all_letters(),
             io:format("Response from /api/abc: ~p~n", [Letters]),
             Res = jsx:encode(Letters);
         <<"albums">> ->
@@ -26,7 +26,7 @@ handle(Req, State) ->
             io:format("Response from /api/albums/id: ~p~n", [Album]),
             Res = jsx:encode(Album);
         <<"artist">> ->
-            {ok, Albums} = data_merger:get_albumlist_by_artistid(binary_to_integer(APIid)),
+            {ok, Albums} = data_merger:get_albums_by_artistid({artist_id, binary_to_integer(APIid)}),
             io:format("Response from /api/artist/id: ~p~n", [Albums]),
             Res = jsx:encode(Albums);
         <<"letter">> ->

@@ -58,17 +58,16 @@ start_link() ->
 %% @end
 %%--------------------------------------------------------------------
 init([]) ->
-    self() ! read_all,
     ets:new(?ETS_ABC, [public, bag, named_table]),
-    ets:new(?ETS_ALBUMS, [public, set, named_table]),
+    ets:new(?ETS_ALBUMS, [public, ordered_set, named_table]),
     ets:new(?ETS_ARTISTS, [public, bag, named_table]),
-    ets:new(?ETS_COVERS, [public, ordered_set, named_table]),
     ets:new(?ETS_COUNTERS, [public, set, named_table]),
-    [ets:insert(?ETS_COUNTERS, {CounterKey, 0}) || CounterKey <- [album_id_counter, artist_id_counter, letter_id_counter, path_id_counter, track_id_counter]],
-    ets:new(?ETS_GENRES, [public, bag, named_table]),
+    ets:new(?ETS_COVERS, [public, ordered_set, named_table]),
+    ets:new(?ETS_GENRES, [public, ordered_set, named_table]),
     ets:new(?ETS_PATHS,  [public, ordered_set, named_table]),
     ets:new(?ETS_TRACKS, [public, ordered_set, named_table]),
     ets:new(?ETS_ERRORS, [public, bag, named_table]),
+    self() ! init_counters,
     {ok, #state{}}.
 
 %%--------------------------------------------------------------------
@@ -112,7 +111,9 @@ handle_cast(_Msg, State) ->
 %%                                   {stop, Reason, State}
 %% @end
 %%--------------------------------------------------------------------
-handle_info(read_all, State) ->
+handle_info(init_counters, State) ->
+    Result = init_ets_counters(),
+    io:format("Counters Init Result: ~p~n", [Result]),
 %%%%    {ok, FilesRoot} = application:get_env(wmb, files_root),
 %%%%    {ok, FilesPattern} = application:get_env(wmb, files_pattern),
 %%%%    FlacFiles = filelib:wildcard(FilesPattern, FilesRoot),
@@ -157,4 +158,19 @@ code_change(_OldVsn, State, _Extra) ->
 %%%===================================================================
 %%% Internal functions
 %%%===================================================================
+init_ets_counters() ->
+    Counters = [
+        album_id_counter,
+        artist_id_counter,
+        cover_id_counter,
+        genre_id_counter,
+        letter_id_counter,
+        path_id_counter,
+        track_id_counter
+    ],
+    Fun = fun(X) ->
+              ets:insert(?ETS_COUNTERS, {X, 0})
+          end,
+    Result = lists:foreach(Fun, Counters),
+    {ok, Result}.
 

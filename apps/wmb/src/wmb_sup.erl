@@ -36,8 +36,9 @@ init([]) ->
     Shutdown = 5000,
     Type = worker,
     WmbSrv = {'wmb_srv', {'wmb_srv', start_link, []}, Restart, Shutdown, Type, [wmb_srv]},
+    WmbDigger = {'wmb_digger', {'wmb_digger', start_link, []}, Restart, Shutdown, Type, [wmb_digger]},
     WmbLibrarian = {'wmb_librarian_sup', {'wmb_librarian_sup', start_link, []}, Restart, Shutdown, supervisor, [wmb_librarian_sup]},
-    {ok, {SupFlags, [WmbSrv, WmbLibrarian]}}.
+    {ok, {SupFlags, [WmbSrv, WmbDigger, WmbLibrarian]}}.
 
 %%====================================================================
 %% Internal functions

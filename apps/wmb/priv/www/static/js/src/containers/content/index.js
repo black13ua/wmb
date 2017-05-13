@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 
 import ContentView from '../../view/content/content-view';
-// import AlbumContainer from './album';
+import AlbumContainer from './album';
 
 import { fetchAlbumsByPage } from '../../actions';
 import { getAlbumsIds } from '../../selectors';
@@ -15,15 +15,15 @@ class ContentContainer extends Component {
 
     get albumsList() {
         const list = this.props.albumsIds.map(id =>
-            <li
+            <AlbumContainer
                 id  = {id}
                 key = {id}
             />
         );
         return (
-            <ul className="main-container">
+            <div>
                 { list }
-            </ul>
+            </div>
         );
     }
 

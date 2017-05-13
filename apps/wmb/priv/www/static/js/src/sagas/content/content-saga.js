@@ -11,7 +11,7 @@ import { receiveAlbums } from '../../actions';
 // ******************************************************************************/
 
 function* routineDataByPage() {
-    const page = yield select(state => state.albums.viewState.currentPage);
+    const page = yield select(state => state.music.viewState.currentPage);
     const response = yield call(API.fetchAlbumsByPage.bind(null, page));
     yield put(receiveAlbums(response));
 }

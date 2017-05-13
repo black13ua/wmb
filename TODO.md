@@ -3,9 +3,7 @@
 - add module for periodic rescan flac files
 - add SPEC's to all functions
 - write howto build/run service to README file
-- Change in ets wmb_tracks key to {track_id,integer()}
-- Add in ets wmb_albums list track_ids
-- Add path_id and use it in tracks ETS
+- Add path_id in wmb_albums and use it for get_cover Fun
 - Add in Fun get_cover_by_albumid() options full/short name
 
 

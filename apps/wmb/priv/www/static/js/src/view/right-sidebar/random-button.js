@@ -44,7 +44,7 @@ const RandomButtonView = ({
 
 RandomButtonView.propTypes = {
     checked            : PropTypes.bool.isRequired,
-    disabled           : PropTypes.object.isRequired,
+    disabled           : PropTypes.bool.isRequired,
     onRandomButtonClick: PropTypes.func.isRequired,
     onRandomCheckToggle: PropTypes.func.isRequired,
 };

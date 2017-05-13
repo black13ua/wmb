@@ -28,7 +28,7 @@ export const setSearchValue             = value            => actionCreator(Acti
 export const fetchArtistsByLetter       = letterId         => actionCreator(ActionTypes.FETCH_ARTISTS_BY_LETTER, { letterId });
 export const receiveArtistsByLetter     = (letterId, data) => actionCreator(ActionTypes.RECEIVE_ARTISTS_BY_LETTER, { letterId, data });
 export const fetchAlbumsByArtist        = artistId         => actionCreator(ActionTypes.FETCH_ALBUMS_BY_ARTIST, { artistId });
-export const receiveAlbumsByArtist      = data             => actionCreator(ActionTypes.RECEIVE_ALBUMS_BY_ARTIST, { data });
+export const receiveAlbumsByArtist      = albums           => actionCreator(ActionTypes.RECEIVE_ALBUMS_BY_ARTIST, { albums });
 
 export const setActiveArtistInAbcFilter = artistId         => actionCreator(ActionTypes.SET_ACTIVE_ARTIST_IN_ABC_FILTER, { artistId });
 

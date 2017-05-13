@@ -1,40 +1,35 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
 
-import TrackContainer from './track';
+import AlbumView from '../../view/content/album';
 
-import { fetchFilter, setFieldValueIO } from '../../../actions';
-import { getFilterDataByAlias, getFilterCurrentValueByAlias } from '../../../selectors';
-
-
-class AlbumContainer extends Component {
+// import { fetchFilter, setFieldValueIO } from '../../../actions';
+import { makeSelectAlbumDatabyId } from '../../selectors';
 
 
-
-    render() {
-        return (
-            <CommonFilterView
-                alias         = {this.props.alias}
-                optionsLength = {_.size(this.props.filterOptions)}
-                select        = {this.select}
-            />
-        );
-    }
-}
+const AlbumContainer = ({ albumData }) =>
+    <AlbumView
+        key = {albumData.albumId}
+        {...albumData}
+    />;
 
 
 AlbumContainer.propTypes = {
-    id           : PropTypes.number.isRequired,
-    albumDatabyId: PropTypes.string,
+    albumData: PropTypes.object,
 };
 
-const mapStateToProps = (state, props) => ({
-    albumDatabyId: getAlbumDataById(state, props),
-});
+const makeMapStateToProps = () => {
+    const selectAlbumDatabyId = makeSelectAlbumDatabyId();
 
-const mapDispatchToProps = (dispatch) => ({
-    // fetchFilterByAlias: ()    => dispatch(fetchFilter(ownProps.alias)),
-    // handleFilterChange: event => dispatch(setFieldValueIO(ownProps.alias, event.target.value)),
-});
+    return createStructuredSelector({
+        albumData: selectAlbumDatabyId,
+    });
+};
 
-export default connect(mapStateToProps, mapDispatchToProps)(AlbumContainer);
+// const mapDispatchToProps = (dispatch) => ({
+//     fetchFilterByAlias: ()    => dispatch(fetchFilter(ownProps.alias)),
+//     handleFilterChange: event => dispatch(setFieldValueIO(ownProps.alias, event.target.value)),
+// });
+
+export default connect(makeMapStateToProps)(AlbumContainer);

@@ -68,7 +68,7 @@ CommonFilterContainer.propTypes = {
     alias             : PropTypes.string.isRequired,
     currentValue      : PropTypes.string,
     fetchFilterByAlias: PropTypes.func.isRequired,
-    filterOptions     : PropTypes.arrayOf(PropTypes.string),
+    filterOptions     : PropTypes.array,
     handleFilterChange: PropTypes.func.isRequired,
 };
 
