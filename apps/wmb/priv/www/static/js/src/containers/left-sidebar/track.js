@@ -2,13 +2,13 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 
-import TrackView from '../../view/content/track';
+import PlaylistTrackView from '../../view/playlist/track';
 
 import { selectTrack } from '../../actions';
 import { makeSelectTrackDatabyId } from '../../selectors';
 
 
-class TrackContainer extends Component {
+class PlaylistTrackContainer extends Component {
     handleSelectTrackClick = (event) => {
         event.preventDefault();
         event.stopPropagation();
@@ -16,13 +16,12 @@ class TrackContainer extends Component {
     }
 
     render() {
-        const { trackData, selected } = this.props;
+        const { trackData } = this.props;
         if (_.isEmpty(trackData)) return null;
 
         return (
-            <TrackView
+            <PlaylistTrackView
                 {...trackData}
-                selected = {selected}
                 onClick  = {this.handleSelectTrackClick}
             />
         );
@@ -30,8 +29,7 @@ class TrackContainer extends Component {
 }
 
 
-TrackContainer.propTypes = {
-    selected   : PropTypes.bool.isRequired,
+PlaylistTrackContainer.propTypes = {
     selectTrack: PropTypes.func.isRequired,
     trackData  : PropTypes.object,
 };
@@ -45,7 +43,7 @@ const makeMapStateToProps = () => {
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-    selectTrack: () => dispatch(selectTrack(ownProps.trackId, ownProps.album, ownProps.selected)),
+    selectTrack: () => dispatch(selectTrack(ownProps.trackId, ownProps.album, true)),
 });
 
-export default connect(makeMapStateToProps, mapDispatchToProps)(TrackContainer);
+export default connect(makeMapStateToProps, mapDispatchToProps)(PlaylistTrackContainer);

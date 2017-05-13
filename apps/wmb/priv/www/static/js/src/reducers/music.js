@@ -6,6 +6,8 @@ import {
     RECEIVE_ALBUMS,
     RECEIVE_RANDOM_TRACKS,
     RECEIVE_ALBUMS_BY_ARTIST,
+    SELECT_TRACK,
+    SELECT_ALBUM,
 } from '../constants/action-types';
 
 
@@ -53,6 +55,33 @@ export default createReducer(initialState, {
     [FETCH_RANDOM_TRACKS](state) {
         return state
             .setIn(['viewState', 'fetching', 'random'], true);
+    },
+
+    [SELECT_TRACK](state, action) {
+        const { trackId, selected } = action.payload;
+        const newSelectedTrackIds = selected
+            ? _.without(state.viewState.selected.tracks, trackId)
+            : state.viewState.selected.tracks.concat(trackId);
+
+        return state
+            .setIn(['viewState', 'selected', 'tracks'], newSelectedTrackIds);
+    },
+
+    [SELECT_ALBUM](state, action) {
+        const { albumId, selected } = action.payload;
+        const currentAlbum = state.data.albums.dataById[albumId];
+        const trackIds = currentAlbum.trackIds;
+        const newSelectedTrackIds = selected
+            ? _.without(state.viewState.selected.tracks, ...trackIds)
+            : _.union(state.viewState.selected.tracks, trackIds);
+
+        const newSelectedAlbumIds = selected
+            ? _.without(state.viewState.selected.albums, albumId)
+            : state.viewState.selected.albums.concat(albumId);
+
+        return state
+            .setIn(['viewState', 'selected', 'albums'], newSelectedAlbumIds)
+            .setIn(['viewState', 'selected', 'tracks'], newSelectedTrackIds);
     },
 
     [RECEIVE_RANDOM_TRACKS](state, action) {
