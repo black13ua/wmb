@@ -14,8 +14,8 @@ const proxy = httpProxy.createProxyServer({
 
 const args = require('minimist')(process.argv);
 
-const port = args['p'] || 3000;
-const host = args['h'] || '0.0.0.0';
+const port = args['p'] || 9000;
+const host = args['h'] || '127.0.0.1';
 const devHost = args['devHost'] || 'wmb.diff.org.ua';
 const devPort = args['devPort'] ? `:${args['devPort']}` : '';
 const remoteProtocol = args['protocol'] || 'http';
@@ -81,6 +81,7 @@ app.use(require('webpack-dev-middleware')(compiler, serverOptions));
 app.use(require('webpack-hot-middleware')(compiler));
 
 app.use('/dist', express.static('./js/dist'));
+app.use('/static', express.static('./'));
 app.use('/static/sass/react-bootstrap-switch.css', express.static('./sass/react-bootstrap-switch.css'));
 
 app.use((req, res, next) => {
@@ -99,11 +100,11 @@ app.get('/', (req, res) => {
 
 
 /* QWERYS */
-app.all('*/static/*', (req, res) => {
-    proxy.web(req, res, {
-        target: apiHost,
-    });
-});
+// app.all('*/static/*', (req, res) => {
+//     proxy.web(req, res, {
+//         target: apiHost,
+//     });
+// });
 
 app.all('*/files/*', (req, res) => {
     proxy.web(req, res, {

@@ -1,7 +1,8 @@
 import React, { PropTypes } from 'react';
 import { Button, FormGroup } from 'react-bootstrap';
 
-import Switch from 'react-bootstrap-switch';
+// import Switch from 'react-bootstrap-switch';
+import Switch from 'react-toolbox/lib/switch';
 
 const RandomButtonView = ({
     checked,
@@ -28,13 +29,9 @@ const RandomButtonView = ({
             </FormGroup>
             <FormGroup>
                 <Switch
-                    animate
-                    defaultValue
-                    labelText = {'autoload'}
-                    offColor  = {'warning'}
-                    value     = {checked}
+                    checked     = {checked}
+                    label = {'autoload'}
                     onChange  = {onRandomCheckToggle}
-                    onColor   = {'success'}
                 />
             </FormGroup>
         </section>

@@ -29,7 +29,7 @@ const config = {
 
     resolve: {
         modules   : ['node_modules'],
-        extensions: ['.js', '.json', '.jsx', '.scss'],
+        extensions: ['.js', '.json', '.jsx', '.scss', '.css'],
     },
 
     module: {
@@ -46,8 +46,20 @@ const config = {
                 use : ['style-loader', 'css-loader', 'sass-loader'],
             },
             {
-                test: /\.css/,
-                use : ['style-loader', 'css-loader?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]'],
+                test: /\.css$/,
+                use : [
+                    'style-loader',
+                    {
+                        loader : 'css-loader',
+                        options: {
+                            modules       : true,
+                            sourceMap     : true,
+                            importLoaders : 1,
+                            localIdentName: '[name]--[local]--[hash:base64:8]',
+                        },
+                    },
+                    'postcss-loader', // has separate config, see postcss.config.js nearby
+                ],
             },
             {
                 test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
@@ -86,6 +98,10 @@ const config = {
         // new ExtractTextPlugin({
         //     filename: 'style.css',
         // }),
+        new webpack.LoaderOptionsPlugin({
+            debug: true,
+        }),
+        new webpack.NamedModulesPlugin(),
         new webpack.DefinePlugin({
             __DEVELOPMENT__ : true,
             __PRODUCTION__  : false,

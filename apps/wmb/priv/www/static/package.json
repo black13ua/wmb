@@ -31,16 +31,20 @@
     "less-loader": "^4.0.3",
     "lodash": "4.17.4",
     "normalizr": "3.1.0",
+    "postcss-cssnext": "^2.10.0",
+    "postcss-each": "^0.9.3",
+    "postcss-import": "^10.0.0",
+    "postcss-loader": "^2.0.5",
+    "postcss-mixins": "^6.0.0",
     "rc-menu": "^5.0.10",
     "react": "15.4.2",
-    "react-addons-css-transition-group": "^15.5.2",
-    "react-addons-transition-group": "^15.5.2",
     "react-bootstrap": "^0.31.0",
-    "react-bootstrap-switch": "^15.0.4",
+    "react-bootstrap-switch": "^15.5.0-a",
     "react-css-modules": "^4.0.5",
     "react-dom": "15.4.2",
     "react-hot-loader": "3.0.0-beta.6",
     "react-redux": "5.0.2",
+    "react-toolbox": "^2.0.0-beta.8",
     "reactstrap": "^4.5.0",
     "redux": "3.6.0",
     "redux-saga": "0.14.3",
@@ -82,7 +86,8 @@
     "build:prod": "better-npm-run build:prod",
     "build:dll": "better-npm-run build:dll",
     "test": "better-npm-run test",
-    "mcurrr": "node ./dev-server.js --devHost 10.1.104.16 -h 10.1.4.159 -p 9090 --protocol http --rlg  --progress --colors"
+    "mcurrr": "node ./dev-server.js --devHost 10.1.104.16 -h 10.1.4.159 -p 9090 --protocol http --rlg  --progress --colors",
+    "home": "node ./dev-server.js --devHost 127.0.0.1 -h 127.0.0.1 -p 9090 --protocol http --progress --colors"
   },
   "betterScripts": {
     "start": {
