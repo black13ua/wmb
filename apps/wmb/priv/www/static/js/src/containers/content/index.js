@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-
+import { ProgressBar } from 'react-toolbox';
 import ContentView from '../../view/content/content-view';
 import AlbumContainer from './album';
 
@@ -33,6 +33,7 @@ class ContentContainer extends Component {
     render() {
         return (
             <ContentView>
+                <ProgressBar type='circular' mode='indeterminate' multicolor />
                 { this.albumsList }
             </ContentView>
         );

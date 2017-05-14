@@ -45,8 +45,8 @@ class App extends Component { // eslint-disable-line
             <div style={{ 'margin-top': '100px' }}>
                 <AppBar
                     fixed
-                    leftIcon={appBarIconVisible ? 'menu' : null}
-                    rightIcon={appBarIconVisible ? 'more' : null}
+                    leftIcon={appBarIconVisible ? 'build' : null}
+                    rightIcon={appBarIconVisible ? 'list' : null}
                     onLeftIconClick={this.toggleFiltersPinned}
                     onRightIconClick={this.togglePlaylistPinned}
                 />
@@ -56,9 +56,7 @@ class App extends Component { // eslint-disable-line
                         permanentAt={permanentAt}
                         onOverlayClick={this.toggleDrawerActive}
                     >
-                        <aside style={{ 'margin-top': '100px' }}>
-                            <RightSidebarContainer />
-                        </aside>
+                        <RightSidebarContainer />
                     </NavDrawer>
                     <Panel>
                         <ContentContainer />
@@ -68,9 +66,7 @@ class App extends Component { // eslint-disable-line
                         width={5}
                         permanentAt={permanentAt}
                     >
-                        <aside style={{ 'margin-top': '100px' }}>
-                            <PlaylistContainer />
-                        </aside>
+                        <PlaylistContainer />
                     </Sidebar>
                 </Layout>
             </div>

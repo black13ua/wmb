@@ -1,12 +1,33 @@
 import React, { PropTypes } from 'react';
-import { Col } from 'react-bootstrap';
+import { List, ListItem, Chip, Avatar, IconButton } from 'react-toolbox';
 
 const PlaylistView = ({ children, button }) =>
-    <Col xsHidden sm={4} md={3}>
-        { button }
-        <h1>{ 'Playlist' }</h1>
-        { children }
-    </Col>;
+    <aside style={{ 'margin-top': '100px' }}>
+        <List selectable ripple>
+            <ListItem
+                caption='Playlist'
+            >
+                { button }
+            </ListItem>
+            <Chip
+                style={{ display: 'block', margin: '3px', cursor: 'pointer' }}
+                deletable
+                onDeleteClick={() => null}
+            >
+                <Avatar style={{ backgroundColor: 'deepskyblue' }} icon="play_arrow" />
+                <span>Avatar Chip</span>
+            </Chip>
+            <Chip
+                style={{ display: 'block', margin: '3px'  }}
+                deletable
+                onDeleteClick={() => null}
+            >
+                <Avatar style={{ backgroundColor: 'deeppink' }} icon="music_note" />
+                <span>Avatar Chip</span>
+            </Chip>
+            { children }
+        </List>
+    </aside>;
 
 
 PlaylistView.propTypes = {

@@ -1,22 +1,13 @@
 import React, { PropTypes } from 'react';
 import classnames from 'classnames';
-import { ListGroupItem, Button } from 'react-bootstrap';
+import { Chip, Avatar } from 'react-toolbox';
 
 const PlaylistTrackView = ({ onClick, title, activeClass }) => {
-    const classNames = classnames('righted', { active: activeClass });
-
     return (
-        <ListGroupItem>
-            <span>{ title }</span>
-            <Button
-                bsSize  = "xsmall"
-                bsStyle = "warning"
-                className = {classNames}
-                onClick = {onClick}
-            >
-                {'remove'}
-            </Button>
-        </ListGroupItem>
+        <Chip>
+          <Avatar style={{ backgroundColor: 'deepskyblue' }} icon="folder" />
+          <span>Avatar Chip</span>
+        </Chip>
     );
 };
 

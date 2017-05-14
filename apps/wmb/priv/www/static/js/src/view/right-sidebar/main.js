@@ -1,11 +1,10 @@
 import React, { PropTypes } from 'react';
-import { Col } from 'react-bootstrap';
 
 
 const RightSidebarView = ({ children }) =>
-    <Col xsHidden smHidden md={3}>
+    <aside style={{ 'margin-top': '100px' }}>
         { children }
-    </Col>;
+    </aside>;
 
 
 RightSidebarView.propTypes = {

@@ -7,7 +7,7 @@ import { AppContainer } from 'react-hot-loader';
 import App from './src/containers/app';
 import store from './src/store/store';
 
-// require('../sass/main.scss'); // eslint-disable-line
+require('../sass/main.scss'); // eslint-disable-line
 
 const rootEl = document.getElementById('main--container');
 

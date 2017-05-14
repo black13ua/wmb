@@ -1,7 +1,9 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { ListGroup, Button } from 'react-bootstrap';
 import { createStructuredSelector } from 'reselect';
+import { IconButton } from 'react-toolbox';
+
+import CleanPlaylistDialog from '../../view/playlist/clean-playlist-dialog';
 
 import PlaylistView from '../../view/playlist/playlist-view';
 import PlaylistTrackContainer from './track';
@@ -9,24 +11,47 @@ import { getSelectedTrackIds } from '../../selectors';
 import { clearPlaylist } from '../../actions/index';
 
 class PlaylistContainer extends Component {
+    state = {
+        activeDialog: false,
+    };
+
     handleClearPlaylist = (event) => {
         event.preventDefault();
         event.stopPropagation();
+        this.setState({ activeDialog: !this.state.activeDialog });
+    }
+
+    handleAgreeClick = (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        this.setState({ activeDialog: !this.state.activeDialog });
         this.props.clearPlaylist();
     }
 
+    actions = [
+        { label: 'Cancel', onClick: this.handleClearPlaylist },
+        { label: 'Delete', onClick: this.handleAgreeClick },
+    ];
+
     get removeButton() {
         const { selectedTrackIds } = this.props;
-        if (_.isEmpty(selectedTrackIds)) return null;
+        // if (_.isEmpty(selectedTrackIds)) return null;
         return (
-            <Button
-                bsSize    = "xsmall"
-                bsStyle   = "danger"
-                className = "righted"
-                onClick   = {this.handleClearPlaylist}
-            >
-                {'clear'}
-            </Button>
+            <IconButton
+                icon    = "delete"
+                style   = {{ backgroundColor: 'deepskyblue' }}
+                onClick = {this.handleClearPlaylist}
+            />
+        );
+    }
+
+    get clearPlaylistDialog() {
+        return (
+            <CleanPlaylistDialog
+                actions       = {this.actions}
+                active        = {this.state.activeDialog}
+                onCancelClick = {this.handleClearPlaylist}
+            />
         );
     }
 
@@ -40,17 +65,14 @@ class PlaylistContainer extends Component {
                 trackId  = {trackId}
             />
         );
-        return (
-            <ListGroup>
-                { list }
-            </ListGroup>
-        );
+        return list;
     }
 
     render() {
         return (
             <PlaylistView button = {this.removeButton}>
                 { this.playlistTracks }
+                { this.clearPlaylistDialog }
             </PlaylistView>
         );
     }

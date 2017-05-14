@@ -7,9 +7,9 @@
 
 html, body{
   height:100%;
-  font-family: 'Roboto', sans-serif;
-  button.righted {
-    float: right;
-    width: 50px;
+  overflow-y: hidden;
+  // font-family: 'Roboto', sans-serif;
+  button:focus {
+    outline: none;
   }
 }

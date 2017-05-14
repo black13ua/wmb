@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Button, FormGroup, ControlLabel, FormControl, HelpBlock } from 'react-bootstrap';
+import Input from 'react-toolbox/lib/input';
 
 
 const SearchView = ({ search, onSearchClick, onSearchChange }) => {
@@ -11,31 +11,13 @@ const SearchView = ({ search, onSearchClick, onSearchChange }) => {
 
     return (
         <article className="name">
-            <h3 className="filters-header">{ 'Search:' }</h3>
-
-            <form className="filter-name">
-                <FormGroup
-                    controlId="formBasicText"
-                    validationState={getValidationState()}
-                >
-                    <ControlLabel>{ 'Type your favorit artist' }</ControlLabel>
-                    <FormControl
-                        placeholder = "Type your favorit artist"
-                        type        = "text"
-                        value       = {search}
-                        onChange    = {onSearchChange}
-                    />
-                    <FormControl.Feedback />
-                    <HelpBlock>{ '3 characters minimum' }</HelpBlock>
-                    <Button
-                        bsStyle  = {search.length < 3 ? 'default' : 'success'}
-                        disabled = {search.length < 3}
-                        onClick  = {onSearchClick}
-                    >
-                        { 'Submit' }
-                    </Button>
-                </FormGroup>
-            </form>
+            <Input
+                type='text'
+                label='find artist'
+                value={search}
+                onChange={onSearchChange}
+                icon='search'
+            />
         </article>
     );
 };

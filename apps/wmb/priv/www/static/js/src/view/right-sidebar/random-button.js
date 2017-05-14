@@ -1,14 +1,12 @@
 import React, { PropTypes } from 'react';
-import { Button, FormGroup } from 'react-bootstrap';
-
-// import Switch from 'react-bootstrap-switch';
-import Switch from 'react-toolbox/lib/switch';
+import { Button, Switch, Slider } from 'react-toolbox';
 
 const RandomButtonView = ({
     checked,
     onRandomButtonClick,
     onRandomCheckToggle,
     disabled,
+    randomNumber,
 }) => {
     function onButtonClick(event) {
         event.preventDefault();
@@ -18,22 +16,31 @@ const RandomButtonView = ({
 
     return (
         <section className="random">
-            <FormGroup>
-                <Button
-                    bsStyle  = "info"
-                    disabled = {disabled}
-                    onClick  = {onButtonClick}
-                >
-                    { '+5 Random Tracks' }
-                </Button>
-            </FormGroup>
-            <FormGroup>
-                <Switch
-                    checked     = {checked}
-                    label = {'autoload'}
-                    onChange  = {onRandomCheckToggle}
-                />
-            </FormGroup>
+            <Button
+                icon='add'
+                label='5 random tracks'
+                raised
+                primary
+                disabled = {disabled}
+                floating
+                onClick = {onButtonClick}
+            />
+            <Switch
+                checked  = {checked}
+                label    = {'autoload'}
+                onChange = {onRandomCheckToggle}
+            />
+            <p>Pinned and with snaps</p>
+            <Slider
+                pinned
+                snaps
+                min={1}
+                max={7}
+                step={1}
+                editable
+                value={5}
+                onChange={() => null}
+            />
         </section>
     );
 };
