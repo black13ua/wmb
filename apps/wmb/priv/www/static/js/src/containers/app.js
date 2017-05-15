@@ -5,9 +5,9 @@ import { Layout, NavDrawer, Panel, Sidebar } from 'react-toolbox';
 import isBrowser from 'react-toolbox/lib/utils/is-browser';
 import breakpoints from 'react-toolbox/lib/utils/breakpoints';
 import { getViewport } from 'react-toolbox/lib/utils/utils';
-import RightSidebarContainer from './right-sidebar';
+import FiltersContainer from './filters';
 import ContentContainer from './content';
-import PlaylistContainer from './left-sidebar';
+import PlaylistContainer from './playlist';
 
 class App extends Component { // eslint-disable-line
     state = {
@@ -81,7 +81,7 @@ class App extends Component { // eslint-disable-line
                         width          = "wide"
                         onOverlayClick = {this.toggleDrawerActive}
                     >
-                        <RightSidebarContainer />
+                        <FiltersContainer />
                     </NavDrawer>
                     <Panel>
                         <ContentContainer />

@@ -1,8 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 
-import FilterItemView from '../../../view/right-sidebar/filters/common-filter-item';
-import CommonFilterView from '../../../view/right-sidebar/filters/common-filter';
+import FilterItemView from '../../../view/filters/filters/common-filter-item';
+import CommonFilterView from '../../../view/filters/filters/common-filter';
 
 import { fetchFilter, setFieldValueIO } from '../../../actions';
 import { getFilterDataByAlias, getFilterCurrentValueByAlias } from '../../../selectors';
@@ -27,13 +27,10 @@ class CommonFilterContainer extends Component {
                 activeClass = {this.props.currentValue === option}
                 key         = {index}
                 onClick     = {this.handleFilterChange.bind(null, option)}
-            >
-                { option }
-            </FilterItemView>
+                name        = { option }
+            />
         );
-        return (
-            <div className="list-group">{ list }</div>
-        );
+        return <div>{ list }</div>;
     }
 
     handleFilterChange = (value, event) => {

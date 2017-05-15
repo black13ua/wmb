@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { List } from 'react-toolbox';
 
 
-const RightSidebarView = ({ children }) =>
+const FIltersMenuView = ({ children }) =>
     <aside style={{ marginTop: '100px' }}>
         <List>
             { children }
@@ -10,8 +10,8 @@ const RightSidebarView = ({ children }) =>
     </aside>;
 
 
-RightSidebarView.propTypes = {
+FIltersMenuView.propTypes = {
     children: PropTypes.node,
 };
 
-export default RightSidebarView;
+export default FIltersMenuView;

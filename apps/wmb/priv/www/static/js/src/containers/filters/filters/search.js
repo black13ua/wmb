@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 
-import SearchView from '../../../view/right-sidebar/filters/search';
+import SearchView from '../../../view/filters/filters/search';
 
 import { fetchSearchResults, saveSearchValue } from '../../../actions';
 import { getSearchValue } from '../../../selectors';

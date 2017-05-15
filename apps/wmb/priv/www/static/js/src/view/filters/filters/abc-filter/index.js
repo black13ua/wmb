@@ -1,15 +1,15 @@
 import React, { PropTypes } from 'react';
-import classnames from 'classnames';
+// import classnames from 'classnames';
+import { ListItem } from 'react-toolbox';
 import translate from '../../../../constants/names';
 
 const AbcFilterView = ({ onClick, optionsLength, alias, children, activeClass }) => {
-    const itemClasses = classnames('sub--menu--header', { active: activeClass });
+    // const itemClasses = classnames('sub--menu--header', { active: activeClass });
     return (
         <div onClick = {onClick}>
-            <span className = {itemClasses} >
-                <b className="number">{`${optionsLength}`}</b>
-                <span>{`${translate.filterHeaders[alias] || alias}`}</span>
-            </span>
+            <ListItem
+                caption ={`${translate.filterHeaders[alias] || alias}`}
+            />
             { children }
         </div>
     );

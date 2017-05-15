@@ -15,7 +15,7 @@ const RandomButtonView = ({
     }
 
     return (
-        <List ripple>
+        <div>
             <ListSubHeader caption='Random' />
             <div style = {{ width: '100%', textAlign: 'center', margin: '15px 0' }} >
                 <Button
@@ -46,7 +46,7 @@ const RandomButtonView = ({
                 value={5}
                 onChange={() => null}
             />
-        </List>
+        </div>
     );
 };
 

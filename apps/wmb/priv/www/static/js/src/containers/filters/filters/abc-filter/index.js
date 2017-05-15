@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 
-import CommonFilterView from '../../../../view/right-sidebar/filters/common-filter';
+import CommonFilterView from '../../../../view/filters/filters/common-filter';
 import LetterContainer from './letter';
 import { fetchFilter, setFieldValueIO } from '../../../../actions';
 import { getFilterDataByAlias, getFilterCurrentValueByAlias } from '../../../../selectors';
@@ -35,9 +35,7 @@ class AbcFilterContainer extends Component {
                 letterId = {letterObj.letterId}
             />
         );
-        return (
-            <div className="list-group">{ list }</div>
-        );
+        return <div>{ list }</div>;
     }
 
     render() {

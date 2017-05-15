@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 
-import RandomButtonView from '../../view/right-sidebar/random-button';
+import RandomButtonView from '../../view/filters/random-button';
 
 import { fetchRandomTracks, randomCheckToggle } from '../../actions';
 import { getIsRandomChecked, getFetchingState } from '../../selectors';

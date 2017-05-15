@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 
-import ArtistView from '../../../../view/right-sidebar/filters/abc-filter/artist';
+import ArtistView from '../../../../view/filters/filters/abc-filter/artist';
 import { fetchAlbumsByArtist } from '../../../../actions';
 
 

@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 
-import LetterView from '../../../../view/right-sidebar/filters/abc-filter/letter';
+import LetterView from '../../../../view/filters/filters/abc-filter/letter';
 import ArtistContainer from './artist';
 import { fetchArtistsByLetter } from '../../../../actions';
 import { getArtistsByLetter, getActiveArtist } from '../../../../selectors';
@@ -35,11 +35,7 @@ class LetterContainer extends Component {
                 {...artistObj}
             />
         );
-        return (
-            <div styleName="list-group">
-                { list }
-            </div>
-        );
+        return <div>{ list }</div>;
     }
 
     render() {
