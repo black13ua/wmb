@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Button, Switch, Slider } from 'react-toolbox';
+import { List, ListSubHeader, ListItem, Button, Switch, Slider } from 'react-toolbox';
 
 const RandomButtonView = ({
     checked,
@@ -15,22 +15,27 @@ const RandomButtonView = ({
     }
 
     return (
-        <section className="random">
-            <Button
-                icon='add'
-                label='5 random tracks'
-                raised
-                primary
-                disabled = {disabled}
-                floating
-                onClick = {onButtonClick}
-            />
-            <Switch
-                checked  = {checked}
-                label    = {'autoload'}
-                onChange = {onRandomCheckToggle}
-            />
-            <p>Pinned and with snaps</p>
+        <List ripple>
+            <ListSubHeader caption='Random' />
+            <div style = {{ width: '100%', textAlign: 'center', margin: '15px 0' }} >
+                <Button
+                    icon='add'
+                    label='5 random tracks'
+                    raised
+                    primary
+                    disabled = {disabled}
+                    floating
+                    onClick = {onButtonClick}
+                />
+            </div>
+            <div style = {{ width: '100%', textAlign: 'center' }} >
+                <Switch
+                    checked  = {checked}
+                    label    = {'autoload'}
+                    onChange = {onRandomCheckToggle}
+                />
+            </div>
+            <ListSubHeader caption='Random tracks per request' />
             <Slider
                 pinned
                 snaps
@@ -41,7 +46,7 @@ const RandomButtonView = ({
                 value={5}
                 onChange={() => null}
             />
-        </section>
+        </List>
     );
 };
 

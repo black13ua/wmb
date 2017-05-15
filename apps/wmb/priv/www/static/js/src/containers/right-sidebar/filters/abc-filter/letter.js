@@ -1,16 +1,10 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 
-import CSSModules from 'react-css-modules';
-import { badge, listGroup } from 'bootstrap-css';
-
 import LetterView from '../../../../view/right-sidebar/filters/abc-filter/letter';
 import ArtistContainer from './artist';
 import { fetchArtistsByLetter } from '../../../../actions';
 import { getArtistsByLetter, getActiveArtist } from '../../../../selectors';
-
-const styles = {};
-Object.assign(styles, badge, listGroup);
 
 
 class LetterContainer extends Component {
@@ -78,5 +72,4 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     fetchArtistsByLetter: ()    => dispatch(fetchArtistsByLetter(ownProps.letterId)),
 });
 
-const styledLetterContainer = CSSModules(LetterContainer, styles, { allowMultiple: true });
-export default connect(mapStateToProps, mapDispatchToProps)(styledLetterContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(LetterContainer);

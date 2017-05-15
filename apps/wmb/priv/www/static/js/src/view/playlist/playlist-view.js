@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
-import { List, ListItem, Chip, Avatar, IconButton } from 'react-toolbox';
+import { List, ListItem } from 'react-toolbox';
 
 const PlaylistView = ({ children, button }) =>
-    <aside style={{ marginTop: '100px' }}>
+    <aside style={{ marginTop: '100px', padding: '10px' }}>
         <List selectable ripple>
             <ListItem
                 caption='Playlist'

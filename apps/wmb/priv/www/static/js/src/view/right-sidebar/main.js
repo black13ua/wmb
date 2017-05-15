@@ -1,9 +1,12 @@
 import React, { PropTypes } from 'react';
+import { List } from 'react-toolbox';
 
 
 const RightSidebarView = ({ children }) =>
     <aside style={{ marginTop: '100px' }}>
-        { children }
+        <List>
+            { children }
+        </List>
     </aside>;
 
 

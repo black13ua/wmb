@@ -1,16 +1,14 @@
 import React, { PropTypes } from 'react';
-import classnames from 'classnames';
-import { ListGroup, ListGroupItem } from 'react-bootstrap';
+// import classnames from 'classnames';
+import { ListItem, ListSubHeader } from 'react-toolbox';
 
 import translate from '../../../constants/names';
 
 
 const FilterView = ({ children, optionsLength, alias, onClick, activeClass }) => {
-    const styleNames = classnames('list-group-item', 'button--hover', { active: activeClass });
     return (
-        <ListGroup>
-            <ListGroupItem
-                className={styleNames}
+        <ListItem>
+            <ListSubHeader caption='Random'
                 onClick = {onClick}
             >
                 <span className="badge" >
@@ -18,11 +16,11 @@ const FilterView = ({ children, optionsLength, alias, onClick, activeClass }) =>
                 </span>
                 {`${translate.filterHeaders[alias] || alias}`}
                 <i className="fa fa-caret-down" />
-            </ListGroupItem>
-            <div className="second--sub--menu">
+            </ListSubHeader>
+            <div>
                 { children }
             </div>
-        </ListGroup>
+        </ListItem>
     );
 };
 

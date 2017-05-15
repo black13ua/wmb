@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { AppBar, IconButton } from 'react-toolbox';
+import { AppBar, Button } from 'react-toolbox';
 import { Layout, NavDrawer, Panel, Sidebar } from 'react-toolbox';
 // import PlayerView from '../view/player/player-view';
 import isBrowser from 'react-toolbox/lib/utils/is-browser';
@@ -37,24 +37,49 @@ class App extends Component { // eslint-disable-line
         this.setState({ width: getViewport().width });
     }
 
+    get filterToggleButton() {
+        return (
+            <Button
+                accent
+                floating
+                mini
+                icon    = "build"
+                style   = {{ position: 'relative', bottom: '-30px' }}
+                onClick = {this.toggleFiltersPinned}
+            />
+        );
+    }
+
+    get playlistToggleButton() {
+        return (
+            <Button
+                accent
+                floating
+                mini
+                icon    = "list"
+                style   = {{ position: 'absolute', bottom: '-22px', right: '10px' }}
+                onClick = {this.togglePlaylistPinned}
+            />
+        );
+    }
+
     render() {
         const permanentAt = 'md';
         const appBarIconVisible = this.state.width <= breakpoints[permanentAt];
 
         return (
             <div style={{ marginTop: '100px' }}>
-                <AppBar
-                    fixed
-                    leftIcon={appBarIconVisible ? 'build' : null}
-                    rightIcon={appBarIconVisible ? 'list' : null}
-                    onLeftIconClick={this.toggleFiltersPinned}
-                    onRightIconClick={this.togglePlaylistPinned}
-                />
+                <AppBar fixed >
+                    {appBarIconVisible ? this.filterToggleButton : null}
+                    {appBarIconVisible ? this.playlistToggleButton : null}
+                </AppBar>
                 <Layout>
-                    <NavDrawer active={this.state.drawerActive}
-                        pinned={this.state.filtersPinned}
-                        permanentAt={permanentAt}
-                        onOverlayClick={this.toggleDrawerActive}
+                    <NavDrawer
+                        active         = {this.state.drawerActive}
+                        pinned         = {this.state.filtersPinned}
+                        permanentAt    = {permanentAt}
+                        width          = "wide"
+                        onOverlayClick = {this.toggleDrawerActive}
                     >
                         <RightSidebarContainer />
                     </NavDrawer>
@@ -62,9 +87,9 @@ class App extends Component { // eslint-disable-line
                         <ContentContainer />
                     </Panel>
                     <Sidebar
-                        pinned={this.state.playlistPinned}
-                        width={5}
-                        permanentAt={permanentAt}
+                        pinned      = {this.state.playlistPinned}
+                        width       = {25}
+                        permanentAt = {permanentAt}
                     >
                         <PlaylistContainer />
                     </Sidebar>

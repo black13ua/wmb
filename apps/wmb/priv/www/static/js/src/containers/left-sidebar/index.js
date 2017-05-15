@@ -35,12 +35,13 @@ class PlaylistContainer extends Component {
 
     get removeButton() {
         const { selectedTrackIds } = this.props;
-        // if (_.isEmpty(selectedTrackIds)) return null;
+        if (_.isEmpty(selectedTrackIds)) return null;
         return (
             <IconButton
                 icon    = "delete"
-                style   = {{ backgroundColor: 'deepskyblue' }}
+                style   = {{ position: 'absolute', backgroundColor: 'deepskyblue', right: '10px', top: '5px' }}
                 onClick = {this.handleClearPlaylist}
+
             />
         );
     }

@@ -1,24 +1,22 @@
 import React, { PropTypes } from 'react';
-import Input from 'react-toolbox/lib/input';
+import { List, Input } from 'react-toolbox';
 
 
 const SearchView = ({ search, onSearchClick, onSearchChange }) => {
-    function getValidationState() {
-        const length = search.length;
-        if (length > 2) return 'success';
-        return 'warning';
-    }
-
+    // function getValidationState() {
+    //     const length = search.length;
+    //     if (length > 2) return 'success';
+    //     return 'warning';
+    // }
     return (
-        <article className="name">
+        <List>
             <Input
-                type='text'
-                label='find artist'
-                value={search}
-                onChange={onSearchChange}
-                icon='search'
+                type     = 'text'
+                value    = {search}
+                icon     = 'search'
+                onChange = {onSearchChange}
             />
-        </article>
+        </List>
     );
 };
 
