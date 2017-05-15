@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 
 
 const RightSidebarView = ({ children }) =>
-    <aside style={{ 'margin-top': '100px' }}>
+    <aside style={{ marginTop: '100px' }}>
         { children }
     </aside>;
 

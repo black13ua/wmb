@@ -42,7 +42,7 @@ class App extends Component { // eslint-disable-line
         const appBarIconVisible = this.state.width <= breakpoints[permanentAt];
 
         return (
-            <div style={{ 'margin-top': '100px' }}>
+            <div style={{ marginTop: '100px' }}>
                 <AppBar
                     fixed
                     leftIcon={appBarIconVisible ? 'build' : null}
