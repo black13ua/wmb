@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
-import { ListGroup } from 'react-bootstrap';
 
 import AlbumView from '../../view/content/album';
 import TrackContainer from './track';
@@ -30,9 +29,9 @@ class AlbumContainer extends Component {
             />
         );
         return (
-            <ListGroup>
+            <div>
                 { list }
-            </ListGroup>
+            </div>
         );
     }
 

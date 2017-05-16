@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 
 
 const MainView = ({ children }) =>
-    <article style={{ overflow: scrollY }}>
+    <article>
         <h1 className="MainView">{ 'Albums' }</h1>
         { children }
     </article>;

@@ -9,9 +9,7 @@ const PlaylistTrackView = ({ onClick, title, active, album, artist, genre, date,
             style         = {{ display: 'block', margin: '3px', cursor: 'pointer' }}
             onDeleteClick = {onClick}
         >
-            <Avatar
-                image={encodeURI(cover)}
-            />
+            <Avatar image={encodeURI(cover)} />
             <span>{ `${title} - ${artist}` }</span>
         </Chip>
     );

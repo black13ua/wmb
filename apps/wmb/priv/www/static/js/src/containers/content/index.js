@@ -31,9 +31,9 @@ class ContentContainer extends Component {
     }
 
     render() {
+        if (_.isEmpty(this.props.albumIds)) return <ProgressBar type='circular' mode='indeterminate' multicolor />;
         return (
             <ContentView>
-                <ProgressBar type='circular' mode='indeterminate' multicolor />
                 { this.albumsList }
             </ContentView>
         );
