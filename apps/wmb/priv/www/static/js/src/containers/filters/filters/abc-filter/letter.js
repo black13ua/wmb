@@ -41,6 +41,7 @@ class LetterContainer extends Component {
     render() {
         return (
             <LetterView
+                active      = {!this.state.folded}
                 artistCount = {_.size(this.props.artists)}
                 letter      = {this.props.letter}
                 onClick     = {this.handleUnfoldLetter}

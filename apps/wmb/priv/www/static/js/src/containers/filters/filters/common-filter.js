@@ -22,14 +22,18 @@ class CommonFilterContainer extends Component {
 
     get itemsList() {
         if (this.state.folded) return null;
-        const list = this.props.filterOptions.map((option, index) =>
-            <FilterItemView
-                activeClass = {this.props.currentValue === option}
-                key         = {index}
-                onClick     = {this.handleFilterChange.bind(null, option)}
-                name        = { option }
-            />
-        );
+        const list = this.props.filterOptions.map((option, index) => {
+            const optionId = _.isObject(option) ? option.genreId : option;
+            const optionName = _.isObject(option) ? option.genre : option;
+            return (
+                <FilterItemView
+                    active      = {this.props.currentValue === optionName}
+                    key         = {index}
+                    name        = {optionName}
+                    onClick     = {this.handleFilterChange.bind(null, optionId)}
+                />
+            );
+        });
         return <div>{ list }</div>;
     }
 
@@ -47,6 +51,7 @@ class CommonFilterContainer extends Component {
     }
 
     render() {
+        console.warn('filterOptions', this.props.filterOptions);
         return (
             <CommonFilterView
                 activeClass   = {!this.state.folded}
