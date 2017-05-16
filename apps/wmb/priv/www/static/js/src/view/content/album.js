@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import classnames from 'classnames';
 import { Card, CardTitle, Button, CardMedia, Tooltip, CardActions, List, ListItem } from 'react-toolbox';
 
-const AlbumView = ({ onClick, children, album, artist, cover, date, genre, selected, activeClass }) => {
+const AlbumView = ({ handleUnfold, folded, onClick, children, album, artist, cover, date, genre, selected, activeClass }) => {
     // const classNames = classnames('righted', { active: activeClass });
 
     /* const tooltip = (
@@ -13,34 +13,38 @@ const AlbumView = ({ onClick, children, album, artist, cover, date, genre, selec
     );*/
 
     return (
-        <Card style={{ width: '350px' }}>
-            <CardTitle
-                avatar   = {encodeURI(cover)}
-                title    = {genre}
-                subtitle = {date}
-            />
-            <CardMedia
-                aspectRatio = "wide"
-                image       = {encodeURI(cover)}
-            />
-            <CardTitle
-                title    = {album}
-                subtitle = {artist}
-            />
-            <CardActions>
-                <Button raised label="Add all" />
-                <Button raised accent label="Remove all" />
-            </CardActions>
-            <List selectable ripple>
-                <ListItem
-                    caption='Tracks'
-                    onClick = {onClick}
-                    rightIcon={activeClass ? 'keyboard_arrow_down' : 'keyboard_arrow_right'}
-                    leftIcon={'assignment'}
+        <section style={{ padding: '1em' }}>
+            <Card style={{ width: '350px' }}>
+                <CardTitle
+                    avatar   = {encodeURI(cover)}
+                    title    = {genre}
+                    subtitle = {date}
                 />
-                { children }
-            </List>
-        </Card>
+                <CardMedia
+                    aspectRatio = "wide"
+                    image       = {encodeURI(cover)}
+                />
+                <CardTitle
+                    title    = {album}
+                    subtitle = {artist}
+                />
+                <CardActions>
+                    {!selected
+                        ? (<Button raised primary label="Add album" onClick = {onClick} />)
+                        : (<Button raised accent label="Remove album" onClick = {onClick} />)
+                    }
+                </CardActions>
+                <List selectable ripple>
+                    <ListItem
+                        caption='Tracks'
+                        onClick = {handleUnfold}
+                        rightIcon={!folded ? 'keyboard_arrow_down' : 'keyboard_arrow_right'}
+                        leftIcon={'assignment'}
+                    />
+                    { children }
+                </List>
+            </Card>
+        </section>
     );
 };
 

@@ -21,6 +21,7 @@ import {
     receiveAlbumsByArtist,
 } from '../../actions';
 
+import { getRandomNumber } from '../../selectors';
 
 const filtersApiMethods = {
     abc   : 'fetchAbcFilter',
@@ -74,7 +75,8 @@ function* routineDataByFilter(action) {
 }
 
 function* routineRandomButton() {
-    const { payload, error } = yield call(getDataFromApi, 'fetchRandom');
+    const randomNumber = yield select(getRandomNumber);
+    const { payload, error } = yield call(getDataFromApi, 'fetchRandom', [randomNumber]);
     if (payload) {
         yield put(receiveRandomTracks(payload));
     } else {

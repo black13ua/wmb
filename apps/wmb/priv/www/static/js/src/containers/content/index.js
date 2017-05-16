@@ -30,8 +30,17 @@ class ContentContainer extends Component {
         );
     }
 
+    mainSpinner = () =>
+        <div style = {{ position: 'fixed', top: '50%', left: '50%' }}>
+            <ProgressBar
+                type='circular'
+                mode='indeterminate'
+                multicolor
+            />
+        </div>;
+
     render() {
-        if (_.isEmpty(this.props.albumIds)) return <ProgressBar type='circular' mode='indeterminate' multicolor />;
+        if (_.isEmpty(this.props.albumIds)) return this.mainSpinner();
         return (
             <ContentView>
                 { this.albumsList }

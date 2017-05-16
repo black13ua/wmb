@@ -5,7 +5,6 @@ import {
     TRACKS_URL,
     ALBUMS_BY_PAGE,
 } from '../constants/urls';
-import { RANDOM_NUMBER } from '../constants/constants';
 
 
 function checkStatus(response) {
@@ -17,9 +16,8 @@ function checkStatus(response) {
     throw error;
 }
 
-export function fetchRandom() {
-    console.info('fetchRandom');
-    return fetch(`${RANDOM_URL}${RANDOM_NUMBER}`)
+export function fetchRandom(randomNumber) {
+    return fetch(`${RANDOM_URL}${randomNumber}`)
         .then(checkStatus)
         .then(res => res.json())
         .then(json => humps.camelizeKeys(json))

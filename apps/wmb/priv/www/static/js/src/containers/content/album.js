@@ -10,13 +10,24 @@ import { makeSelectAlbumDatabyId, getSelectedTrackIds } from '../../selectors';
 
 
 class AlbumContainer extends Component {
+    state = {
+        folded: true,
+    }
+
     handleSelectAlbumClick = (event) => {
         event.preventDefault();
         event.stopPropagation();
         this.props.selectAlbum();
     }
 
+    handleUnfold = (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        this.setState({ folded: !this.state.folded });
+    }
+
     get trackList() {
+        if (this.state.folded) return null;
         const { albumId, albumData, selectedTrackIds } = this.props;
         if (_.isEmpty(albumData.trackIds)) return null;
 
@@ -44,6 +55,8 @@ class AlbumContainer extends Component {
                 {...albumData}
                 selected = {selected}
                 onClick  = {this.handleSelectAlbumClick}
+                folded = {this.state.folded}
+                handleUnfold = {this.handleUnfold}
             >
                 { this.trackList }
             </AlbumView>

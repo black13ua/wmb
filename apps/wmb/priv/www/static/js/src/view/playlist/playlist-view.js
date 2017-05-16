@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { List, ListItem } from 'react-toolbox';
 
 const PlaylistView = ({ children, button }) =>
-    <aside style={{ marginTop: '100px', padding: '10px' }}>
+    <section style={{ marginTop: '70px', padding: '10px' }}>
         <List selectable ripple>
             <ListItem
                 caption='Playlist'
@@ -11,7 +11,7 @@ const PlaylistView = ({ children, button }) =>
             </ListItem>
             { children }
         </List>
-    </aside>;
+    </section>;
 
 
 PlaylistView.propTypes = {

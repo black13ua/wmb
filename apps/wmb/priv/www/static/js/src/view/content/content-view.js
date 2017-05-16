@@ -3,7 +3,6 @@ import React, { PropTypes } from 'react';
 
 const MainView = ({ children }) =>
     <article>
-        <h1 className="MainView">{ 'Albums' }</h1>
         { children }
     </article>;
 

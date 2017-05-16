@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { List, ListSubHeader, ListItem, Button, Switch, Slider } from 'react-toolbox';
+import { List, ProgressBar, ListSubHeader, ListItem, Button, Switch, Slider } from 'react-toolbox';
 
 const RandomButtonView = ({
     checked,
@@ -16,7 +16,7 @@ const RandomButtonView = ({
     }
 
     return (
-        <div>
+        <div style = {{ position: 'relative' }} >
             <ListSubHeader caption='Random' />
             <div style = {{ width: '100%', textAlign: 'center', margin: '15px 0' }} >
                 <Button
@@ -24,7 +24,7 @@ const RandomButtonView = ({
                     label={`${randomNumber} random tracks`}
                     raised
                     primary
-                    disabled = {randomNumber < 3 && disabled}
+                    disabled = {disabled}
                     floating
                     onClick = {onButtonClick}
                 />
@@ -40,9 +40,9 @@ const RandomButtonView = ({
             <Slider
                 pinned
                 snaps
-                min={1}
-                max={7}
-                step={1}
+                min={5}
+                max={30}
+                step={5}
                 editable
                 value={randomNumber}
                 onChange={onSliderChange.bind(this)}

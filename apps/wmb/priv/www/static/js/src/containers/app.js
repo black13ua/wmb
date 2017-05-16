@@ -90,6 +90,7 @@ class App extends Component { // eslint-disable-line
                         pinned      = {this.state.playlistPinned}
                         width       = {25}
                         permanentAt = {permanentAt}
+                        style       = {{ overflow: 'visible' }}
                     >
                         <PlaylistContainer />
                     </Sidebar>
