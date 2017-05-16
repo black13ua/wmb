@@ -7,6 +7,7 @@ const RandomButtonView = ({
     onRandomCheckToggle,
     disabled,
     randomNumber,
+    onSliderChange,
 }) => {
     function onButtonClick(event) {
         event.preventDefault();
@@ -20,10 +21,10 @@ const RandomButtonView = ({
             <div style = {{ width: '100%', textAlign: 'center', margin: '15px 0' }} >
                 <Button
                     icon='add'
-                    label='5 random tracks'
+                    label={`${randomNumber} random tracks`}
                     raised
                     primary
-                    disabled = {disabled}
+                    disabled = {randomNumber < 3 && disabled}
                     floating
                     onClick = {onButtonClick}
                 />
@@ -43,8 +44,8 @@ const RandomButtonView = ({
                 max={7}
                 step={1}
                 editable
-                value={5}
-                onChange={() => null}
+                value={randomNumber}
+                onChange={onSliderChange.bind(this)}
             />
         </div>
     );

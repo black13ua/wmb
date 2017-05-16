@@ -19,6 +19,7 @@ export const receiveError               = error            => actionCreator(Acti
 
 export const randomCheckToggle          = ()               => actionCreator(ActionTypes.RANDOM_CHECKER_TOGGLE);
 export const saveSearchValue            = value            => actionCreator(ActionTypes.SAVE_SEARCH_VALUE, { value });
+export const randomNumberChange         = value            => actionCreator(ActionTypes.RANDOM_NUMBER_CHANGE, { value });
 export const fetchFiltersData           = ()               => actionCreator(ActionTypes.FETCH_ALL_FILTERS);
 
 

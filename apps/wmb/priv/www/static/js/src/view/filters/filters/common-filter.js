@@ -4,6 +4,11 @@ import { ListItem } from 'react-toolbox';
 
 import translate from '../../../constants/names';
 
+const iconsByAlias = {
+    genres: 'library_music',
+    dates : 'history',
+    abc   : 'line_weight',
+};
 
 const FilterView = ({ children, optionsLength, alias, onClick, activeClass }) => {
     return (
@@ -11,10 +16,12 @@ const FilterView = ({ children, optionsLength, alias, onClick, activeClass }) =>
             <ListItem
                 caption={`${translate.filterHeaders[alias] || alias}`}
                 onClick = {onClick}
-                rightIcon="keyboard_arrow_right"
-                leftIcon='assignment'
+                rightIcon={activeClass ? 'keyboard_arrow_down' : 'keyboard_arrow_right'}
+                leftIcon={iconsByAlias[alias] || 'assignment'}
             />
-            { children }
+            <div style = {{ textAlign: 'center' }}>
+                { children }
+            </div>
         </div>
     );
 };

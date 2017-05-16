@@ -13,6 +13,7 @@ export const SAVE_SEARCH_VALUE               = 'SAVE_SEARCH_VALUE';
 export const FETCH_ALL_FILTERS               = 'FETCH_ALL_FILTERS';
 export const SET_SEARCH_VALUE                = 'SET_SEARCH_VALUE';
 export const RANDOM_CHECKER_TOGGLE           = 'RANDOM_CHECKER_TOGGLE';
+export const RANDOM_NUMBER_CHANGE            = 'RANDOM_NUMBER_CHANGE';
 export const SET_FIELD_VALUE                 = 'SET_FIELD_VALUE';
 
 export const FETCH_ARTISTS_BY_LETTER         = 'FETCH_ARTISTS_BY_LETTER';

@@ -39,3 +39,8 @@ export const getActiveArtist = createSelector(
     filterSelector,
     state => state.viewState.activeArtistId
 );
+
+export const getRandomNumber = createSelector(
+    filterSelector,
+    state => state.data.randomNumber
+);

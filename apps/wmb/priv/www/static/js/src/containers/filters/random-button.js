@@ -3,8 +3,8 @@ import { connect } from 'react-redux';
 
 import RandomButtonView from '../../view/filters/random-button';
 
-import { fetchRandomTracks, randomCheckToggle } from '../../actions';
-import { getIsRandomChecked, getFetchingState } from '../../selectors';
+import { fetchRandomTracks, randomCheckToggle, randomNumberChange } from '../../actions';
+import { getIsRandomChecked, getFetchingState, getRandomNumber } from '../../selectors';
 
 
 const RandomButtonContainer = ({
@@ -12,17 +12,17 @@ const RandomButtonContainer = ({
     handleRandomButtonClick,
     handleRandomCheckToggle,
     fetching,
-}) => {
-    console.info('fetching', fetching);
-    return (
-        <RandomButtonView
-            checked             = {checked}
-            disabled            = {fetching.random}
-            onRandomButtonClick = {handleRandomButtonClick}
-            onRandomCheckToggle = {handleRandomCheckToggle}
-        />
-    );
-};
+    handleSliderChange,
+    randomNumber,
+}) =>
+    <RandomButtonView
+        checked             = {checked}
+        disabled            = {fetching.random}
+        onRandomButtonClick = {handleRandomButtonClick}
+        onRandomCheckToggle = {handleRandomCheckToggle}
+        onSliderChange      = {handleSliderChange}
+        randomNumber        = {randomNumber}
+    />;
 
 
 RandomButtonContainer.propTypes = {
@@ -33,13 +33,15 @@ RandomButtonContainer.propTypes = {
 };
 
 const mapStateToProps = state => ({
-    checked : getIsRandomChecked(state),
-    fetching: getFetchingState(state),
+    checked     : getIsRandomChecked(state),
+    fetching    : getFetchingState(state),
+    randomNumber: getRandomNumber(state),
 });
 
 const mapDispatchToProps = dispatch => ({
     handleRandomButtonClick: () => dispatch(fetchRandomTracks()),
     handleRandomCheckToggle: () => dispatch(randomCheckToggle()),
+    handleSliderChange     : value => dispatch(randomNumberChange(value)),
 });
 
 

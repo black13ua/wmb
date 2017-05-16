@@ -8,8 +8,10 @@ import {
     SAVE_SEARCH_VALUE,
     SET_ACTIVE_ARTIST_IN_ABC_FILTER,
     RECEIVE_ARTISTS_BY_LETTER,
+    RANDOM_NUMBER_CHANGE,
 } from '../constants/action-types';
 
+import { RANDOM_NUMBER } from '../constants/constants';
 
 const initialState = Immutable({
     data: {
@@ -19,6 +21,7 @@ const initialState = Immutable({
             dates : [],
         },
         artistsByLetter: {},
+        randomNumber   : RANDOM_NUMBER,
     },
     viewState: {
         filtersCurrentValue: {
@@ -29,6 +32,10 @@ const initialState = Immutable({
         activeArtistId : -1,
         search         : '',
         isRandomChecked: true,
+        selected       : {
+            filters: [],
+            letters: [],
+        },
     },
 });
 
@@ -36,6 +43,11 @@ export default createReducer(initialState, {
     [RECEIVE_FILTER_DATA](state, action) {
         const { alias, data } = action.payload;
         return state.setIn(['data', 'filters', alias], data);
+    },
+
+    [RANDOM_NUMBER_CHANGE](state, action) {
+        const { value } = action.payload;
+        return state.setIn(['data', 'randomNumber'], value);
     },
 
     [RECEIVE_ARTISTS_BY_LETTER](state, action) {

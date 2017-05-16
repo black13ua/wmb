@@ -1,17 +1,22 @@
 import React, { PropTypes } from 'react';
 // import classnames from 'classnames';
-import { ListItem } from 'react-toolbox';
+import { ListItem, Avatar } from 'react-toolbox';
 
 const LetterView = ({ onClick, children, letter, artistCount, activeClass }) => {
     // const classNames = classnames({ active: activeClass });
-
     return (
         <div>
             <ListItem
-                caption = {letter}
+                rightIcon={activeClass ? 'keyboard_arrow_down' : 'keyboard_arrow_right'}
                 onClick = {onClick}
-                rightIcon="keyboard_arrow_right"
-            />
+            >
+                <div style = {{ textAlign: 'center' }} >
+                    <Avatar
+                        style = {{ backgroundColor: activeClass ? 'deeppink' : 'deepskyblue' }}
+                        title = {letter}
+                    />
+                </div>
+            </ListItem>
             <div>
                 { children }
             </div>

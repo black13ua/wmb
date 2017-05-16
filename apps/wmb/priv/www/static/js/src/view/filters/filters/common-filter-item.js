@@ -9,7 +9,6 @@ const FilterItemView = ({ activeClass, onClick, name }) => {
         <ListItem
             caption = {name}
             onClick   = {onClick}
-            leftIcon = "history"
         />
     );
 };
