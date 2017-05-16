@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 // import classnames from 'classnames';
 import { Chip, Avatar } from 'react-toolbox';
 
-const PlaylistTrackView = ({ onClick, title, activeClass }) => {
+const PlaylistTrackView = ({ onClick, title, active, album, artist, genre, date, cover }) => {
     return (
         <Chip
             deletable
@@ -10,18 +10,17 @@ const PlaylistTrackView = ({ onClick, title, activeClass }) => {
             onDeleteClick = {onClick}
         >
             <Avatar
-                style = {{ backgroundColor: activeClass ? 'deepskyblue' : 'deeppink' }}
-                icon  = {activeClass ? 'play_arrow' : 'music_note'}
+                image={encodeURI(cover)}
             />
-            <span>{ title }</span>
+            <span>{ `${title} - ${artist}` }</span>
         </Chip>
     );
 };
 
 PlaylistTrackView.propTypes = {
-    activeClass: PropTypes.bool,
-    title      : PropTypes.string.isRequired,
-    onClick    : PropTypes.func.isRequired,
+    active : PropTypes.bool,
+    title  : PropTypes.string.isRequired,
+    onClick: PropTypes.func.isRequired,
 };
 
 export default PlaylistTrackView;
