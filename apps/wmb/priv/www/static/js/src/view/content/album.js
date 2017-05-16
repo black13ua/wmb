@@ -3,7 +3,7 @@ import classnames from 'classnames';
 import { Card, CardTitle, Button, CardMedia, Tooltip, CardActions, List, ListItem } from 'react-toolbox';
 
 const AlbumView = ({ onClick, children, album, artist, cover, date, genre, selected, activeClass }) => {
-    const classNames = classnames('righted', { active: activeClass });
+    // const classNames = classnames('righted', { active: activeClass });
 
     /* const tooltip = (
         <Tooltip id="tooltip">
@@ -27,13 +27,19 @@ const AlbumView = ({ onClick, children, album, artist, cover, date, genre, selec
                 title    = {album}
                 subtitle = {artist}
             />
-            <List>
-                <ListItem  title="sdfsfsf" />
-                <ListItem  title="идф" />
-            </List>
             <CardActions>
-                <Button label="Add all" />
+                <Button raised label="Add all" />
+                <Button raised accent label="Remove all" />
             </CardActions>
+            <List selectable ripple>
+                <ListItem
+                    caption='Tracks'
+                    onClick = {onClick}
+                    rightIcon={activeClass ? 'keyboard_arrow_down' : 'keyboard_arrow_right'}
+                    leftIcon={'assignment'}
+                />
+                { children }
+            </List>
         </Card>
     );
 };

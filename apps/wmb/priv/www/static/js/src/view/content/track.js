@@ -1,22 +1,19 @@
 import React, { PropTypes } from 'react';
 import classnames from 'classnames';
-import { ListGroupItem, Button } from 'react-bootstrap';
+import { Chip, Avatar } from 'react-toolbox';
 
-const TrackView = ({ onClick, title, selected, activeClass }) => {
+const TrackView = ({ onClick, title, selected, activeClass, cover }) => {
     const classNames = classnames('righted', { active: activeClass });
 
     return (
-        <ListGroupItem>
-            <span>{ title }</span>
-            <Button
-                bsSize    = "xsmall"
-                bsStyle   = {selected ? 'warning' : 'info'}
-                className = {classNames}
-                onClick   = {onClick}
-            >
-                { selected ? 'remove' : 'add' }
-            </Button>
-        </ListGroupItem>
+        <Chip
+            deletable = {selected}
+            style         = {{ display: 'block', margin: '3px', cursor: 'pointer' }}
+            onDeleteClick = {onClick}
+        >
+            <Avatar icon={selected ? 'delete' : 'add'} />
+            <span>{title}</span>
+        </Chip>
     );
 };
 

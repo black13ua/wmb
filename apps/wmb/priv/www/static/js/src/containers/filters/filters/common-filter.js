@@ -51,7 +51,6 @@ class CommonFilterContainer extends Component {
     }
 
     render() {
-        console.warn('filterOptions', this.props.filterOptions);
         return (
             <CommonFilterView
                 activeClass   = {!this.state.folded}
