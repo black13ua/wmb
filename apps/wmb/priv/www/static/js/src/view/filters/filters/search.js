@@ -3,31 +3,27 @@ import { ListSubHeader, ListDivider, Input, Button } from 'react-toolbox';
 
 
 const SearchView = ({ search, onSearchClick, onSearchChange }) => {
-    // function getValidationState() {
-    //     const length = search.length;
-    //     if (length > 2) return 'success';
-    //     return 'warning';
-    // }
     return (
         <div>
             <ListDivider />
             <ListSubHeader caption='Search' />
             <div>
                 <Input
-                    type     = 'text'
+                    icon     = "search"
+                    type     = "text"
                     value    = {search}
-                    icon     = 'search'
                     onChange = {onSearchChange}
                 />
             </div>
             <div style = {{ width: '100%', textAlign: 'center', margin: '15px 0' }} >
                 <Button
-                    icon='search'
-                    label='Search'
+                    icon     = 'search'
+                    label    = 'Search'
+                    disabled = {search.length < 3}
                     raised
                     primary
                     floating
-                    onClick = {onSearchClick}
+                    onClick  = {onSearchClick}
                 />
             </div>
         </div>

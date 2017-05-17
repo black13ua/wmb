@@ -27,7 +27,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
     handleSearchClick : ()    => dispatch(fetchSearchResults()),
-    handleSearchChange: event => dispatch(saveSearchValue(event.target.value)),
+    handleSearchChange: value => dispatch(saveSearchValue(value)),
 });
 
 
