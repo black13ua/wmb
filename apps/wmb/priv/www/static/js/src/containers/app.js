@@ -42,9 +42,8 @@ class App extends Component { // eslint-disable-line
             <Button
                 accent
                 floating
-                mini
                 icon    = "build"
-                style   = {{ position: 'relative', bottom: '-30px' }}
+                style   = {{ position: 'absolute', top: '35px', left: '35px', zIndex: 999 }}
                 onClick = {this.toggleFiltersPinned}
             />
         );
@@ -55,9 +54,8 @@ class App extends Component { // eslint-disable-line
             <Button
                 accent
                 floating
-                mini
-                icon    = "list"
-                style   = {{ position: 'absolute', bottom: '-22px', right: '10px' }}
+                icon    = "assignment"
+                style   = {{ position: 'absolute', top: '35px', right: '35px', zIndex: 999 }}
                 onClick = {this.togglePlaylistPinned}
             />
         );
@@ -68,11 +66,10 @@ class App extends Component { // eslint-disable-line
         const appBarIconVisible = this.state.width <= breakpoints[permanentAt];
 
         return (
-            <div style={{ marginTop: '100px' }}>
-                <AppBar fixed >
-                    {appBarIconVisible ? this.filterToggleButton : null}
-                    {appBarIconVisible ? this.playlistToggleButton : null}
-                </AppBar>
+            <div style={{ marginTop: '100px', position: 'realtive' }}>
+                {appBarIconVisible ? this.filterToggleButton : null}
+                {appBarIconVisible ? this.playlistToggleButton : null}
+                <AppBar fixed />
                 <Layout>
                     <NavDrawer
                         active         = {this.state.drawerActive}
@@ -89,7 +86,7 @@ class App extends Component { // eslint-disable-line
                     <Sidebar
                         style       = {{ overflow: 'visible' }}
                         pinned      = {this.state.playlistPinned}
-                        width       = {25}
+                        width       = {5}
                         permanentAt = {permanentAt}
                     >
                         <PlaylistContainer />

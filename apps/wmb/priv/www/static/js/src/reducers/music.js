@@ -60,7 +60,8 @@ export default createReducer(initialState, {
 
     [CLEAR_PLAYLIST](state) {
         return state
-            .setIn(['viewState', 'selected', 'tracks'], []);
+            .setIn(['viewState', 'selected', 'tracks'], [])
+            .setIn(['viewState', 'selected', 'albums'], []);
     },
 
     [SELECT_TRACK](state, action) {
