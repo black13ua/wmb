@@ -131,7 +131,7 @@ add_to_ets(File, FileID3Tags) ->
             [LetterByte|_] = unicode:characters_to_list(AlbumArtist),
             LetterBin = unicode:characters_to_binary([LetterByte]),
             LetterID = get_letter_id(LetterBin),
-            ets:insert_new(?ETS_ABC, {{{letter_id, LetterID}, {letter, LetterBin}}, {artist, AlbumArtist}});
+            ets:insert(?ETS_ABC, {{{letter_id, LetterID}, {letter, LetterBin}}, {artist, AlbumArtist}});
             %%%io:format("Letters is: ~p~n", [[LetterByte, LetterBin]]);
         ExistedAlbumID ->
             {{album, Album}, {date, Date}, {tracks, TrackIDList}, PathIDTuple, GenreTuple, CoverTuple} = ets:lookup_element(?ETS_ALBUMS, {album_id, ExistedAlbumID}, 2),

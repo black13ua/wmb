@@ -226,7 +226,8 @@ get_artists_by_letterid(LetterID) ->
     ArtistsFlat = ets:match(?ETS_ABC, {{LetterID, '_'}, '$1'}),
     ArtistsSorted = lists:flatten(lists:usort(ArtistsFlat)),
     Fun = fun(X) ->
-              [[ArtistID]|_] = ets:match(?ETS_ARTISTS, {'_', {X, '$1'}}),
+              %[[ArtistID]|_] = ets:match(?ETS_ARTISTS, {'_', {X, '$1'}}),
+              {[[ArtistID]], _} = ets:match(?ETS_ARTISTS, {'_', {X, '$1'}}, 1),
               [ArtistID, X]
           end,
     Artists = lists:map(Fun, ArtistsSorted),
