@@ -126,6 +126,13 @@ function getNormalizedAlbums(albums) {
 
 function getNormalizedDataTracks(albums) {
     return _(albums)
+        .map(album => ({
+                        ...album,
+                        tracks: _(album.tracks)
+                                    .map(track => ({ ...track, ...album }))
+                                    .value(),
+                        })
+        )
         .flatMap('tracks')
         .reduce((acum, track) => ({ ...acum, [track.trackId]: track }), {});
 }

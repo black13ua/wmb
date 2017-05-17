@@ -1,4 +1,4 @@
-import React, { PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
 // import classnames from 'classnames';
 import { Chip, Avatar } from 'react-toolbox';
 
@@ -13,18 +13,38 @@ const hoveredStyle = {
     bottom   : '4px',
 };
 
-const PlaylistTrackView = ({ onClick, title, active, album, artist, genre, date, cover }) => {
-    return (
-        <Chip
-            deletable
-            style         = {hoveredStyle}
-            onDeleteClick = {onClick}
-        >
-            <Avatar image={encodeURI(cover)} />
-            <span>{ `${title} - ${artist}` }</span>
-        </Chip>
-    );
+const defaultStyle = {
+    display: 'block',
+    margin : '3px',
+    cursor : 'pointer',
 };
+
+class PlaylistTrackView extends Component {
+    state = {
+        hovered: false,
+    };
+
+    handleHover = (value, event) => {
+        event.stopPropagation();
+        this.setState({ hovered: value });
+    }
+
+    render() {
+        const { onClick, title, active, album, artist, genre, date, cover } = this.props;
+        return (
+            <Chip
+                deletable
+                style         = {this.state.hovered ? hoveredStyle : defaultStyle}
+                onDeleteClick = {onClick}
+                onMouseEnter = {this.handleHover.bind(this, true)}
+                onMouseLeave = {this.handleHover.bind(this, false)}
+            >
+                <Avatar image={encodeURI(cover)} />
+                <span>{ `${title} - ${artist}` }</span>
+            </Chip>
+        );
+    }
+}
 
 PlaylistTrackView.propTypes = {
     active : PropTypes.bool,

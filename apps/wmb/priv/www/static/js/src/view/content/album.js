@@ -13,7 +13,7 @@ const AlbumView = ({ handleUnfold, folded, onClick, children, album, artist, cov
     );*/
 
     return (
-        <section style={{ padding: '1em' }}>
+        <section style={{ padding: '1em', display: 'inline-block', float: 'left' }}>
             <Card style={{ width: '350px' }}>
                 <CardTitle
                     avatar   = {encodeURI(cover)}
