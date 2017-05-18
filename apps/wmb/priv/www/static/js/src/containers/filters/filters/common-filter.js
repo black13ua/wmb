@@ -5,7 +5,7 @@ import FilterItemView from '../../../view/filters/filters/common-filter-item';
 import CommonFilterView from '../../../view/filters/filters/common-filter';
 
 import { fetchFilter, setFieldValueIO } from '../../../actions';
-import { getFilterDataByAlias, getFilterCurrentValueByAlias } from '../../../selectors';
+import { getFilterDataByAlias, getFilterCurrentValueByAlias, getFetchingState } from '../../../selectors';
 
 
 class CommonFilterContainer extends Component {
@@ -14,10 +14,6 @@ class CommonFilterContainer extends Component {
         this.state = {
             folded: true,
         };
-    }
-
-    componentWillMount() {
-        this.props.fetchFilterByAlias();
     }
 
     get itemsList() {
@@ -48,6 +44,7 @@ class CommonFilterContainer extends Component {
         event.preventDefault();
         event.stopPropagation();
         this.setState({ folded: !this.state.folded });
+        this.props.fetchFilterByAlias();
     }
 
     render() {
@@ -76,6 +73,7 @@ CommonFilterContainer.propTypes = {
 const mapStateToProps = (state, props) => ({
     filterOptions: getFilterDataByAlias(state, props),
     currentValue : getFilterCurrentValueByAlias(state, props),
+    fetching     : getFetchingState(state),
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({

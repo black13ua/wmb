@@ -10,9 +10,9 @@ const iconsByAlias = {
     abc   : 'line_weight',
 };
 
-const FilterView = ({ children, optionsLength, alias, onClick, activeClass }) => {
+const FilterView = ({ children, optionsLength, alias, onClick, activeClass, fetching }) => {
     return (
-        <div>
+        <div style = {{ cursor: 'pointer' }}>
             <ListItem
                 caption={`${translate.filterHeaders[alias] || alias}`}
                 onClick = {onClick}
@@ -32,6 +32,7 @@ FilterView.propTypes = {
     alias        : PropTypes.string.isRequired,
     children     : PropTypes.node,
     optionsLength: PropTypes.number.isRequired,
+    fetching     : PropTypes.object.isRequired,
     onClick      : PropTypes.func.isRequired,
 };
 
