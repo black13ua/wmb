@@ -20,30 +20,26 @@ export function fetchRandom(randomNumber) {
     return fetch(`${RANDOM_URL}${randomNumber}`)
         .then(checkStatus)
         .then(res => res.json())
-        .then(json => humps.camelizeKeys(json))
-        .catch(error => console.log(`%c ${error.message}`, 'color: deepPink'));
+        .then(json => humps.camelizeKeys(json));
 }
 
 export function fetchAlbumById(albumId) {
     return fetch(`${ALBUMS_URL}${albumId}`)
         .then(checkStatus)
         .then(res => res.json())
-        .then(json => humps.camelizeKeys(json))
-        .catch(error => console.log(`%c ${error.message}`, 'color: deepPink'));
+        .then(json => humps.camelizeKeys(json));
 }
 
 export function fetchAlbumsByPage(page) {
     return fetch(`${ALBUMS_BY_PAGE}${page}`)
         .then(checkStatus)
         .then(res => res.json())
-        .then(json => humps.camelizeKeys(json))
-        .catch(error => console.log(`%c ${error.message}`, 'color: deepPink'));
+        .then(json => humps.camelizeKeys(json));
 }
 
 export function fetchTrack(trackId) {
     return fetch(`${TRACKS_URL}${trackId}`)
         .then(checkStatus)
         .then(res => res.json())
-        .then(json => humps.camelizeKeys(json))
-        .catch(error => console.log(`%c ${error.message}`, 'color: deepPink'));
+        .then(json => humps.camelizeKeys(json));
 }

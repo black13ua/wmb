@@ -32,7 +32,7 @@ FilterView.propTypes = {
     alias        : PropTypes.string.isRequired,
     children     : PropTypes.node,
     optionsLength: PropTypes.number.isRequired,
-    fetching     : PropTypes.object.isRequired,
+    fetching     : PropTypes.object,
     onClick      : PropTypes.func.isRequired,
 };
 

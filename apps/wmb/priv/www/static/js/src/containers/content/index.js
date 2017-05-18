@@ -1,16 +1,20 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { ProgressBar } from 'react-toolbox';
+import { ProgressBar, Snackbar } from 'react-toolbox';
 import ContentView from '../../view/content/content-view';
 import AlbumContainer from './album';
 
-import { fetchAlbumsByPage } from '../../actions';
-import { getAlbumsIds, getSelectedAlbumIds } from '../../selectors';
+import { fetchAlbumsByPage, clearWarningState } from '../../actions';
+import { getAlbumsIds, getSelectedAlbumIds, getWarningMessage } from '../../selectors';
 
 
 class ContentContainer extends Component {
     componentWillMount() {
         this.props.fetchAlbumsByPage();
+    }
+
+    handleSnackbarTimeout = () => {
+        this.props.clearWarningState();
     }
 
     get albumsList() {
@@ -35,11 +39,26 @@ class ContentContainer extends Component {
             />
         </div>;
 
+    get warningMessage() {
+        return (
+            <Snackbar
+                action    = 'Dismiss'
+                active    = {this.props.warning}
+                label     = {this.props.warning}
+                timeout   = {3000}
+                onClick   = {this.handleSnackbarTimeout}
+                onTimeout = {this.handleSnackbarTimeout}
+                type='warning'
+            />
+        );
+    }
+
     render() {
         if (_.isEmpty(this.props.albumIds)) return this.mainSpinner();
         return (
             <ContentView>
                 { this.albumsList }
+                { this.warningMessage }
             </ContentView>
         );
     }
@@ -50,15 +69,18 @@ ContentContainer.propTypes = {
     albumIds         : PropTypes.arrayOf(PropTypes.number),
     fetchAlbumsByPage: PropTypes.func.isRequired,
     selectedAlbumIds : PropTypes.arrayOf(PropTypes.number).isRequired,
+    warning          : PropTypes.string,
 };
 
 const mapStateToProps = state => ({
     albumIds        : getAlbumsIds(state),
     selectedAlbumIds: getSelectedAlbumIds(state),
+    warning         : getWarningMessage(state),
 });
 
 const mapDispatchToProps = dispatch => ({
     fetchAlbumsByPage: () => dispatch(fetchAlbumsByPage()),
+    clearWarningState: () => dispatch(clearWarningState()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ContentContainer);

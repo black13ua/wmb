@@ -17,8 +17,8 @@ const AlbumView = ({ handleUnfold, folded, onClick, children, album, artist, cov
             <Card style={{ width: '350px', background: 'lightgrey' }}>
                 <CardTitle
                     avatar   = {encodeURI(cover)}
-                    title    = {genre}
-                    subtitle = {date}
+                    title    = {artist}
+                    subtitle = {album}
                 />
                 <CardMedia
                     aspectRatio = {'square'}
@@ -26,8 +26,8 @@ const AlbumView = ({ handleUnfold, folded, onClick, children, album, artist, cov
                     <img src={encodeURI(cover)} alt={album} />
                 </CardMedia>
                 <CardTitle
-                    title    = {album}
-                    subtitle = {artist}
+                    title    = {genre}
+                    subtitle = {date}
                 />
                 <CardActions>
                     {!selected

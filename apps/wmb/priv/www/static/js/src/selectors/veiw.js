@@ -12,3 +12,8 @@ export const getCurrentPage = createSelector(
     musicSelector,
     state => state.viewState.currentPage
 );
+
+export const getWarningMessage = createSelector(
+    musicSelector,
+    state => state.viewState.warningMessage
+);

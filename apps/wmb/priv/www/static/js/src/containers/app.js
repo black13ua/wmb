@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { AppBar, Button } from 'react-toolbox';
 import { Layout, NavDrawer, Panel, Sidebar, IconButton } from 'react-toolbox';
-// import PlayerView from '../view/player/player-view';
 import isBrowser from 'react-toolbox/lib/utils/is-browser';
 import breakpoints from 'react-toolbox/lib/utils/breakpoints';
 import { getViewport } from 'react-toolbox/lib/utils/utils';
+import GreyAppBar from './greyAppBar';
 import FiltersContainer from './filters';
 import ContentContainer from './content';
 import PlaylistContainer from './playlist';
@@ -69,7 +69,7 @@ class App extends Component { // eslint-disable-line
             <div style={{ marginTop: '70px', position: 'realtive' }} >
                 {appBarIconVisible ? this.filterToggleButton : null}
                 {appBarIconVisible ? this.playlistToggleButton : null}
-                <AppBar fixed style = {{ height: '75px' }} >
+                <AppBar scrollHide fixed style = {{ height: '75px' }} >
                     <div style = {{ display: 'flex', width: '100%', margin: '0 20%', flexWrap: 'wrap', justifyContent: 'space-around', alignContent: 'flex-around' }}>
                         <IconButton icon='skip_previous' floating mini style = {{ margin: 'auto 0', color: 'wheat' }} />
                         <Button icon='play_arrow' floating accent style = {{ margin: 'auto 0', color: 'wheat' }} />
@@ -98,6 +98,17 @@ class App extends Component { // eslint-disable-line
                         <PlaylistContainer />
                     </Sidebar>
                 </Layout>
+                <div style = {{ position: 'fixed', bottom: 0, width: '100%', zIndex: 200, height: '35px' }}>
+                    <GreyAppBar >
+                        <div style = {{ display: 'flex', width: '100%', height: '100%', flexWrap: 'wrap', justifyContent: 'space-around', alignContent: 'flex-around' }}>
+                            <Button icon='first_page' label='10' flat />
+                            <Button icon='navigate_before' label='12' flat />
+                            <Button label='13' flat />
+                            <Button icon='navigate_next' label='14' flat />
+                            <Button icon='last_page' label='20' flat />
+                        </div>
+                    </GreyAppBar>
+                </div>
             </div>
         );
     }

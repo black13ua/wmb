@@ -9,6 +9,9 @@ import {
     SELECT_TRACK,
     SELECT_ALBUM,
     CLEAR_PLAYLIST,
+    CLEAR_WARNING,
+    SET_WARNING,
+    RECEIVE_ERROR,
 } from '../constants/action-types';
 
 
@@ -32,7 +35,8 @@ const initialState = Immutable({
             albums: [],
             tracks: [],
         },
-        currentPage: 1,
+        currentPage   : 1,
+        warningMessage: '',
     },
 });
 
@@ -62,6 +66,23 @@ export default createReducer(initialState, {
         return state
             .setIn(['viewState', 'selected', 'tracks'], [])
             .setIn(['viewState', 'selected', 'albums'], []);
+    },
+
+    [CLEAR_WARNING](state) {
+        return state
+            .setIn(['viewState', 'warningMessage'], '');
+    },
+
+    [SET_WARNING](state, action) {
+        const { warning } = action.payload;
+        return state
+            .setIn(['viewState', 'warningMessage'], warning);
+    },
+
+    [RECEIVE_ERROR](state, action) {
+        const { error } = action.payload;
+        return state
+            .setIn(['viewState', 'warningMessage'], error);
     },
 
     [SELECT_TRACK](state, action) {

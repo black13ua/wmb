@@ -43,7 +43,7 @@ function getDataFromApi(apiMethod, args = []) {
     return API[apiMethod]
         ? API[apiMethod](...args)
             .then(payload => ({ payload }))
-            .catch(error => ({ error }))
+            .catch(error => ({ error: error.message }))
         : new Promise((resolve, reject) => reject());
 }
 
