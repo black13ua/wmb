@@ -14,14 +14,14 @@ const AlbumView = ({ handleUnfold, folded, onClick, children, album, artist, cov
 
     return (
         <section style={{ flex: '0 350px', padding: '1em 0' }}>
-            <Card style={{ width: '350px' }}>
+            <Card style={{ width: '350px', background: 'lightgrey' }}>
                 <CardTitle
                     avatar   = {encodeURI(cover)}
                     title    = {genre}
                     subtitle = {date}
                 />
                 <CardMedia
-                    aspectRatio = "wide"
+                    aspectRatio = "square"
                     image       = {encodeURI(cover)}
                 />
                 <CardTitle

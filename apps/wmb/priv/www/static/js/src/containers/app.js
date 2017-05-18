@@ -43,7 +43,7 @@ class App extends Component { // eslint-disable-line
                 accent
                 floating
                 icon    = "build"
-                style   = {{ position: 'absolute', top: '35px', left: '35px', zIndex: 999 }}
+                style   = {{ position: 'fixed', top: '35px', left: '35px', zIndex: 999 }}
                 onClick = {this.toggleFiltersPinned}
             />
         );
@@ -55,7 +55,7 @@ class App extends Component { // eslint-disable-line
                 accent
                 floating
                 icon    = "assignment"
-                style   = {{ position: 'absolute', top: '35px', right: '35px', zIndex: 999 }}
+                style   = {{ position: 'fixed', top: '35px', right: '35px', zIndex: 999 }}
                 onClick = {this.togglePlaylistPinned}
             />
         );
