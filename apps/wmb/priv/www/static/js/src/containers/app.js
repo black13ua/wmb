@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { AppBar, Button } from 'react-toolbox';
-import { Layout, NavDrawer, Panel, Sidebar } from 'react-toolbox';
+import { Layout, NavDrawer, Panel, Sidebar, IconButton } from 'react-toolbox';
 // import PlayerView from '../view/player/player-view';
 import isBrowser from 'react-toolbox/lib/utils/is-browser';
 import breakpoints from 'react-toolbox/lib/utils/breakpoints';
@@ -66,10 +66,16 @@ class App extends Component { // eslint-disable-line
         const appBarIconVisible = this.state.width <= breakpoints[permanentAt];
 
         return (
-            <div style={{ marginTop: '100px', position: 'realtive' }} >
+            <div style={{ marginTop: '70px', position: 'realtive' }} >
                 {appBarIconVisible ? this.filterToggleButton : null}
                 {appBarIconVisible ? this.playlistToggleButton : null}
-                <AppBar fixed />
+                <AppBar fixed style = {{ height: '75px' }} >
+                    <div style = {{ display: 'flex', width: '100%', margin: '0 20%', flexWrap: 'wrap', justifyContent: 'space-around', alignContent: 'flex-around' }}>
+                        <IconButton icon='skip_previous' floating mini style = {{ margin: 'auto 0', color: 'wheat' }} />
+                        <Button icon='play_arrow' floating accent style = {{ margin: 'auto 0', color: 'wheat' }} />
+                        <IconButton icon='skip_next' floating mini style = {{ margin: 'auto 0', color: 'wheat' }} />
+                    </div>
+                </AppBar>
                 <Layout>
                     <NavDrawer
                         active         = {this.state.drawerActive}
