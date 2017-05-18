@@ -21,9 +21,10 @@ const AlbumView = ({ handleUnfold, folded, onClick, children, album, artist, cov
                     subtitle = {date}
                 />
                 <CardMedia
-                    aspectRatio = "square"
-                    image       = {encodeURI(cover)}
-                />
+                    aspectRatio = {'square'}
+                >
+                    <img src={encodeURI(cover)} alt={album} />
+                </CardMedia>
                 <CardTitle
                     title    = {album}
                     subtitle = {artist}
