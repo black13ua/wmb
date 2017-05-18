@@ -23,11 +23,7 @@ class ContentContainer extends Component {
                 selected = {_.includes(selectedAlbumIds, albumId)}
             />
         );
-        return (
-            <div>
-                { list }
-            </div>
-        );
+        return list;
     }
 
     mainSpinner = () =>

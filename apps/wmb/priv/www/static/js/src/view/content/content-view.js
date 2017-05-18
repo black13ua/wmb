@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 
 
 const MainView = ({ children }) =>
-    <article>
+    <article style = {{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-around', alignContent: 'space-around' }}>
         { children }
     </article>;
 

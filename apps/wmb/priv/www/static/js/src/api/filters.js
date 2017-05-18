@@ -84,7 +84,6 @@ export function fetchArtistsByLetter(letterId) {
 }
 
 export function fetchAlbumsByArtist(artistId) {
-    console.warn('fetchAlbumsByArtist');
     return fetch(`${ALBUMS_BY_ARTIST_URL}${artistId}`)
         .then(checkStatus)
         .then(res => res.json())

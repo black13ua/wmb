@@ -18,7 +18,7 @@ import {
     receiveError,
     setActiveArtistInAbcFilter,
     receiveArtistsByLetter,
-    receiveAlbumsByArtist,
+    receiveAlbums,
 } from '../../actions';
 
 import { getRandomNumber } from '../../selectors';
@@ -123,7 +123,7 @@ function* routineAbcFilterArtist(action) {
     const { payload, error } = yield call(getDataFromApi, 'fetchAlbumsByArtist', [artistId]);
     if (payload) {
         yield put(setActiveArtistInAbcFilter(artistId));
-        yield put(receiveAlbumsByArtist(payload));
+        yield put(receiveAlbums(payload));
     } else {
         yield put(receiveError(error));
     }
