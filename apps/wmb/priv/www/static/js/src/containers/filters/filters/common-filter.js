@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
+import { ProgressBar } from 'react-toolbox';
 
 import FilterItemView from '../../../view/filters/filters/common-filter-item';
 import CommonFilterView from '../../../view/filters/filters/common-filter';
@@ -18,6 +19,15 @@ class CommonFilterContainer extends Component {
 
     get itemsList() {
         if (this.state.folded) return null;
+        if (_.isEmpty(this.props.filterOptions)) {
+            return (
+                <ProgressBar
+                    type='circular'
+                    mode='indeterminate'
+                    multicolor
+                />
+            );
+        }
         const list = this.props.filterOptions.map((option, index) => {
             const optionId = _.isObject(option) ? option.genreId : option;
             const optionName = _.isObject(option) ? option.genre : option;
@@ -43,8 +53,10 @@ class CommonFilterContainer extends Component {
     handleSubMenuClick = (event) => {
         event.preventDefault();
         event.stopPropagation();
+        if (_.isEmpty(this.props.filterOptions)) {
+            this.props.fetchFilterByAlias();
+        }
         this.setState({ folded: !this.state.folded });
-        this.props.fetchFilterByAlias();
     }
 
     render() {
@@ -68,6 +80,7 @@ CommonFilterContainer.propTypes = {
     fetchFilterByAlias: PropTypes.func.isRequired,
     filterOptions     : PropTypes.array,
     handleFilterChange: PropTypes.func.isRequired,
+    fetching          : PropTypes.object.isRequired,
 };
 
 const mapStateToProps = (state, props) => ({

@@ -5,17 +5,19 @@ import { ListItem, Avatar } from 'react-toolbox';
 const LetterView = ({ onClick, children, letter, artistCount, active }) => {
     return (
         <div>
-            <ListItem
-                rightIcon={active ? 'keyboard_arrow_down' : 'keyboard_arrow_right'}
-                onClick = {onClick}
-            >
-                <div style = {{ textAlign: 'center' }} >
-                    <Avatar
-                        style = {{ backgroundColor: active ? 'deeppink' : 'grey' }}
-                        title = {letter}
-                    />
-                </div>
-            </ListItem>
+            <div style = {{ display: 'flex', justifyContent: 'space-around', width: '100%' }} >
+                <ListItem
+                    rightIcon={active ? 'keyboard_arrow_down' : 'keyboard_arrow_right'}
+                    onClick = {onClick}
+                >
+                    <div>
+                        <Avatar
+                            style = {{ backgroundColor: active ? 'deeppink' : 'grey' }}
+                            title = {letter}
+                        />
+                    </div>
+                </ListItem>
+            </div>
             <div>
                 { children }
             </div>

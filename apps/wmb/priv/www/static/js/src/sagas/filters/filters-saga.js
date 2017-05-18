@@ -21,7 +21,7 @@ import {
     receiveAlbums,
 } from '../../actions';
 
-import { getRandomNumber } from '../../selectors';
+import { getRandomNumber, getArtistsByLetter, getSearchValue } from '../../selectors';
 
 const filtersApiMethods = {
     abc   : 'fetchAbcFilter',
@@ -95,7 +95,7 @@ function* routineInitFilter(action) {
 }
 
 function* routineSearchResults() {
-    const search = yield select(state => state.filters.viewState.search);
+    const search = yield select(getSearchValue);
     const { payload, error } = yield call(getDataFromApi, 'fetchDataBySearch', [search]);
     if (payload) {
         console.log('%c dataBySearch', 'color: aqua', payload);
@@ -107,7 +107,8 @@ function* routineSearchResults() {
 
 function* routineAbcFilterLetters(action) {
     const { letterId } = action.payload;
-    const artistsByLetter = yield select(state => state.filters.data.artistsByLetter[letterId]);
+    const artistsByLetter = yield select(getArtistsByLetter, letterId);
+    console.warn(artistsByLetter);
     if (!artistsByLetter) {
         const { payload, error } = yield call(getDataFromApi, 'fetchArtistsByLetter', [letterId]);
         if (payload) {

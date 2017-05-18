@@ -1,11 +1,11 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 
+import { ProgressBar } from 'react-toolbox';
 import LetterView from '../../../../view/filters/filters/abc-filter/letter';
 import ArtistContainer from './artist';
 import { fetchArtistsByLetter } from '../../../../actions';
 import { getArtistsByLetter, getActiveArtist } from '../../../../selectors';
-
 
 class LetterContainer extends Component {
     constructor(props) {
@@ -16,7 +16,6 @@ class LetterContainer extends Component {
     }
 
     handleUnfoldLetter = (event) => {
-        console.info('handleUnfoldLetter');
         event.preventDefault();
         event.stopPropagation();
         this.setState({ folded: !this.state.folded });
@@ -26,8 +25,16 @@ class LetterContainer extends Component {
     }
 
     get artistList() {
-        if (this.state.folded || _.isEmpty(this.props.artists)) return null;
-
+        if (this.state.folded) return null;
+        if (_.isEmpty(this.props.artists)) {
+            return (
+                <ProgressBar
+                    type='circular'
+                    mode='indeterminate'
+                    multicolor
+                />
+            );
+        }
         const list = this.props.artists.map(artistObj =>
             <ArtistContainer
                 key      = {artistObj.artistId}

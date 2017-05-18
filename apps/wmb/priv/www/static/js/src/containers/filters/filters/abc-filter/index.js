@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
+import { ProgressBar } from 'react-toolbox';
 
 import CommonFilterView from '../../../../view/filters/filters/common-filter';
 import LetterContainer from './letter';
@@ -15,19 +16,26 @@ class AbcFilterContainer extends Component {
         };
     }
 
-    componentWillMount() {
-        this.props.fetchFilterByAlias();
-    }
-
     handleUnfoldList = (event) => {
         event.preventDefault();
         event.stopPropagation();
+        if (_.isEmpty(this.props.filterOptions)) {
+            this.props.fetchFilterByAlias();
+        }
         this.setState({ folded: !this.state.folded });
     }
 
     get abcList() {
         if (this.state.folded) return null;
-
+        if (_.isEmpty(this.props.filterOptions)) {
+            return (
+                <ProgressBar
+                    type='circular'
+                    mode='indeterminate'
+                    multicolor
+                />
+            );
+        }
         const list = this.props.filterOptions.map(letterObj =>
             <LetterContainer
                 key      = {letterObj.letterId}
