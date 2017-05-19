@@ -5,7 +5,7 @@ import ContentView from '../../view/content/content-view';
 import AlbumContainer from './album';
 
 import { fetchAlbumsByPage, clearWarningState } from '../../actions';
-import { getAlbumsIds, getSelectedAlbumIds, getWarningMessage, getPages } from '../../selectors';
+import { getAlbumsIds, getSelectedAlbumIds, getWarningMessage, getPages, getFetchingState } from '../../selectors';
 
 
 class ContentContainer extends Component {
@@ -33,8 +33,8 @@ class ContentContainer extends Component {
     mainSpinner = () =>
         <div style = {{ position: 'fixed', top: '50%', left: '50%' }}>
             <ProgressBar
-                type='circular'
-                mode='indeterminate'
+                type = 'circular'
+                mode = 'indeterminate'
                 multicolor
             />
         </div>;
@@ -48,13 +48,13 @@ class ContentContainer extends Component {
                 timeout   = {3000}
                 onClick   = {this.handleSnackbarTimeout}
                 onTimeout = {this.handleSnackbarTimeout}
-                type='warning'
+                type      = 'warning'
             />
         );
     }
 
     render() {
-        if (_.isEmpty(this.props.albumIds)) return this.mainSpinner();
+        if (this.props.fetching.albums) return this.mainSpinner();
         return (
             <ContentView>
                 { this.albumsList }
@@ -68,6 +68,8 @@ class ContentContainer extends Component {
 ContentContainer.propTypes = {
     albumIds         : PropTypes.arrayOf(PropTypes.number),
     fetchAlbumsByPage: PropTypes.func.isRequired,
+    fetching         : PropTypes.object.isRequired,
+    pages            : PropTypes.object.isRequired,
     selectedAlbumIds : PropTypes.arrayOf(PropTypes.number).isRequired,
     warning          : PropTypes.string,
 };
@@ -77,6 +79,7 @@ const mapStateToProps = state => ({
     selectedAlbumIds: getSelectedAlbumIds(state),
     warning         : getWarningMessage(state),
     pages           : getPages(state),
+    fetching        : getFetchingState(state),
 });
 
 const mapDispatchToProps = dispatch => ({

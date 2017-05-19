@@ -2,15 +2,27 @@ import { put, call, fork, take } from 'redux-saga/effects';
 
 import * as API from '../../api';
 import { FETCH_ALBUMS_BY_PAGE } from '../../constants/action-types';
-import { receiveAlbums, setCurrentPage } from '../../actions';
+import { receiveAlbums, setCurrentPage, receiveError, fetching } from '../../actions';
 
+
+function getAlbumsByPage(currentPage) {
+    return API.fetchAlbumsByPage(currentPage)
+        .then(payload => ({ payload }))
+        .catch(error => ({ error: error.message }));
+}
 // ******************************************************************************/
 // ******************************* ROUTINES *************************************/
 // ******************************************************************************/
 
 function* routineDataByPage(currentPage) {
-    const response = yield call(API.fetchAlbumsByPage.bind(null, currentPage));
-    yield put(receiveAlbums(response));
+    const { payload, error } = yield call(getAlbumsByPage, currentPage);
+    if (payload) {
+        yield put(receiveAlbums(payload));
+        yield put(setCurrentPage(currentPage));
+    } else {
+        yield put(receiveError(error));
+    }
+    yield put(fetching('albums', false));
 }
 
 // ******************************************************************************/
@@ -20,7 +32,7 @@ function* routineDataByPage(currentPage) {
 function* watchAlbumsByPage() {
     while (true) {
         const { payload } = yield take(FETCH_ALBUMS_BY_PAGE);
-        yield put(setCurrentPage(payload.currentPage));
+        yield put(fetching('albums', true));
         yield fork(routineDataByPage, payload.currentPage);
     }
 }

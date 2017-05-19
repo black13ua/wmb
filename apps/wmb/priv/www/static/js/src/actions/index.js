@@ -13,7 +13,7 @@ export const fetchRandomTracks          = ()               => actionCreator(Acti
 
 export const fetchSearchResults         = value            => actionCreator(ActionTypes.FETCH_SEARCH_RESULTS, { value });
 export const receiveSearchResults       = tracks           => actionCreator(ActionTypes.RECEIVE_SEARCH_RESULTS, { tracks });
-export const fetching                   = value            => actionCreator(ActionTypes.FETCHING, { value });
+export const fetching                   = (value, isFetching)   => actionCreator(ActionTypes.FETCHING, { value, isFetching });
 
 export const receiveError               = error            => actionCreator(ActionTypes.RECEIVE_ERROR, { error });
 

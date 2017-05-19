@@ -4,7 +4,7 @@ import { createStructuredSelector } from 'reselect';
 import { Button } from 'react-toolbox';
 
 import { getPages } from '../selectors';
-import { setCurrentPage } from '../actions/index';
+import { fetchAlbumsByPage } from '../actions/index';
 
 class PlaylistContainer extends Component {
     state = {
@@ -15,7 +15,7 @@ class PlaylistContainer extends Component {
         event.preventDefault();
         event.stopPropagation();
         if (value === this.props.pages.current) return;
-        this.props.setCurrentPage(value);
+        this.props.fetchAlbumsByPage(value);
     }
 
     render() {
@@ -41,7 +41,7 @@ const mapStateToProps = createStructuredSelector({
 });
 
 const mapDispatchToProps = dispatch => ({
-    setCurrentPage: currentPage => dispatch(setCurrentPage(currentPage)),
+    fetchAlbumsByPage: currentPage => dispatch(fetchAlbumsByPage(currentPage)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(PlaylistContainer);

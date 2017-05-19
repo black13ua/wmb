@@ -13,6 +13,7 @@ import {
     SET_WARNING,
     RECEIVE_ERROR,
     SET_CURRENT_PAGE,
+    FETCHING,
 } from '../constants/action-types';
 
 
@@ -28,7 +29,7 @@ const initialState = Immutable({
     },
     viewState: {
         fetching: {
-            albums: [],
+            albums: false,
             tracks: [],
             random: false,
         },
@@ -44,6 +45,7 @@ const initialState = Immutable({
             forward : 10,
         },
         warningMessage: '',
+        maxPage       : 100,
     },
 });
 
@@ -55,6 +57,12 @@ export default createReducer(initialState, {
         return state
             .setIn(['data', 'albums'], normalizedAlbums)
             .setIn(['data', 'tracks', 'dataById'], normalizedDataTracks);
+    },
+
+    [FETCHING](state, action) {
+        const { value, isFetching } = action.payload;
+        return state
+            .setIn(['viewState', 'fetching', value], isFetching);
     },
 
     [RECEIVE_ALBUMS_BY_ARTIST](state, action) {
@@ -187,6 +195,6 @@ function getPages(currentPage) {
         previous: currentPage > 1 ? currentPage - 1 : 0,
         current : currentPage,
         next    : currentPage + 1,
-        forward : currentPage + 2,
+        forward : Math.ceil(currentPage / 10) * 10,
     };
 }
