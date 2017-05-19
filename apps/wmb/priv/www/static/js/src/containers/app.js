@@ -67,7 +67,7 @@ class App extends Component { // eslint-disable-line
         const appBarIconVisible = this.state.width <= breakpoints[permanentAt];
 
         return (
-            <div style={{ marginTop: '70px', position: 'realtive' }} >
+            <div style={{ margin: '70px 0 30px', position: 'realtive' }} >
                 {appBarIconVisible ? this.filterToggleButton : null}
                 {appBarIconVisible ? this.playlistToggleButton : null}
                 <AppBar scrollHide fixed style = {{ height: '75px' }} >
