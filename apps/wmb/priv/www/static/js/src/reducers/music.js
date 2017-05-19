@@ -189,12 +189,25 @@ function getNormalizedTracks(tracks) {
         }), { ids: [], dataById: {} });
 }
 
+function getFirstPage(currentPage) {
+    if (currentPage < 3) return 0;
+    if (currentPage < 12) return 1;
+    let lastPage = Math.floor(currentPage / 10) * 10;
+    if (lastPage === currentPage) lastPage = currentPage - 10;
+    if (lastPage === currentPage - 1)  lastPage = currentPage - 11;
+    return lastPage;
+}
+
 function getPages(currentPage) {
+    let lastPage = Math.ceil(currentPage / 10) * 10;
+    lastPage = lastPage === currentPage ? lastPage + 10 : lastPage;
+    lastPage = lastPage === (currentPage + 1) ? lastPage + 10 : lastPage;
+
     return {
-        back    : currentPage > 2 ? currentPage - 2 : 0,
+        back    : getFirstPage(currentPage),
         previous: currentPage > 1 ? currentPage - 1 : 0,
         current : currentPage,
         next    : currentPage + 1,
-        forward : Math.ceil(currentPage / 10) * 10,
+        forward : lastPage,
     };
 }
