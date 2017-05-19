@@ -1,18 +1,15 @@
-import { takeLatest } from 'redux-saga';
-import { put, call, fork, select } from 'redux-saga/effects';
+import { put, call, fork, take } from 'redux-saga/effects';
 
 import * as API from '../../api';
 import { FETCH_ALBUMS_BY_PAGE } from '../../constants/action-types';
-import { receiveAlbums } from '../../actions';
-
+import { receiveAlbums, setCurrentPage } from '../../actions';
 
 // ******************************************************************************/
 // ******************************* ROUTINES *************************************/
 // ******************************************************************************/
 
-function* routineDataByPage() {
-    const page = yield select(state => state.music.viewState.currentPage);
-    const response = yield call(API.fetchAlbumsByPage.bind(null, page));
+function* routineDataByPage(currentPage) {
+    const response = yield call(API.fetchAlbumsByPage.bind(null, currentPage));
     yield put(receiveAlbums(response));
 }
 
@@ -21,7 +18,11 @@ function* routineDataByPage() {
 // ******************************************************************************/
 
 function* watchAlbumsByPage() {
-    yield takeLatest(FETCH_ALBUMS_BY_PAGE, routineDataByPage);
+    while (true) {
+        const { payload } = yield take(FETCH_ALBUMS_BY_PAGE);
+        yield put(setCurrentPage(payload.currentPage));
+        yield fork(routineDataByPage, payload.currentPage);
+    }
 }
 
 

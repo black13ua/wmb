@@ -5,12 +5,12 @@ import ContentView from '../../view/content/content-view';
 import AlbumContainer from './album';
 
 import { fetchAlbumsByPage, clearWarningState } from '../../actions';
-import { getAlbumsIds, getSelectedAlbumIds, getWarningMessage } from '../../selectors';
+import { getAlbumsIds, getSelectedAlbumIds, getWarningMessage, getPages } from '../../selectors';
 
 
 class ContentContainer extends Component {
     componentWillMount() {
-        this.props.fetchAlbumsByPage();
+        this.props.fetchAlbumsByPage(this.props.pages.current);
     }
 
     handleSnackbarTimeout = () => {
@@ -76,11 +76,12 @@ const mapStateToProps = state => ({
     albumIds        : getAlbumsIds(state),
     selectedAlbumIds: getSelectedAlbumIds(state),
     warning         : getWarningMessage(state),
+    pages           : getPages(state),
 });
 
 const mapDispatchToProps = dispatch => ({
-    fetchAlbumsByPage: () => dispatch(fetchAlbumsByPage()),
-    clearWarningState: () => dispatch(clearWarningState()),
+    fetchAlbumsByPage: currentPage => dispatch(fetchAlbumsByPage(currentPage)),
+    clearWarningState: ()          => dispatch(clearWarningState()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ContentContainer);

@@ -12,6 +12,7 @@ import {
     CLEAR_WARNING,
     SET_WARNING,
     RECEIVE_ERROR,
+    SET_CURRENT_PAGE,
 } from '../constants/action-types';
 
 
@@ -35,7 +36,13 @@ const initialState = Immutable({
             albums: [],
             tracks: [],
         },
-        currentPage   : 1,
+        pages: {
+            back    : 0,
+            previous: 0,
+            current : 1,
+            next    : 2,
+            forward : 10,
+        },
         warningMessage: '',
     },
 });
@@ -71,6 +78,13 @@ export default createReducer(initialState, {
     [CLEAR_WARNING](state) {
         return state
             .setIn(['viewState', 'warningMessage'], '');
+    },
+
+    [SET_CURRENT_PAGE](state, action) {
+        const { currentPage } = action.payload;
+        const pages = getPages(currentPage);
+        return state
+            .setIn(['viewState', 'pages'], pages);
     },
 
     [SET_WARNING](state, action) {
@@ -138,7 +152,7 @@ export default createReducer(initialState, {
 // HELPERS
 function getNormalizedAlbums(albums) {
     return _(albums)
-        .map(album => ({ ...album, 'trackIds': _(album.tracks).map(track => track.trackId).compact().value() }))
+        .map(album => ({ ...album, trackIds: _(album.tracks).map(track => track.trackId).compact().value() }))
         .map(album => _.omit(album, 'tracks'))
         .reduce((acum, album) => ({
             ids     : [...acum.ids, album.albumId],
@@ -149,11 +163,11 @@ function getNormalizedAlbums(albums) {
 function getNormalizedDataTracks(albums) {
     return _(albums)
         .map(album => ({
-                        ...album,
-                        tracks: _(album.tracks)
-                                    .map(track => ({ ...track, ...album }))
-                                    .value(),
-                        })
+            ...album,
+            tracks: _(album.tracks)
+                            .map(track => ({ ...track, ...album }))
+                            .value(),
+        })
         )
         .flatMap('tracks')
         .reduce((acum, track) => ({ ...acum, [track.trackId]: track }), {});
@@ -165,4 +179,14 @@ function getNormalizedTracks(tracks) {
             ids     : [...acum.ids, track.trackId],
             dataById: { ...acum.dataById, [track.trackId]: track },
         }), { ids: [], dataById: {} });
+}
+
+function getPages(currentPage) {
+    return {
+        back    : currentPage > 2 ? currentPage - 2 : 0,
+        previous: currentPage > 1 ? currentPage - 1 : 0,
+        current : currentPage,
+        next    : currentPage + 1,
+        forward : currentPage + 2,
+    };
 }

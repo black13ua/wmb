@@ -38,9 +38,9 @@ export const setActiveArtistInAbcFilter = artistId         => actionCreator(Acti
 // ******************************* ALBUMS ***************************************/
 // ******************************************************************************/
 
-export const receiveRandomTracks = tracks => actionCreator(ActionTypes.RECEIVE_RANDOM_TRACKS, { tracks });
-export const fetchAlbumsByPage   = ()     => actionCreator(ActionTypes.FETCH_ALBUMS_BY_PAGE);
-export const receiveAlbums       = albums => actionCreator(ActionTypes.RECEIVE_ALBUMS, { albums });
+export const receiveRandomTracks = tracks      => actionCreator(ActionTypes.RECEIVE_RANDOM_TRACKS, { tracks });
+export const fetchAlbumsByPage   = currentPage => actionCreator(ActionTypes.FETCH_ALBUMS_BY_PAGE, { currentPage });
+export const receiveAlbums       = albums      => actionCreator(ActionTypes.RECEIVE_ALBUMS, { albums });
 
 // ******************************************************************************/
 // ******************************** VIEW ****************************************/
@@ -49,4 +49,5 @@ export const selectAlbum       = (albumId, selected)          => actionCreator(A
 export const selectTrack       = (trackId, albumId, selected) => actionCreator(ActionTypes.SELECT_TRACK, { trackId, albumId, selected });
 export const clearPlaylist     = ()                           => actionCreator(ActionTypes.CLEAR_PLAYLIST);
 export const clearWarningState = ()                           => actionCreator(ActionTypes.CLEAR_WARNING);
-export const setWarningState    = warning                     => actionCreator(ActionTypes.SET_WARNING, { warning });
+export const setWarningState   = warning                     => actionCreator(ActionTypes.SET_WARNING, { warning });
+export const setCurrentPage    = currentPage                     => actionCreator(ActionTypes.SET_CURRENT_PAGE, { currentPage });

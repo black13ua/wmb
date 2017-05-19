@@ -18,3 +18,8 @@ export const makeSelectAlbumDatabyId = () => createSelector(
     [musicSelector, getAlbumId],
     (state, albumId) => state.data.albums.dataById[albumId]
 );
+
+export const getPages = createSelector(
+    musicSelector,
+    state => state.viewState.pages
+);

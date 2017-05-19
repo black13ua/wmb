@@ -8,6 +8,7 @@ import GreyAppBar from './greyAppBar';
 import FiltersContainer from './filters';
 import ContentContainer from './content';
 import PlaylistContainer from './playlist';
+import PageButtonsContainer from './pageButtons';
 
 class App extends Component { // eslint-disable-line
     state = {
@@ -100,13 +101,7 @@ class App extends Component { // eslint-disable-line
                 </Layout>
                 <div style = {{ position: 'fixed', bottom: 0, width: '100%', zIndex: 200, height: '35px' }}>
                     <GreyAppBar >
-                        <div style = {{ display: 'flex', width: '100%', height: '100%', flexWrap: 'wrap', justifyContent: 'space-around', alignContent: 'flex-around' }}>
-                            <Button icon='first_page' label='10' flat />
-                            <Button icon='navigate_before' label='12' flat />
-                            <Button label='13' flat />
-                            <Button icon='navigate_next' label='14' flat />
-                            <Button icon='last_page' label='20' flat />
-                        </div>
+                        <PageButtonsContainer />
                     </GreyAppBar>
                 </div>
             </div>

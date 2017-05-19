@@ -42,8 +42,9 @@ export const RECEIVE_ALBUMS_BY_FILTERS = 'RECEIVE_ALBUMS_BY_FILTERS';
 // ********************************** VIEW **************************************/
 // ******************************************************************************/
 
-export const SELECT_ALBUM   = 'SELECT_ALBUM';
-export const SELECT_TRACK   = 'SELECT_TRACK';
-export const CLEAR_PLAYLIST = 'CLEAR_PLAYLIST';
-export const CLEAR_WARNING  = 'CLEAR_WARNING';
-export const SET_WARNING    = 'SET_WARNING';
+export const SELECT_ALBUM     = 'SELECT_ALBUM';
+export const SELECT_TRACK     = 'SELECT_TRACK';
+export const CLEAR_PLAYLIST   = 'CLEAR_PLAYLIST';
+export const CLEAR_WARNING    = 'CLEAR_WARNING';
+export const SET_WARNING      = 'SET_WARNING';
+export const SET_CURRENT_PAGE = 'SET_CURRENT_PAGE';
