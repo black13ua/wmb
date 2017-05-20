@@ -4,6 +4,8 @@ import { Layout, NavDrawer, Panel, Sidebar, IconButton } from 'react-toolbox';
 import isBrowser from 'react-toolbox/lib/utils/is-browser';
 import breakpoints from 'react-toolbox/lib/utils/breakpoints';
 import { getViewport } from 'react-toolbox/lib/utils/utils';
+import ScrollUp from 'react-scroll-up';
+
 import GreyAppBar from './greyAppBar';
 import FiltersContainer from './filters';
 import ContentContainer from './content';
@@ -62,6 +64,17 @@ class App extends Component { // eslint-disable-line
         );
     }
 
+    get toTopButton() {
+        return (
+            <ScrollUp showUnder={350} duration={1000} easing="easeOutCubic" style = {{ position: 'fixed', bottom: '65px', right: '35px', zIndex: 999, transitionDuration: '0.5s' }}>
+                <Button
+                    floating
+                    icon    = "vertical_align_top"
+                />
+            </ScrollUp>
+        );
+    }
+
     render() {
         const permanentAt = 'md';
         const appBarIconVisible = this.state.width <= breakpoints[permanentAt];
@@ -104,6 +117,7 @@ class App extends Component { // eslint-disable-line
                         <PageButtonsContainer />
                     </GreyAppBar>
                 </div>
+                { this.toTopButton }
             </div>
         );
     }
