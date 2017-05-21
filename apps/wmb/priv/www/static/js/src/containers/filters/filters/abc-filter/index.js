@@ -7,7 +7,8 @@ import LetterContainer from './letter';
 import { fetchFilter, setFieldValueIO } from '../../../../actions';
 import { getFilterDataByAlias, getFilterCurrentValueByAlias } from '../../../../selectors';
 
-
+// import debugRender from 'react-render-debugger';
+// @debugRender
 class AbcFilterContainer extends Component {
     constructor(props) {
         super(props);

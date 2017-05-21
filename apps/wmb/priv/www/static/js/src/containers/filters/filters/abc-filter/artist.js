@@ -4,7 +4,8 @@ import { connect } from 'react-redux';
 import ArtistView from '../../../../view/filters/filters/abc-filter/artist';
 import { fetchAlbumsByArtist } from '../../../../actions';
 
-
+// import debugRender from 'react-render-debugger';
+// @debugRender
 class ArtistContainer extends Component {
     handleFetchAlbumsByArtist = (event) => {
         event.preventDefault();

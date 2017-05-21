@@ -6,6 +6,9 @@ import { Button } from 'react-toolbox';
 import { getPages } from '../selectors';
 import { fetchAlbumsByPage } from '../actions/index';
 
+
+// import debugRender from 'react-render-debugger';
+// @debugRender
 class PlaylistContainer extends Component {
     state = {
         activeDialog: false,

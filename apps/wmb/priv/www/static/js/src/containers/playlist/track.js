@@ -8,6 +8,8 @@ import { selectTrack } from '../../actions';
 import { makeSelectTrackDatabyId } from '../../selectors';
 
 
+// import debugRender from 'react-render-debugger';
+// @debugRender
 class PlaylistTrackContainer extends Component {
     handleSelectTrackClick = (event) => {
         event.preventDefault();

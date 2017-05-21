@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import { AppBar, Button } from 'react-toolbox';
-import { Layout, NavDrawer, Panel, Sidebar, IconButton } from 'react-toolbox';
+import { AppBar, Button, Layout, NavDrawer, Panel, Sidebar, IconButton } from 'react-toolbox';
 import isBrowser from 'react-toolbox/lib/utils/is-browser';
 import breakpoints from 'react-toolbox/lib/utils/breakpoints';
 import { getViewport } from 'react-toolbox/lib/utils/utils';
 import ScrollUp from 'react-scroll-up';
+
 
 import GreyAppBar from './greyAppBar';
 import FiltersContainer from './filters';
@@ -12,6 +12,8 @@ import ContentContainer from './content';
 import PlaylistContainer from './playlist';
 import PageButtonsContainer from './pageButtons';
 
+// import debugRender from 'react-render-debugger';
+// @debugRender
 class App extends Component { // eslint-disable-line
     state = {
         filtersPinned : false,
@@ -83,7 +85,7 @@ class App extends Component { // eslint-disable-line
             <div style={{ margin: '70px 0 30px', position: 'realtive' }} >
                 {appBarIconVisible ? this.filterToggleButton : null}
                 {appBarIconVisible ? this.playlistToggleButton : null}
-                <AppBar scrollHide fixed style = {{ height: '75px' }} >
+                <AppBar fixed style = {{ height: '75px' }} >
                     <div style = {{ display: 'flex', width: '100%', margin: '0 20%', flexWrap: 'wrap', justifyContent: 'space-around', alignContent: 'flex-around' }}>
                         <IconButton icon='skip_previous' floating mini style = {{ margin: 'auto 0', color: 'wheat' }} />
                         <Button icon='play_arrow' floating accent style = {{ margin: 'auto 0', color: 'wheat' }} />

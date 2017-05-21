@@ -10,6 +10,9 @@ import PlaylistTrackContainer from './track';
 import { getSelectedTrackIds } from '../../selectors';
 import { clearPlaylist } from '../../actions/index';
 
+
+// import debugRender from 'react-render-debugger';
+// @debugRender
 class PlaylistContainer extends Component {
     state = {
         activeDialog: false,

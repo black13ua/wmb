@@ -9,6 +9,8 @@ import { fetchFilter, setFieldValueIO } from '../../../actions';
 import { getFilterDataByAlias, getFilterCurrentValueByAlias, getFetchingState } from '../../../selectors';
 
 
+// import debugRender from 'react-render-debugger';
+// @debugRender
 class CommonFilterContainer extends Component {
     constructor(props) {
         super(props);

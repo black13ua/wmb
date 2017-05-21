@@ -76,8 +76,8 @@ const config = {
             filename: 'style.css',
         }),
         new webpack.DefinePlugin({
-            __DEVELOPMENT__: false,
-            __PRODUCTION__ : true,
+            __DEVELOPMENT__: JSON.stringify(false),
+            __PRODUCTION__ : JSON.stringify(true),
         }),
         new HtmlWebpackPlugin({
             filename: path.join(__dirname, './html/new.html'),

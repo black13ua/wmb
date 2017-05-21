@@ -8,7 +8,8 @@ import TrackContainer from './track';
 import { selectAlbum } from '../../actions';
 import { makeSelectAlbumDatabyId, getSelectedTrackIds } from '../../selectors';
 
-
+// import debugRender from 'react-render-debugger';
+// @debugRender
 class AlbumContainer extends Component {
     state = {
         folded: true,

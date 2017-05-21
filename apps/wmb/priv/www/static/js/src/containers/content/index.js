@@ -7,7 +7,8 @@ import AlbumContainer from './album';
 import { fetchAlbumsByPage, clearWarningState } from '../../actions';
 import { getAlbumsIds, getSelectedAlbumIds, getWarningMessage, getPages, getFetchingState } from '../../selectors';
 
-
+// import debugRender from 'react-render-debugger';
+// @debugRender
 class ContentContainer extends Component {
     componentWillMount() {
         this.props.fetchAlbumsByPage(this.props.pages.current);

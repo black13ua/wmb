@@ -7,6 +7,9 @@ import ArtistContainer from './artist';
 import { fetchArtistsByLetter } from '../../../../actions';
 import { getArtistsByLetter, getActiveArtist } from '../../../../selectors';
 
+
+// import debugRender from 'react-render-debugger';
+// @debugRender
 class LetterContainer extends Component {
     constructor(props) {
         super(props);

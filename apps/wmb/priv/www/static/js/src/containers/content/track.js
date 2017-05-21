@@ -7,7 +7,8 @@ import TrackView from '../../view/content/track';
 import { selectTrack } from '../../actions';
 import { makeSelectTrackDatabyId } from '../../selectors';
 
-
+// import debugRender from 'react-render-debugger';
+// @debugRender
 class TrackContainer extends Component {
     handleSelectTrackClick = (event) => {
         event.preventDefault();

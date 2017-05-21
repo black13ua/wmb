@@ -84,6 +84,10 @@ const config = {
         ],
     },
 
+    // sassLoader: {
+    //     data: `@import ${path.resolve(__dirname, 'sass/_theme.scss')};`,
+    // },
+
     plugins: [
         new webpack.DllReferencePlugin({
             context : '.',
@@ -103,9 +107,9 @@ const config = {
         }),
         new webpack.NamedModulesPlugin(),
         new webpack.DefinePlugin({
-            __DEVELOPMENT__ : true,
-            __PRODUCTION__  : false,
-            __REDUX_LOGGER__: JSON.parse(reduxLogger || false),
+            __DEVELOPMENT__ : JSON.stringify(true),
+            __PRODUCTION__  : JSON.stringify(false),
+            __REDUX_LOGGER__: JSON.stringify(reduxLogger || false),
         }),
     ],
 };
