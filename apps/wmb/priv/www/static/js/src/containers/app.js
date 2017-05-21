@@ -48,7 +48,7 @@ class App extends Component { // eslint-disable-line
                 accent
                 floating
                 icon    = "build"
-                style   = {{ position: 'fixed', top: '35px', left: '35px', zIndex: 999 }}
+                style   = {{ position: 'fixed', top: '35px', left: '35px', zIndex: 999, color: '#424242' }}
                 onClick = {this.toggleFiltersPinned}
             />
         );
@@ -60,7 +60,7 @@ class App extends Component { // eslint-disable-line
                 accent
                 floating
                 icon    = "assignment"
-                style   = {{ position: 'fixed', top: '35px', right: '35px', zIndex: 999 }}
+                style   = {{ position: 'fixed', top: '35px', right: '35px', zIndex: 999, color: '#424242' }}
                 onClick = {this.togglePlaylistPinned}
             />
         );
@@ -70,8 +70,10 @@ class App extends Component { // eslint-disable-line
         return (
             <ScrollUp showUnder={350} duration={1000} easing="easeOutCubic" style = {{ position: 'fixed', bottom: '65px', right: '35px', zIndex: 999, transitionDuration: '0.5s' }}>
                 <Button
+                    accent
                     floating
-                    icon    = "vertical_align_top"
+                    icon    = "arrow_upward"
+                    style = {{ color: '#424242' }}
                 />
             </ScrollUp>
         );
@@ -87,9 +89,9 @@ class App extends Component { // eslint-disable-line
                 {appBarIconVisible ? this.playlistToggleButton : null}
                 <AppBar fixed style = {{ height: '75px' }} >
                     <div style = {{ display: 'flex', width: '100%', margin: '0 20%', flexWrap: 'wrap', justifyContent: 'space-around', alignContent: 'flex-around' }}>
-                        <IconButton icon='skip_previous' floating mini style = {{ margin: 'auto 0', color: 'wheat' }} />
-                        <Button icon='play_arrow' floating accent style = {{ margin: 'auto 0', color: 'wheat' }} />
-                        <IconButton icon='skip_next' floating mini style = {{ margin: 'auto 0', color: 'wheat' }} />
+                        <IconButton icon='skip_previous' floating mini style = {{ margin: 'auto 0', color: '#FFEA00' }} />
+                        <IconButton icon='play_arrow' floating style = {{ margin: 'auto 0', color: '#FFEA00' }} />
+                        <IconButton icon='skip_next' floating mini style = {{ margin: 'auto 0', color: '#FFEA00' }} />
                     </div>
                 </AppBar>
                 <Layout>

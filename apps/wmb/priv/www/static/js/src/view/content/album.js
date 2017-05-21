@@ -1,6 +1,8 @@
 import React, { PropTypes } from 'react';
-import classnames from 'classnames';
-import { Card, CardTitle, Button, CardMedia, Tooltip, CardActions, List, ListItem } from 'react-toolbox';
+// import Button from 'react-toolbox/lib/button/Button';
+// import buttonTheme from '../../../../sass/theme/button.scss';
+
+import { Card, CardTitle, CardMedia, Tooltip, Button, CardActions, List, ListItem } from 'react-toolbox';
 
 const AlbumView = ({ handleUnfold, folded, onClick, children, album, artist, cover, date, genre, selected, activeClass }) => {
     // const classNames = classnames('righted', { active: activeClass });
@@ -31,7 +33,12 @@ const AlbumView = ({ handleUnfold, folded, onClick, children, album, artist, cov
                 />
                 <CardActions>
                     {!selected
-                        ? (<Button raised primary label="Add album" onClick = {onClick} />)
+                        ? (<Button
+                            raised
+                            primary
+                            label="Add album"
+                            onClick = {onClick}
+                        />)
                         : (<Button raised accent label="Remove album" onClick = {onClick} />)
                     }
                 </CardActions>

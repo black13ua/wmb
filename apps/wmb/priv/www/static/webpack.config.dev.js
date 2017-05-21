@@ -5,6 +5,7 @@ const args              = require('minimist')(process.argv);
 
 const reduxLogger       = args.rlg;
 
+const reactToolboxColorVariables = require('./sass/custom-theme-css');
 
 const config = {
     context: __dirname,
@@ -43,7 +44,13 @@ const config = {
             },
             {
                 test: /\.scss/,
-                use : ['style-loader', 'css-loader', 'sass-loader'],
+                use : [
+                    'style-loader',
+                    'css-loader',
+                    {
+                        loader: 'sass-loader',
+                    },
+                ],
             },
             {
                 test: /\.css$/,
@@ -58,7 +65,25 @@ const config = {
                             localIdentName: '[name]--[local]--[hash:base64:8]',
                         },
                     },
-                    'postcss-loader', // has separate config, see postcss.config.js nearby
+                    {
+                        loader : 'postcss-loader',
+                        options: {
+                            plugins: [
+                                /* eslint-disable global-require */
+                                require('postcss-cssnext')({
+                                    features: {
+                                        customProperties: {
+                                            variables: reactToolboxColorVariables,
+                                        },
+                                    },
+                                }),
+                                /* optional - see next section */
+                                require('postcss-modules-values'),
+                                /* eslint-enable global-require */
+                            ],
+                        },
+                    },
+                    // 'postcss-loader', // has separate config, see postcss.config.js nearby
                 ],
             },
             {
@@ -83,10 +108,6 @@ const config = {
             },
         ],
     },
-
-    // sassLoader: {
-    //     data: `@import ${path.resolve(__dirname, 'sass/_theme.scss')};`,
-    // },
 
     plugins: [
         new webpack.DllReferencePlugin({
