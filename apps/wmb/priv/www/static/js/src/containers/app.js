@@ -4,20 +4,21 @@ import isBrowser from 'react-toolbox/lib/utils/is-browser';
 import breakpoints from 'react-toolbox/lib/utils/breakpoints';
 import { getViewport } from 'react-toolbox/lib/utils/utils';
 import ScrollUp from 'react-scroll-up';
-
+import { connect } from 'react-redux';
 
 import GreyAppBar from './greyAppBar';
 import FiltersContainer from './filters';
 import ContentContainer from './content';
 import PlaylistContainer from './playlist';
 import PageButtonsContainer from './pageButtons';
-
+import { toggleTrack } from '../actions';
 // import debugRender from 'react-render-debugger';
 // @debugRender
 class App extends Component { // eslint-disable-line
     state = {
         filtersPinned : false,
         playlistPinned: false,
+        paused        : true,
         width         : isBrowser() && getViewport().width,
     };
 
@@ -40,6 +41,13 @@ class App extends Component { // eslint-disable-line
 
     handleResize = () => {
         this.setState({ width: getViewport().width });
+    }
+
+    handleToggleClick = (event) => {
+        event.stopPropagation();
+        event.preventDefault();
+        this.setState({ paused: !this.state.paused });
+        this.props.toggleTrack();
     }
 
     get filterToggleButton() {
@@ -89,9 +97,9 @@ class App extends Component { // eslint-disable-line
                 {appBarIconVisible ? this.playlistToggleButton : null}
                 <AppBar fixed style = {{ height: '75px' }} >
                     <div style = {{ display: 'flex', width: '100%', margin: '0 20%', flexWrap: 'wrap', justifyContent: 'space-around', alignContent: 'flex-around' }}>
-                        <IconButton icon='skip_previous' floating mini style = {{ margin: 'auto 0', color: '#FFEA00' }} />
-                        <IconButton icon='play_arrow' floating style = {{ margin: 'auto 0', color: '#FFEA00' }} />
-                        <IconButton icon='skip_next' floating mini style = {{ margin: 'auto 0', color: '#FFEA00' }} />
+                        <IconButton icon='skip_previous' style = {{ margin: 'auto 0', color: '#FFEA00' }} />
+                        <IconButton icon={this.state.paused ? 'pause' : 'play_arrow'} onClick = {this.handleToggleClick} style = {{ margin: 'auto 0', color: '#FFEA00' }} />
+                        <IconButton icon='skip_next' style = {{ margin: 'auto 0', color: '#FFEA00' }} />
                     </div>
                 </AppBar>
                 <Layout>
@@ -127,5 +135,8 @@ class App extends Component { // eslint-disable-line
     }
 }
 
+const mapDispatchToProps = dispatch => ({
+    toggleTrack: () => dispatch(toggleTrack()),
+});
 
-export default App;
+export default connect(null, mapDispatchToProps)(App);

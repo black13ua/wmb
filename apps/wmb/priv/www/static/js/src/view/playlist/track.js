@@ -29,12 +29,13 @@ class PlaylistTrackView extends Component {
     }
 
     render() {
-        const { onClick, title, active, album, artist, genre, date, cover } = this.props;
+        const { onPlay, onDelete, title, active, album, artist, genre, date, cover } = this.props;
         return (
             <Chip
+                onClick = {onPlay}
                 deletable
                 style         = {this.state.hovered ? hoveredStyle : defaultStyle}
-                onDeleteClick = {onClick}
+                onDeleteClick = {onDelete}
                 onMouseEnter = {this.handleHover.bind(this, true)}
                 onMouseLeave = {this.handleHover.bind(this, false)}
             >
@@ -46,9 +47,10 @@ class PlaylistTrackView extends Component {
 }
 
 PlaylistTrackView.propTypes = {
-    active : PropTypes.bool,
-    title  : PropTypes.string.isRequired,
-    onClick: PropTypes.func.isRequired,
+    active  : PropTypes.bool,
+    title   : PropTypes.string.isRequired,
+    onDelete: PropTypes.func.isRequired,
+    onPlay  : PropTypes.func.isRequired,
 };
 
 export default PlaylistTrackView;

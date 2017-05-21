@@ -46,8 +46,16 @@ export const receiveAlbums       = albums      => actionCreator(ActionTypes.RECE
 // ******************************** VIEW ****************************************/
 // ******************************************************************************/
 export const selectAlbum       = (albumId, selected)          => actionCreator(ActionTypes.SELECT_ALBUM, { albumId, selected });
-export const selectTrack       = (trackId, albumId, selected) => actionCreator(ActionTypes.SELECT_TRACK, { trackId, albumId, selected });
+export const selectTrack       = (albumId, trackId, selected) => actionCreator(ActionTypes.SELECT_TRACK, { trackId, albumId, selected });
 export const clearPlaylist     = ()                           => actionCreator(ActionTypes.CLEAR_PLAYLIST);
 export const clearWarningState = ()                           => actionCreator(ActionTypes.CLEAR_WARNING);
 export const setWarningState   = warning                     => actionCreator(ActionTypes.SET_WARNING, { warning });
 export const setCurrentPage    = currentPage                     => actionCreator(ActionTypes.SET_CURRENT_PAGE, { currentPage });
+
+// ******************************************************************************/
+// ******************************* PLAYER ***************************************/
+// ******************************************************************************/
+
+export const playTrack   = track => actionCreator(ActionTypes.PLAY_TRACK, { track });
+export const stopTrack   = ()    => actionCreator(ActionTypes.STOP_TRACK);
+export const toggleTrack = ()    => actionCreator(ActionTypes.TOGGLE_TRACK);

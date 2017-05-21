@@ -4,6 +4,7 @@
   "description": "building static",
   "main": "js/main.js",
   "dependencies": {
+    "av": "^0.4.9",
     "babel-cli": "6.18.0",
     "babel-core": "6.21.0",
     "babel-loader": "6.2.10",
@@ -20,6 +21,7 @@
     "exports-loader": "0.6.3",
     "expose-loader": "0.7.1",
     "extract-text-webpack-plugin": "^2.1.0",
+    "flac.js": "^0.2.1",
     "font-awesome-sass-loader": "^2.0.1",
     "font-awesome-webpack": "^0.0.5-beta.2",
     "font-awesome-webpack-2": "^1.0.0",
@@ -30,6 +32,7 @@
     "less": "^2.7.2",
     "less-loader": "^4.0.3",
     "lodash": "4.17.4",
+    "mp3.js": "^0.2.0",
     "normalizr": "3.1.0",
     "postcss-cssnext": "^2.10.0",
     "postcss-each": "^0.9.3",

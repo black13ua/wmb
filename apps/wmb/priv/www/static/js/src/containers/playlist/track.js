@@ -4,7 +4,7 @@ import { createStructuredSelector } from 'reselect';
 
 import PlaylistTrackView from '../../view/playlist/track';
 
-import { selectTrack } from '../../actions';
+import { playTrack, selectTrack } from '../../actions';
 import { makeSelectTrackDatabyId } from '../../selectors';
 
 
@@ -12,9 +12,17 @@ import { makeSelectTrackDatabyId } from '../../selectors';
 // @debugRender
 class PlaylistTrackContainer extends Component {
     handleSelectTrackClick = (event) => {
+        const { trackData } = this.props;
         event.preventDefault();
         event.stopPropagation();
-        this.props.selectTrack();
+        this.props.playTrack(trackData.file);
+    }
+
+    handleDeleteTrackClick = (event) => {
+        const { trackData } = this.props;
+        event.preventDefault();
+        event.stopPropagation();
+        this.props.selectTrack(trackData.albumId, trackData.trackId, true);
     }
 
     render() {
@@ -24,7 +32,8 @@ class PlaylistTrackContainer extends Component {
         return (
             <PlaylistTrackView
                 {...trackData}
-                onClick  = {this.handleSelectTrackClick}
+                onPlay   = {this.handleSelectTrackClick}
+                onDelete = {this.handleDeleteTrackClick}
             />
         );
     }
@@ -32,6 +41,7 @@ class PlaylistTrackContainer extends Component {
 
 
 PlaylistTrackContainer.propTypes = {
+    playTrack  : PropTypes.func.isRequired,
     selectTrack: PropTypes.func.isRequired,
     trackData  : PropTypes.object,
 };
@@ -44,8 +54,9 @@ const makeMapStateToProps = () => {
     });
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => ({
-    selectTrack: () => dispatch(selectTrack(ownProps.trackId, ownProps.album, true)),
+const mapDispatchToProps = dispatch => ({
+    playTrack  : url => dispatch(playTrack(url)),
+    selectTrack: (albumId, trackId, selected) => dispatch(selectTrack(albumId, trackId, selected)),
 });
 
 export default connect(makeMapStateToProps, mapDispatchToProps)(PlaylistTrackContainer);

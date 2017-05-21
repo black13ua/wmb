@@ -5,16 +5,15 @@ import rootSaga from './index';
 export const CANCEL_SAGAS_HMR = 'CANCEL_SAGAS_HMR';
 
 function createAbortableSaga(saga) {
-    if (process.env.NODE_ENV === `development`) {
+    if (__DEVELOPMENT__) {
         return function* main() {
             const sagaTask = yield fork(saga);
 
             yield take(CANCEL_SAGAS_HMR);
             yield cancel(sagaTask);
         };
-    } else {
-        return saga;
     }
+    return saga;
 }
 
 const SagaManager = {
