@@ -49,6 +49,7 @@ const initialState = Immutable({
     },
 });
 
+
 export default createReducer(initialState, {
     [RECEIVE_ALBUMS](state, action) {
         const { albums } = action.payload;
@@ -56,7 +57,13 @@ export default createReducer(initialState, {
         const normalizedDataTracks = getNormalizedDataTracks(albums);
         return state
             .setIn(['data', 'albums'], normalizedAlbums)
-            .setIn(['data', 'tracks', 'dataById'], normalizedDataTracks);
+            .merge({
+                data: {
+                    tracks: {
+                        dataById: normalizedDataTracks,
+                    },
+                },
+            }, { deep: true });
     },
 
     [FETCHING](state, action) {
@@ -173,8 +180,8 @@ function getNormalizedDataTracks(albums) {
         .map(album => ({
             ...album,
             tracks: _(album.tracks)
-                            .map(track => ({ ...track, ...album }))
-                            .value(),
+                .map(track => ({ ...track, ...album }))
+                .value(),
         })
         )
         .flatMap('tracks')

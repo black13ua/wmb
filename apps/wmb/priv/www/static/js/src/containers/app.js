@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { AppBar, Button, Layout, NavDrawer, Panel, Sidebar, IconButton } from 'react-toolbox';
+import { AppBar, ProgressBar, Button, Layout, NavDrawer, Panel, Sidebar, IconButton } from 'react-toolbox';
 import isBrowser from 'react-toolbox/lib/utils/is-browser';
 import breakpoints from 'react-toolbox/lib/utils/breakpoints';
 import { getViewport } from 'react-toolbox/lib/utils/utils';
@@ -100,6 +100,9 @@ class App extends Component { // eslint-disable-line
                         <IconButton icon='skip_previous' style = {{ margin: 'auto 0', color: '#FFEA00' }} />
                         <IconButton icon={this.state.paused ? 'pause' : 'play_arrow'} onClick = {this.handleToggleClick} style = {{ margin: 'auto 0', color: '#FFEA00' }} />
                         <IconButton icon='skip_next' style = {{ margin: 'auto 0', color: '#FFEA00' }} />
+                    </div>
+                    <div style = {{ width: '100%', position: 'fixed', left: 0, top: '60px' }} >
+                        <ProgressBar mode='determinate' value={30} buffer={70} />
                     </div>
                 </AppBar>
                 <Layout>

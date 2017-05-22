@@ -59,3 +59,8 @@ export const setCurrentPage    = currentPage                     => actionCreato
 export const playTrack   = track => actionCreator(ActionTypes.PLAY_TRACK, { track });
 export const stopTrack   = ()    => actionCreator(ActionTypes.STOP_TRACK);
 export const toggleTrack = ()    => actionCreator(ActionTypes.TOGGLE_TRACK);
+
+export const onPlayerBuffer   = buffer   => actionCreator(ActionTypes.ON_PLAYER_BUFFER, { buffer });
+export const onPlayerDuration = duration => actionCreator(ActionTypes.ON_PLAYER_DURATION, { duration });
+export const onPlayerProgress = progress => actionCreator(ActionTypes.ON_PLAYER_PROGRESS, { progress });
+export const onPlayerEnd      = ()       => actionCreator(ActionTypes.ON_PLAYER_END);
