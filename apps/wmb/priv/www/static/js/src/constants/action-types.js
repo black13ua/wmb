@@ -56,3 +56,8 @@ export const SET_CURRENT_PAGE = 'SET_CURRENT_PAGE';
 export const PLAY_TRACK   = 'PLAY_TRACK';
 export const STOP_TRACK   = 'STOP_TRACK';
 export const TOGGLE_TRACK = 'TOGGLE_TRACK';
+
+export const ON_PLAYER_BUFFER   = 'ON_PLAYER_BUFFER';
+export const ON_PLAYER_DURATION = 'ON_PLAYER_DURATION';
+export const ON_PLAYER_PROGRESS = 'ON_PLAYER_PROGRESS';
+export const ON_PLAYER_END      = 'ON_PLAYER_END';
