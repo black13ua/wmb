@@ -14,6 +14,7 @@ import {
     RECEIVE_ERROR,
     SET_CURRENT_PAGE,
     FETCHING,
+    SET_ACTIVE_TRACK,
 } from '../constants/action-types';
 
 
@@ -46,6 +47,7 @@ const initialState = Immutable({
         },
         warningMessage: '',
         maxPage       : 100,
+        activeTrack   : 0,
     },
 });
 
@@ -70,6 +72,12 @@ export default createReducer(initialState, {
         const { value, isFetching } = action.payload;
         return state
             .setIn(['viewState', 'fetching', value], isFetching);
+    },
+
+    [SET_ACTIVE_TRACK](state, action) {
+        const { trackId } = action.payload;
+        return state
+            .setIn(['viewState', 'activeTrack'], trackId);
     },
 
     [RECEIVE_ALBUMS_BY_ARTIST](state, action) {

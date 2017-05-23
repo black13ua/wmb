@@ -6,6 +6,7 @@ import {
     ON_PLAYER_DURATION,
     ON_PLAYER_PROGRESS,
     GET_PLAYER_PROPERTY,
+    PLAY_TRACK,
 } from '../constants/action-types';
 
 const initialState = Immutable({
@@ -16,6 +17,10 @@ const initialState = Immutable({
 });
 
 export default createReducer(initialState, {
+    [PLAY_TRACK](state) {
+        return state.set('buffer', 0);
+    },
+
     [ON_PLAYER_PROGRESS](state, action) {
         const { progress } = action.payload;
         return state.set('progress', progress);

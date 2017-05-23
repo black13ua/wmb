@@ -17,3 +17,8 @@ export const getWarningMessage = createSelector(
     musicSelector,
     state => state.viewState.warningMessage
 );
+
+export const getActiveTrack = createSelector(
+    musicSelector,
+    state => state.viewState.sctiveTrack
+);

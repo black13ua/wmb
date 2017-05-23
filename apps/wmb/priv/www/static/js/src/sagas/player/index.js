@@ -1,4 +1,4 @@
-import { put, fork, take, call, cancel } from 'redux-saga/effects';
+import { put, fork, take, call, cancel, select } from 'redux-saga/effects';
 
 // import * as API from '../../api';
 import {
@@ -8,10 +8,11 @@ import {
     ASK_PLAYER_PROPERTY,
     SET_PLAYER_PROPERTY,
     REMOVE_PREVIOUS_PLAYER,
+    ON_PLAYER_END,
 } from '../../constants/action-types';
 import createPlayerChannel from './player-event-emiter';
-import { receiveError, getPlayerProperty } from '../../actions';
-
+import { receiveError, getPlayerProperty, setActiveTrack, playTrack } from '../../actions';
+import { getActiveTrack, getSelectedTrackIds, makeSelectTrackDatabyId } from '../../selectors';
 // ******************************************************************************/
 // ******************************* WATCHERS *************************************/
 // ******************************************************************************/
@@ -93,7 +94,32 @@ function* watchToggleTrack(player) {
     }
 }
 
+function* watchTrackEnd() {
+    while (true) {
+        yield take(ON_PLAYER_END);
+        yield put({ type: REMOVE_PREVIOUS_PLAYER });
+        const activeTrack = yield select(getActiveTrack);
+        const selectedTracks = yield select(getSelectedTrackIds);
+        const activeIndex = _.indexOf(selectedTracks, activeTrack);
+        let nextActiveIndex;
+        if (activeIndex === selectedTracks.length) {
+            console.warn('what to do? playlist is over!');
+            nextActiveIndex = 0;
+        } else {
+            nextActiveIndex = activeIndex + 1;
+        }
+        const trackId = _.get(selectedTracks, nextActiveIndex, 0);
+        yield put(setActiveTrack(trackId));
+        const getTrackDataById = makeSelectTrackDatabyId();
+        const track = yield select(state => getTrackDataById(state, { trackId }));
+        yield put(playTrack(track.file));
+    }
+}
+
 
 export default function* () {
-    yield fork(watchPlayTrack);
+    yield [
+        fork(watchPlayTrack),
+        fork(watchTrackEnd),
+    ];
 }

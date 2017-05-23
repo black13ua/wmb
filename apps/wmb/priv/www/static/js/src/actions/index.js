@@ -51,6 +51,7 @@ export const clearPlaylist     = ()                           => actionCreator(A
 export const clearWarningState = ()                           => actionCreator(ActionTypes.CLEAR_WARNING);
 export const setWarningState   = warning                     => actionCreator(ActionTypes.SET_WARNING, { warning });
 export const setCurrentPage    = currentPage                     => actionCreator(ActionTypes.SET_CURRENT_PAGE, { currentPage });
+export const setActiveTrack    = trackId                     => actionCreator(ActionTypes.SET_ACTIVE_TRACK, { trackId });
 
 // ******************************************************************************/
 // ******************************* PLAYER ***************************************/
