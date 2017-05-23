@@ -92,44 +92,56 @@ function* watchToggleTrack(player) {
 function* watchTrackEnd() {
     while (true) {
         yield take([ON_PLAYER_END, NEXT_TRACK]);
-        yield put({ type: REMOVE_PREVIOUS_PLAYER });
-        const activeTrack = yield select(getActiveTrack);
-        const selectedTracks = yield select(getSelectedTrackIds);
-        const activeIndex = _.indexOf(selectedTracks, activeTrack);
-        let nextActiveIndex;
-        if (activeIndex === selectedTracks.length) {
-            console.warn('what to do? playlist is over!');
-            nextActiveIndex = 0;
-        } else {
-            nextActiveIndex = activeIndex + 1;
+        try {
+            yield put({ type: REMOVE_PREVIOUS_PLAYER });
+            const activeTrack = yield select(getActiveTrack);
+            if (activeTrack) {
+                const selectedTracks = yield select(getSelectedTrackIds);
+                const activeIndex = _.indexOf(selectedTracks, activeTrack);
+                let nextActiveIndex;
+                if (activeIndex === selectedTracks.length) {
+                    console.warn('what to do? playlist is over!');
+                    nextActiveIndex = 0;
+                } else {
+                    nextActiveIndex = activeIndex + 1;
+                }
+                const trackId = _.get(selectedTracks, nextActiveIndex, 0);
+                yield put(setActiveTrack(trackId));
+                const getTrackDataById = makeSelectTrackDatabyId();
+                const track = yield select(state => getTrackDataById(state, { trackId }));
+                yield put(playTrack(track.file));
+            }
+        } catch (error) {
+            yield put(receiveError(error.message));
         }
-        const trackId = _.get(selectedTracks, nextActiveIndex, 0);
-        yield put(setActiveTrack(trackId));
-        const getTrackDataById = makeSelectTrackDatabyId();
-        const track = yield select(state => getTrackDataById(state, { trackId }));
-        yield put(playTrack(track.file));
     }
 }
 
 function* watchPrevTrack() {
     while (true) {
         yield take(PREV_TRACK);
-        yield put({ type: REMOVE_PREVIOUS_PLAYER });
-        const activeTrack = yield select(getActiveTrack);
-        const selectedTracks = yield select(getSelectedTrackIds);
-        const activeIndex = _.indexOf(selectedTracks, activeTrack);
-        let nextActiveIndex;
-        if (activeIndex === 0) {
-            console.warn('what to do? playlist is over!');
-            nextActiveIndex = selectedTracks.length - 1;
-        } else {
-            nextActiveIndex = activeIndex - 1;
+        try {
+            yield put({ type: REMOVE_PREVIOUS_PLAYER });
+            const activeTrack = yield select(getActiveTrack);
+            if (activeTrack) {
+                const selectedTracks = yield select(getSelectedTrackIds);
+                const activeIndex = _.indexOf(selectedTracks, activeTrack);
+                let nextActiveIndex;
+                if (activeIndex === 0) {
+                    console.warn('what to do? playlist is over!');
+                    nextActiveIndex = selectedTracks.length - 1;
+                } else {
+                    nextActiveIndex = activeIndex - 1;
+                }
+                const trackId = _.get(selectedTracks, nextActiveIndex, 0);
+                yield put(setActiveTrack(trackId));
+                const getTrackDataById = makeSelectTrackDatabyId();
+                const track = yield select(state => getTrackDataById(state, { trackId }));
+                yield put(playTrack(track.file));
+            }
+        } catch (error) {
+            yield put(receiveError(error.message));
         }
-        const trackId = _.get(selectedTracks, nextActiveIndex, 0);
-        yield put(setActiveTrack(trackId));
-        const getTrackDataById = makeSelectTrackDatabyId();
-        const track = yield select(state => getTrackDataById(state, { trackId }));
-        yield put(playTrack(track.file));
     }
 }
 
