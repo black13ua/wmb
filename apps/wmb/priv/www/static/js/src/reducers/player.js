@@ -22,8 +22,11 @@ export default createReducer(initialState, {
     },
 
     [ON_PLAYER_PROGRESS](state, action) {
+        if (!state.duration) return state;
+
         const { progress } = action.payload;
-        return state.set('progress', progress);
+        const percentProgress = ((progress * 100) / state.duration).toFixed(2);
+        return state.set('progress', percentProgress);
     },
 
     [ON_PLAYER_BUFFER](state, action) {

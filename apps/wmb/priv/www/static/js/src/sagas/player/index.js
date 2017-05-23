@@ -1,3 +1,4 @@
+import { delay } from 'redux-saga';
 import { put, fork, take, call, cancel, select } from 'redux-saga/effects';
 
 // import * as API from '../../api';
@@ -9,9 +10,11 @@ import {
     SET_PLAYER_PROPERTY,
     REMOVE_PREVIOUS_PLAYER,
     ON_PLAYER_END,
+    NEXT_TRACK,
+    PREV_TRACK,
 } from '../../constants/action-types';
 import createPlayerChannel from './player-event-emiter';
-import { receiveError, getPlayerProperty, setActiveTrack, playTrack } from '../../actions';
+import { receiveError, getPlayerProperty, setActiveTrack, playTrack, askPlayerProperty } from '../../actions';
 import { getActiveTrack, getSelectedTrackIds, makeSelectTrackDatabyId } from '../../selectors';
 // ******************************************************************************/
 // ******************************* WATCHERS *************************************/
@@ -38,10 +41,10 @@ function createPlayerFromUrl(url) {
 }
 
 function* generateActionsFromPlayerMessage(playerChannel) {
-  while (true) {
-      const action = yield take(playerChannel);
-      yield put(action);
-  }
+    while (true) {
+        const action = yield take(playerChannel);
+        yield put(action);
+    }
 }
 
 function* watchPlayTrack() {
@@ -57,20 +60,12 @@ function* watchPlayTrack() {
             fork(watchSetPlayerProperty, player),
         ];
         player.play();
+        yield put(askPlayerProperty('playing'));
         yield take(REMOVE_PREVIOUS_PLAYER);
         player.stop();
         yield playerTasks.map(task => cancel(task));
     }
 }
-
-// function* talkToPlayer(player) {
-//     yield [
-//         fork(watchToggleTrack, player),
-//         fork(watchStopTrack, player),
-//         fork(watchGetPlayerProperty, player),
-//         fork(watchSetPlayerProperty, player),
-//     ];
-// }
 
 function* watchStopTrack(player) {
     while (true) {
@@ -96,7 +91,7 @@ function* watchToggleTrack(player) {
 
 function* watchTrackEnd() {
     while (true) {
-        yield take(ON_PLAYER_END);
+        yield take([ON_PLAYER_END, NEXT_TRACK]);
         yield put({ type: REMOVE_PREVIOUS_PLAYER });
         const activeTrack = yield select(getActiveTrack);
         const selectedTracks = yield select(getSelectedTrackIds);
@@ -116,10 +111,32 @@ function* watchTrackEnd() {
     }
 }
 
+function* watchPrevTrack() {
+    while (true) {
+        yield take(PREV_TRACK);
+        yield put({ type: REMOVE_PREVIOUS_PLAYER });
+        const activeTrack = yield select(getActiveTrack);
+        const selectedTracks = yield select(getSelectedTrackIds);
+        const activeIndex = _.indexOf(selectedTracks, activeTrack);
+        let nextActiveIndex;
+        if (activeIndex === 0) {
+            console.warn('what to do? playlist is over!');
+            nextActiveIndex = selectedTracks.length - 1;
+        } else {
+            nextActiveIndex = activeIndex - 1;
+        }
+        const trackId = _.get(selectedTracks, nextActiveIndex, 0);
+        yield put(setActiveTrack(trackId));
+        const getTrackDataById = makeSelectTrackDatabyId();
+        const track = yield select(state => getTrackDataById(state, { trackId }));
+        yield put(playTrack(track.file));
+    }
+}
 
 export default function* () {
     yield [
         fork(watchPlayTrack),
         fork(watchTrackEnd),
+        fork(watchPrevTrack),
     ];
 }

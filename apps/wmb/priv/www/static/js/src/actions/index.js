@@ -62,10 +62,12 @@ export const stopTrack            = ()    => actionCreator(ActionTypes.STOP_TRAC
 export const toggleTrack          = ()    => actionCreator(ActionTypes.TOGGLE_TRACK);
 export const deletePreviousPlayer = ()    => actionCreator(ActionTypes.REMOVE_PREVIOUS_PLAYER);
 
-export const onPlayerBuffer    = buffer            => actionCreator(ActionTypes.ON_PLAYER_BUFFER, { buffer });
-export const onPlayerDuration  = duration          => actionCreator(ActionTypes.ON_PLAYER_DURATION, { duration });
-export const onPlayerProgress  = progress          => actionCreator(ActionTypes.ON_PLAYER_PROGRESS, { progress });
-export const onPlayerEnd       = ()                => actionCreator(ActionTypes.ON_PLAYER_END);
+export const onPlayerBuffer   = buffer   => actionCreator(ActionTypes.ON_PLAYER_BUFFER, { buffer });
+export const onPlayerDuration = duration => actionCreator(ActionTypes.ON_PLAYER_DURATION, { duration });
+export const onPlayerProgress = progress => actionCreator(ActionTypes.ON_PLAYER_PROGRESS, { progress });
+export const onPlayerEnd      = ()       => actionCreator(ActionTypes.ON_PLAYER_END);
+export const prevTrack        = ()       => actionCreator(ActionTypes.PREV_TRACK);
+export const nextTrack        = ()       => actionCreator(ActionTypes.NEXT_TRACK);
 
 export const getPlayerProperty = (property, value) => actionCreator(ActionTypes.GET_PLAYER_PROPERTY, { property, value });
 export const setPlayerProperty = (property, value) => actionCreator(ActionTypes.SET_PLAYER_PROPERTY, { property, value });

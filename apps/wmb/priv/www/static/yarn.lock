@@ -5612,6 +5612,10 @@ to-fast-properties@^1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/to-fast-properties/-/to-fast-properties-1.0.2.tgz#f3f5c0c3ba7299a7ef99427e44633257ade43320"
 
+toolbox-loader@^0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/toolbox-loader/-/toolbox-loader-0.0.3.tgz#0d9d1bcd6c44aacce3d4c17b6115f0477fcf4179"
+
 toposort@^1.0.0:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/toposort/-/toposort-1.0.3.tgz#f02cd8a74bd8be2fc0e98611c3bacb95a171869c"

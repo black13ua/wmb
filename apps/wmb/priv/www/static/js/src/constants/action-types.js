@@ -63,6 +63,8 @@ export const ON_PLAYER_BUFFER   = 'ON_PLAYER_BUFFER';
 export const ON_PLAYER_DURATION = 'ON_PLAYER_DURATION';
 export const ON_PLAYER_PROGRESS = 'ON_PLAYER_PROGRESS';
 export const ON_PLAYER_END      = 'ON_PLAYER_END';
+export const PREV_TRACK         = 'PREV_TRACK';
+export const NEXT_TRACK         = 'NEXT_TRACK';
 
 export const ASK_PLAYER_PROPERTY = 'ASK_PLAYER_PROPERTY';
 export const SET_PLAYER_PROPERTY = 'SET_PLAYER_PROPERTY';
