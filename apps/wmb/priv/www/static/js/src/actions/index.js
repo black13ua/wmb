@@ -15,7 +15,7 @@ export const fetchSearchResults         = value            => actionCreator(Acti
 export const receiveSearchResults       = tracks           => actionCreator(ActionTypes.RECEIVE_SEARCH_RESULTS, { tracks });
 export const fetching                   = (value, isFetching)   => actionCreator(ActionTypes.FETCHING, { value, isFetching });
 
-export const receiveError               = error            => actionCreator(ActionTypes.RECEIVE_ERROR, { error });
+export const receiveError               = error            => actionCreator(ActionTypes.RECEIVE_ERROR, { error: `${error}` });
 
 export const randomCheckToggle          = ()               => actionCreator(ActionTypes.RANDOM_CHECKER_TOGGLE);
 export const saveSearchValue            = value            => actionCreator(ActionTypes.SAVE_SEARCH_VALUE, { value });
@@ -56,11 +56,16 @@ export const setCurrentPage    = currentPage                     => actionCreato
 // ******************************* PLAYER ***************************************/
 // ******************************************************************************/
 
-export const playTrack   = track => actionCreator(ActionTypes.PLAY_TRACK, { track });
-export const stopTrack   = ()    => actionCreator(ActionTypes.STOP_TRACK);
-export const toggleTrack = ()    => actionCreator(ActionTypes.TOGGLE_TRACK);
+export const playTrack            = track => actionCreator(ActionTypes.PLAY_TRACK, { track });
+export const stopTrack            = ()    => actionCreator(ActionTypes.STOP_TRACK);
+export const toggleTrack          = ()    => actionCreator(ActionTypes.TOGGLE_TRACK);
+export const deletePreviousPlayer = ()    => actionCreator(ActionTypes.REMOVE_PREVIOUS_PLAYER);
 
-export const onPlayerBuffer   = buffer   => actionCreator(ActionTypes.ON_PLAYER_BUFFER, { buffer });
-export const onPlayerDuration = duration => actionCreator(ActionTypes.ON_PLAYER_DURATION, { duration });
-export const onPlayerProgress = progress => actionCreator(ActionTypes.ON_PLAYER_PROGRESS, { progress });
-export const onPlayerEnd      = ()       => actionCreator(ActionTypes.ON_PLAYER_END);
+export const onPlayerBuffer    = buffer            => actionCreator(ActionTypes.ON_PLAYER_BUFFER, { buffer });
+export const onPlayerDuration  = duration          => actionCreator(ActionTypes.ON_PLAYER_DURATION, { duration });
+export const onPlayerProgress  = progress          => actionCreator(ActionTypes.ON_PLAYER_PROGRESS, { progress });
+export const onPlayerEnd       = ()                => actionCreator(ActionTypes.ON_PLAYER_END);
+
+export const getPlayerProperty = (property, value) => actionCreator(ActionTypes.GET_PLAYER_PROPERTY, { property, value });
+export const setPlayerProperty = (property, value) => actionCreator(ActionTypes.SET_PLAYER_PROPERTY, { property, value });
+export const askPlayerProperty = property          => actionCreator(ActionTypes.ASK_PLAYER_PROPERTY, { property });

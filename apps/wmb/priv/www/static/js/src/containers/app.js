@@ -1,17 +1,16 @@
 import React, { Component } from 'react';
-import { AppBar, ProgressBar, Button, Layout, NavDrawer, Panel, Sidebar, IconButton } from 'react-toolbox';
+import { Button, Layout, NavDrawer, Panel, Sidebar } from 'react-toolbox';
 import isBrowser from 'react-toolbox/lib/utils/is-browser';
 import breakpoints from 'react-toolbox/lib/utils/breakpoints';
 import { getViewport } from 'react-toolbox/lib/utils/utils';
 import ScrollUp from 'react-scroll-up';
-import { connect } from 'react-redux';
 
+import PlayerContainer from './player';
 import GreyAppBar from './greyAppBar';
 import FiltersContainer from './filters';
 import ContentContainer from './content';
 import PlaylistContainer from './playlist';
 import PageButtonsContainer from './pageButtons';
-import { toggleTrack } from '../actions';
 // import debugRender from 'react-render-debugger';
 // @debugRender
 class App extends Component { // eslint-disable-line
@@ -43,13 +42,6 @@ class App extends Component { // eslint-disable-line
         this.setState({ width: getViewport().width });
     }
 
-    handleToggleClick = (event) => {
-        event.stopPropagation();
-        event.preventDefault();
-        this.setState({ paused: !this.state.paused });
-        this.props.toggleTrack();
-    }
-
     get filterToggleButton() {
         return (
             <Button
@@ -74,18 +66,20 @@ class App extends Component { // eslint-disable-line
         );
     }
 
-    get toTopButton() {
-        return (
-            <ScrollUp showUnder={350} duration={1000} easing="easeOutCubic" style = {{ position: 'fixed', bottom: '65px', right: '35px', zIndex: 999, transitionDuration: '0.5s' }}>
-                <Button
-                    accent
-                    floating
-                    icon    = "arrow_upward"
-                    style = {{ color: '#424242' }}
-                />
-            </ScrollUp>
-        );
-    }
+    toTopButton = () =>
+        <ScrollUp
+            duration  = {1000}
+            easing    = "easeOutCubic"
+            showUnder = {350}
+            style     = {{ position: 'fixed', bottom: '65px', right: '35px', zIndex: 999, transitionDuration: '0.5s' }}
+        >
+            <Button
+                accent
+                floating
+                icon  = "arrow_upward"
+                style = {{ color: '#424242' }}
+            />
+        </ScrollUp>;
 
     render() {
         const permanentAt = 'md';
@@ -95,21 +89,12 @@ class App extends Component { // eslint-disable-line
             <div style={{ margin: '70px 0 30px', position: 'realtive' }} >
                 {appBarIconVisible ? this.filterToggleButton : null}
                 {appBarIconVisible ? this.playlistToggleButton : null}
-                <AppBar fixed style = {{ height: '75px' }} >
-                    <div style = {{ display: 'flex', width: '100%', margin: '0 20%', flexWrap: 'wrap', justifyContent: 'space-around', alignContent: 'flex-around' }}>
-                        <IconButton icon='skip_previous' style = {{ margin: 'auto 0', color: '#FFEA00' }} />
-                        <IconButton icon={this.state.paused ? 'pause' : 'play_arrow'} onClick = {this.handleToggleClick} style = {{ margin: 'auto 0', color: '#FFEA00' }} />
-                        <IconButton icon='skip_next' style = {{ margin: 'auto 0', color: '#FFEA00' }} />
-                    </div>
-                    <div style = {{ width: '100%', position: 'fixed', left: 0, top: '60px' }} >
-                        <ProgressBar mode='determinate' value={30} buffer={70} />
-                    </div>
-                </AppBar>
+                <PlayerContainer />
                 <Layout>
                     <NavDrawer
                         active         = {this.state.drawerActive}
-                        pinned         = {this.state.filtersPinned}
                         permanentAt    = {permanentAt}
+                        pinned         = {this.state.filtersPinned}
                         width          = "wide"
                         onOverlayClick = {this.toggleDrawerActive}
                     >
@@ -119,10 +104,10 @@ class App extends Component { // eslint-disable-line
                         <ContentContainer />
                     </Panel>
                     <Sidebar
-                        style       = {{ overflow: 'visible' }}
-                        pinned      = {this.state.playlistPinned}
-                        width       = {5}
                         permanentAt = {permanentAt}
+                        pinned      = {this.state.playlistPinned}
+                        style       = {{ overflow: 'visible' }}
+                        width       = {5}
                     >
                         <PlaylistContainer />
                     </Sidebar>
@@ -132,14 +117,10 @@ class App extends Component { // eslint-disable-line
                         <PageButtonsContainer />
                     </GreyAppBar>
                 </div>
-                { this.toTopButton }
+                { this.toTopButton() }
             </div>
         );
     }
 }
 
-const mapDispatchToProps = dispatch => ({
-    toggleTrack: () => dispatch(toggleTrack()),
-});
-
-export default connect(null, mapDispatchToProps)(App);
+export default App;
