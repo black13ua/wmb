@@ -2,18 +2,11 @@ import React, { PropTypes } from 'react';
 // import Button from 'react-toolbox/lib/button/Button';
 // import buttonTheme from '../../../../sass/theme/button.scss';
 
-import { Card, CardTitle, CardMedia, Tooltip, Button, CardActions, List, ListItem } from 'react-toolbox';
+import { Card, CardTitle, CardMedia, Button, CardActions, List, ListItem } from 'react-toolbox';
+import YellowButton from '../../containers/custom/yellow-button';
 
-const AlbumView = ({ handleUnfold, folded, onClick, children, album, artist, cover, date, genre, selected, activeClass }) => {
-    // const classNames = classnames('righted', { active: activeClass });
 
-    /* const tooltip = (
-        <Tooltip id="tooltip">
-            <strong>{ `${artist} - ${album} | `}</strong>
-            <span>{ `${date} | ${genre}` }</span>
-        </Tooltip>
-    );*/
-
+const AlbumView = ({ handleUnfold, folded, onClick, children, album, artist, cover, date, genre, selected }) => {
     return (
         <section style={{ flex: '0 350px', padding: '1em 0' }}>
             <Card style={{ width: '350px', background: 'lightgrey' }}>
@@ -39,7 +32,7 @@ const AlbumView = ({ handleUnfold, folded, onClick, children, album, artist, cov
                             label="Add album"
                             onClick = {onClick}
                         />)
-                        : (<Button raised accent label="Remove album" onClick = {onClick} />)
+                        : (<YellowButton raised accent label="Remove album" onClick = {onClick} />)
                     }
                 </CardActions>
                 <List selectable ripple>

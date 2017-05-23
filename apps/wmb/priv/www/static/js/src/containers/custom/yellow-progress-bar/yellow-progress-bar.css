@@ -1,0 +1,13 @@
+.linear {
+  background: #FFF9C4 !important;
+}
+
+.value {
+  background-color: #FFEA00;
+}
+
+.buffer {
+  background-image:
+    linear-gradient(to right, grey, grey),
+    linear-gradient(to right, grey, grey);
+}

@@ -6,7 +6,7 @@ import { getViewport } from 'react-toolbox/lib/utils/utils';
 import ScrollUp from 'react-scroll-up';
 
 import PlayerContainer from './player';
-import GreyAppBar from './greyAppBar';
+import GreyAppBar from './custom/grey-appbar';
 import FiltersContainer from './filters';
 import ContentContainer from './content';
 import PlaylistContainer from './playlist';

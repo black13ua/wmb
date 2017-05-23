@@ -54,10 +54,10 @@ class AlbumContainer extends Component {
         return (
             <AlbumView
                 {...albumData}
-                selected = {selected}
-                onClick  = {this.handleSelectAlbumClick}
-                folded = {this.state.folded}
+                folded       = {this.state.folded}
+                selected     = {selected}
                 handleUnfold = {this.handleUnfold}
+                onClick      = {this.handleSelectAlbumClick}
             >
                 { this.trackList }
             </AlbumView>

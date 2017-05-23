@@ -14,11 +14,14 @@ const initialState = Immutable({
     buffer  : 0,
     duration: 0,
     playing : false,
+    volume  : 50,
 });
 
 export default createReducer(initialState, {
     [PLAY_TRACK](state) {
-        return state.set('buffer', 0);
+        return state
+            .set('buffer', 0)
+            .set('progress', 0);
     },
 
     [ON_PLAYER_PROGRESS](state, action) {

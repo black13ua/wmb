@@ -21,3 +21,8 @@ export const getPlayerIsPlaying =  createSelector(
     playerSelector,
     state => state.playing
 );
+
+export const getPlayerVolume =  createSelector(
+    playerSelector,
+    state => state.volume
+);

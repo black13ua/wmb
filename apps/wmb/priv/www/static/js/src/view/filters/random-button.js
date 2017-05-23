@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { List, ProgressBar, ListSubHeader, ListItem, Button, Switch, Slider } from 'react-toolbox';
+import { ListSubHeader, Button, Switch, Slider } from 'react-toolbox';
 
 const RandomButtonView = ({
     checked,
