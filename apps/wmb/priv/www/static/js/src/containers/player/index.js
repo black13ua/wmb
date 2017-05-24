@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
-import { AppBar, IconButton } from 'react-toolbox';
+import { AppBar, IconButton, CardTitle } from 'react-toolbox';
 import YellowProgressBar from '../custom/yellow-progress-bar';
 import YellowSlider from '../custom/yellow-slider';
 import {
@@ -9,6 +9,7 @@ import {
     getPlayerProgress,
     getPlayerIsPlaying,
     getPlayerVolume,
+    getActiveTrackData,
 } from '../../selectors';
 import {
     toggleTrack,
@@ -58,10 +59,25 @@ class PlayerContainer extends Component {
         return 'volume_up';
     }
 
+    get activeTrackInfo() {
+        if (_.isEmpty(this.props.activeTrack)) return;
+        const { title, active, album, artist, genre, date, cover } = this.props.activeTrack;
+        return (
+            <CardTitle
+                avatar   = {encodeURI(cover)}
+                subtitle = {album}
+                title    = {artist}
+            />
+        );
+    }
+
     render() {
         return (
             <AppBar fixed style = {{ height: '75px' }} >
                 <div style = {{ display: 'flex', width: '100%', margin: '0 10%', flexWrap: 'wrap', justifyContent: 'space-around', alignContent: 'flex-around' }}>
+                    <div style = {{  width: '30%' }}>
+                        { this.activeTrackInfo }
+                    </div>
                     <IconButton
                         icon  = "skip_previous"
                         style = {{ margin: 'auto 0', color: '#FFEA00' }}
@@ -77,19 +93,21 @@ class PlayerContainer extends Component {
                         style = {{ margin: 'auto 0', color: '#FFEA00' }}
                         onClick = {this.handleNextTrackClick}
                     />
-                    <IconButton
-                        icon  = {this.getVolumeIcon}
-                        style = {{ margin: 'auto 0', color: '#FFEA00' }}
-                        onClick = {this.handleMuteClick}
-                    />
-                    <div style = {{ width: '25%' }}>
-                        <YellowSlider
-                            pinned
-                            max   = {100}
-                            min   = {0}
-                            value = {this.props.volume}
-                            onChange={this.onSliderChange.bind(this)}
+                    <div style = {{ width: '25%', display: 'flex' }}>
+                        <IconButton
+                            icon  = {this.getVolumeIcon}
+                            style = {{ margin: 'auto 0', color: '#FFEA00' }}
+                            onClick = {this.handleMuteClick}
                         />
+                        <div style = {{ width: '100%' }}>
+                            <YellowSlider
+                                pinned
+                                max   = {100}
+                                min   = {0}
+                                value = {this.props.volume}
+                                onChange={this.onSliderChange.bind(this)}
+                            />
+                        </div>
                     </div>
                 </div>
                 <div style = {{ width: '100%', position: 'fixed', left: 0, top: '60px' }} >
@@ -106,6 +124,7 @@ class PlayerContainer extends Component {
 }
 
 PlayerContainer.propTypes = {
+    activeTrack : PropTypes.object,
     askIfPlaign : PropTypes.func.isRequired,
     askVolume   : PropTypes.func.isRequired,
     buffer      : PropTypes.number,
@@ -119,10 +138,11 @@ PlayerContainer.propTypes = {
 };
 
 const mapStateToProps = createStructuredSelector({
-    buffer  : getPlayerBuffer,
-    progress: getPlayerProgress,
-    playing : getPlayerIsPlaying,
-    volume  : getPlayerVolume,
+    buffer     : getPlayerBuffer,
+    progress   : getPlayerProgress,
+    playing    : getPlayerIsPlaying,
+    volume     : getPlayerVolume,
+    activeTrack: getActiveTrackData,
 });
 
 const mapDispatchToProps = dispatch => ({

@@ -1,5 +1,5 @@
-import { delay } from 'redux-saga';
 import { put, fork, take, call, cancel, select } from 'redux-saga/effects';
+import createPlayerChannel from './player-event-emiter';
 
 // import * as API from '../../api';
 import {
@@ -13,9 +13,22 @@ import {
     NEXT_TRACK,
     PREV_TRACK,
 } from '../../constants/action-types';
-import createPlayerChannel from './player-event-emiter';
-import { receiveError, getPlayerProperty, setActiveTrack, playTrack, askPlayerProperty } from '../../actions';
-import { getActiveTrack, getSelectedTrackIds, makeSelectTrackDatabyId } from '../../selectors';
+
+import {
+    receiveError,
+    getPlayerProperty,
+    setActiveTrack,
+    playTrack,
+    askPlayerProperty,
+    fetchRandomTracks,
+} from '../../actions';
+
+import {
+    getActiveTrackId,
+    getSelectedTrackIds,
+    makeSelectTrackDatabyId,
+    getIsRandomChecked,
+} from '../../selectors';
 // ******************************************************************************/
 // ******************************* WATCHERS *************************************/
 // ******************************************************************************/
@@ -94,12 +107,17 @@ function* watchTrackEnd() {
         yield take([ON_PLAYER_END, NEXT_TRACK]);
         try {
             yield put({ type: REMOVE_PREVIOUS_PLAYER });
-            const activeTrack = yield select(getActiveTrack);
+            const activeTrack = yield select(getActiveTrackId);
             if (activeTrack) {
                 const selectedTracks = yield select(getSelectedTrackIds);
                 const activeIndex = _.indexOf(selectedTracks, activeTrack);
+                console.warn(activeTrack, selectedTracks, activeIndex);
+                const autoload = yield select(getIsRandomChecked);
+                if ((activeIndex === selectedTracks.length - 2) && autoload) {
+                    yield put(fetchRandomTracks()); // load more random tracks
+                }
                 let nextActiveIndex;
-                if (activeIndex === selectedTracks.length) {
+                if (activeIndex === selectedTracks.length - 1) {
                     console.warn('what to do? playlist is over!');
                     nextActiveIndex = 0;
                 } else {
@@ -122,7 +140,7 @@ function* watchPrevTrack() {
         yield take(PREV_TRACK);
         try {
             yield put({ type: REMOVE_PREVIOUS_PLAYER });
-            const activeTrack = yield select(getActiveTrack);
+            const activeTrack = yield select(getActiveTrackId);
             if (activeTrack) {
                 const selectedTracks = yield select(getSelectedTrackIds);
                 const activeIndex = _.indexOf(selectedTracks, activeTrack);

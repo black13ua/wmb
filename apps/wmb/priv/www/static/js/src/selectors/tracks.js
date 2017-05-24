@@ -12,3 +12,8 @@ export const getSelectedTrackIds = createSelector(
     musicSelector,
     state => state.viewState.selected.tracks,
 );
+
+export const getTracksData = createSelector(
+    musicSelector,
+    state => state.data.tracks.dataById,
+);

@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-
+import { getTracksData } from './tracks';
 
 const musicSelector = state => state.music;
 
@@ -18,7 +18,12 @@ export const getWarningMessage = createSelector(
     state => state.viewState.warningMessage
 );
 
-export const getActiveTrack = createSelector(
+export const getActiveTrackId = createSelector(
     musicSelector,
     state => state.viewState.activeTrack
+);
+
+export const getActiveTrackData = createSelector(
+    [getTracksData, getActiveTrackId],
+    (tracksData, activeTrackId) => _.get(tracksData, activeTrackId, {})
 );
