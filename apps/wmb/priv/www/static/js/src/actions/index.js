@@ -72,3 +72,6 @@ export const nextTrack        = ()       => actionCreator(ActionTypes.NEXT_TRACK
 export const getPlayerProperty = (property, value) => actionCreator(ActionTypes.GET_PLAYER_PROPERTY, { property, value });
 export const setPlayerProperty = (property, value) => actionCreator(ActionTypes.SET_PLAYER_PROPERTY, { property, value });
 export const askPlayerProperty = property          => actionCreator(ActionTypes.ASK_PLAYER_PROPERTY, { property });
+export const setStoreProperty  = (property, value) => actionCreator(ActionTypes.SET_STORE_PROPERTY, { property, value });
+
+export const receivePlayerError = error            => actionCreator(ActionTypes.RECEIVE_PLAYER_ERROR, { error: `${error}` });

@@ -4,6 +4,8 @@ import { createStructuredSelector } from 'reselect';
 import { AppBar, IconButton, CardTitle } from 'react-toolbox';
 import YellowProgressBar from '../custom/yellow-progress-bar';
 import YellowSlider from '../custom/yellow-slider';
+import MenuTest from './active-track-menu';
+
 import {
     getPlayerBuffer,
     getPlayerProgress,
@@ -11,18 +13,60 @@ import {
     getPlayerVolume,
     getActiveTrackData,
 } from '../../selectors';
+
 import {
     toggleTrack,
     askPlayerProperty,
     prevTrack,
     nextTrack,
     setPlayerProperty,
+    setStoreProperty,
 } from '../../actions';
 
 
 // import debugRender from 'react-render-debugger';
 // @debugRender
 class PlayerContainer extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            previousVolume: 0,
+        };
+    }
+
+    get getVolumeIcon() {
+        if (this.props.volume === 0) {
+            return 'volume_off';
+        }
+        if (this.props.volume < 50) {
+            return 'volume_down';
+        }
+        return 'volume_up';
+    }
+
+    get activeTrackInfo() {
+        if (_.isEmpty(this.props.activeTrack)) return null;
+        const { title, active, album, artist, genre, date, cover } = this.props.activeTrack;
+        return (
+            <CardTitle
+                avatar   = {encodeURI(cover)}
+                subtitle = {album}
+                title    = {artist}
+            />
+        );
+    }
+
+    get menuButton() {
+        if (_.isEmpty(this.props.activeTrack)) return null;
+        const { activeTrack } = this.props;
+        return (
+            <MenuTest
+                {...activeTrack}
+                active = {false}
+            />
+        );
+    }
+
     handleToggleClick = (event) => {
         event.stopPropagation();
         event.preventDefault();
@@ -42,41 +86,37 @@ class PlayerContainer extends Component {
         this.props.nextTrack();
     }
 
-    onSliderChange = (value) => {
+    handleToggleMuteClick = (event) => {
         event.stopPropagation();
         event.preventDefault();
-        this.props.volumeChange(value);
-        this.props.askVolume();
+        const volume = this.props.volume ? 0 : this.state.previousVolume;
+        this.setState({ previousVolume: this.props.volume });
+        if (this.props.playing) {
+            this.props.volumeChange(volume);
+            this.props.askVolume();
+        } else {
+            this.props.setStoreVolume(volume);
+        }
     }
 
-    get getVolumeIcon() {
-        if (this.props.volume === 0) {
-            return 'volume_off';
+    handleSliderChange = (value) => {
+        event.stopPropagation();
+        event.preventDefault();
+        if (this.props.playing) {
+            this.props.volumeChange(value);
+            this.props.askVolume();
+        } else {
+            this.props.setStoreVolume(value);
         }
-        if (this.props.volume < 50) {
-            return 'volume_down';
-        }
-        return 'volume_up';
-    }
-
-    get activeTrackInfo() {
-        if (_.isEmpty(this.props.activeTrack)) return;
-        const { title, active, album, artist, genre, date, cover } = this.props.activeTrack;
-        return (
-            <CardTitle
-                avatar   = {encodeURI(cover)}
-                subtitle = {album}
-                title    = {artist}
-            />
-        );
     }
 
     render() {
         return (
             <AppBar fixed style = {{ height: '75px' }} >
                 <div style = {{ display: 'flex', width: '100%', margin: '0 10%', flexWrap: 'wrap', justifyContent: 'space-around', alignContent: 'flex-around' }}>
-                    <div style = {{  width: '30%' }}>
+                    <div style = {{ width: '30%', display: 'flex' }}>
                         { this.activeTrackInfo }
+                        {/* { this.menuButton }*/}
                     </div>
                     <IconButton
                         icon  = "skip_previous"
@@ -97,15 +137,15 @@ class PlayerContainer extends Component {
                         <IconButton
                             icon  = {this.getVolumeIcon}
                             style = {{ margin: 'auto 0', color: '#FFEA00' }}
-                            onClick = {this.handleMuteClick}
+                            onClick = {this.handleToggleMuteClick}
                         />
-                        <div style = {{ width: '100%' }}>
+                        <div style = {{ width: '100%', margin: 'auto' }}>
                             <YellowSlider
                                 pinned
                                 max   = {100}
                                 min   = {0}
                                 value = {this.props.volume}
-                                onChange={this.onSliderChange.bind(this)}
+                                onChange={this.handleSliderChange.bind(this)}
                             />
                         </div>
                     </div>
@@ -124,17 +164,18 @@ class PlayerContainer extends Component {
 }
 
 PlayerContainer.propTypes = {
-    activeTrack : PropTypes.object,
-    askIfPlaign : PropTypes.func.isRequired,
-    askVolume   : PropTypes.func.isRequired,
-    buffer      : PropTypes.number,
-    nextTrack   : PropTypes.func.isRequired,
-    playing     : PropTypes.number,
-    prevTrack   : PropTypes.func.isRequired,
-    progress    : PropTypes.number,
-    toggleTrack : PropTypes.func.isRequired,
-    volume      : PropTypes.number,
-    volumeChange: PropTypes.func.isRequired,
+    activeTrack   : PropTypes.object,
+    askIfPlaign   : PropTypes.func.isRequired,
+    askVolume     : PropTypes.func.isRequired,
+    buffer        : PropTypes.number,
+    nextTrack     : PropTypes.func.isRequired,
+    playing       : PropTypes.number,
+    prevTrack     : PropTypes.func.isRequired,
+    progress      : PropTypes.number,
+    setStoreVolume: PropTypes.func.isRequired,
+    toggleTrack   : PropTypes.func.isRequired,
+    volume        : PropTypes.number,
+    volumeChange  : PropTypes.func.isRequired,
 };
 
 const mapStateToProps = createStructuredSelector({
@@ -146,12 +187,13 @@ const mapStateToProps = createStructuredSelector({
 });
 
 const mapDispatchToProps = dispatch => ({
-    toggleTrack : () => dispatch(toggleTrack()),
-    prevTrack   : () => dispatch(prevTrack()),
-    nextTrack   : () => dispatch(nextTrack()),
-    askIfPlaign : () => dispatch(askPlayerProperty('playing')),
-    askVolume   : () => dispatch(askPlayerProperty('volume')),
-    volumeChange: value => dispatch(setPlayerProperty('volume', value)),
+    toggleTrack   : ()    => dispatch(toggleTrack()),
+    prevTrack     : ()    => dispatch(prevTrack()),
+    nextTrack     : ()    => dispatch(nextTrack()),
+    askIfPlaign   : ()    => dispatch(askPlayerProperty('playing')),
+    askVolume     : ()    => dispatch(askPlayerProperty('volume')),
+    setStoreVolume: value => dispatch(setStoreProperty('volume', value)),
+    volumeChange  : value => dispatch(setPlayerProperty('volume', value)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(PlayerContainer);

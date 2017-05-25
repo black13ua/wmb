@@ -1,7 +1,7 @@
+import { delay } from 'redux-saga';
 import { put, fork, take, call, cancel, select } from 'redux-saga/effects';
 import createPlayerChannel from './player-event-emiter';
 
-// import * as API from '../../api';
 import {
     PLAY_TRACK,
     STOP_TRACK,
@@ -12,6 +12,7 @@ import {
     ON_PLAYER_END,
     NEXT_TRACK,
     PREV_TRACK,
+    RECEIVE_PLAYER_ERROR,
 } from '../../constants/action-types';
 
 import {
@@ -21,6 +22,7 @@ import {
     playTrack,
     askPlayerProperty,
     fetchRandomTracks,
+    setPlayerProperty,
 } from '../../actions';
 
 import {
@@ -28,6 +30,7 @@ import {
     getSelectedTrackIds,
     makeSelectTrackDatabyId,
     getIsRandomChecked,
+    getPlayerVolume,
 } from '../../selectors';
 // ******************************************************************************/
 // ******************************* WATCHERS *************************************/
@@ -72,6 +75,9 @@ function* watchPlayTrack() {
             fork(watchGetPlayerProperty, player),
             fork(watchSetPlayerProperty, player),
         ];
+        yield call(delay, 100); // for watchSetPlayerProperty
+        const volume = yield select(getPlayerVolume);
+        yield put(setPlayerProperty('volume', volume));
         player.play();
         yield put(askPlayerProperty('playing'));
         yield take(REMOVE_PREVIOUS_PLAYER);
@@ -104,7 +110,7 @@ function* watchToggleTrack(player) {
 
 function* watchTrackEnd() {
     while (true) {
-        yield take([ON_PLAYER_END, NEXT_TRACK]);
+        yield take([ON_PLAYER_END, NEXT_TRACK, RECEIVE_PLAYER_ERROR]);
         try {
             yield put({ type: REMOVE_PREVIOUS_PLAYER });
             const activeTrack = yield select(getActiveTrackId);

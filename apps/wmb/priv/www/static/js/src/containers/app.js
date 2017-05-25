@@ -4,7 +4,7 @@ import isBrowser from 'react-toolbox/lib/utils/is-browser';
 import breakpoints from 'react-toolbox/lib/utils/breakpoints';
 import { getViewport } from 'react-toolbox/lib/utils/utils';
 import ScrollUp from 'react-scroll-up';
-
+import MenuTest from './player/active-track-menu';
 import PlayerContainer from './player';
 import GreyAppBar from './custom/grey-appbar';
 import FiltersContainer from './filters';

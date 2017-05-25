@@ -12,6 +12,7 @@ import {
     CLEAR_WARNING,
     SET_WARNING,
     RECEIVE_ERROR,
+    RECEIVE_PLAYER_ERROR,
     SET_CURRENT_PAGE,
     FETCHING,
     SET_ACTIVE_TRACK,
@@ -117,6 +118,12 @@ export default createReducer(initialState, {
     },
 
     [RECEIVE_ERROR](state, action) {
+        const { error } = action.payload;
+        return state
+            .setIn(['viewState', 'warningMessage'], error);
+    },
+
+    [RECEIVE_PLAYER_ERROR](state, action) {
         const { error } = action.payload;
         return state
             .setIn(['viewState', 'warningMessage'], error);
