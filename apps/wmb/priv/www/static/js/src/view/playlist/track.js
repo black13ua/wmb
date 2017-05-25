@@ -2,21 +2,21 @@ import React, { Component, PropTypes } from 'react';
 // import classnames from 'classnames';
 import { Chip, Avatar } from 'react-toolbox';
 
-const hoveredStyle = {
-    display  : 'block',
-    margin   : '4px 6px',
-    cursor   : 'pointer',
-    boxShadow: '3px 3px 5px 0px rgba(0,0,0,0.75)',
-    position : 'relative',
-    right    : '3px',
-    bottom   : '3px',
-};
+// const hoveredStyle = {
+//     display  : 'block',
+//     margin   : '4px 6px',
+//     cursor   : 'pointer',
+//     boxShadow: '3px 3px 5px 0px rgba(0,0,0,0.75)',
+//     position : 'relative',
+//     right    : '3px',
+//     bottom   : '3px',
+// };
 
-const defaultStyle = {
-    display: 'block',
-    margin : '4px 6px',
-    cursor : 'pointer',
-};
+// const defaultStyle = {
+//     display: 'block',
+//     margin : '4px 6px',
+//     cursor : 'pointer',
+// };
 
 class PlaylistTrackView extends Component {
     state = {
@@ -34,7 +34,7 @@ class PlaylistTrackView extends Component {
             <Chip
                 onClick = {onPlay}
                 deletable
-                style         = {this.state.hovered ? hoveredStyle : defaultStyle}
+                style         = {{ display: 'block', margin: '4px 6px', cursor: 'pointer', background: active ? '#FFCA28' : '' }}
                 onDeleteClick = {onDelete}
                 onMouseEnter = {this.handleHover.bind(this, true)}
                 onMouseLeave = {this.handleHover.bind(this, false)}
@@ -47,7 +47,7 @@ class PlaylistTrackView extends Component {
 }
 
 PlaylistTrackView.propTypes = {
-    active  : PropTypes.bool,
+    active  : PropTypes.bool.isRequired,
     title   : PropTypes.string.isRequired,
     onDelete: PropTypes.func.isRequired,
     onPlay  : PropTypes.func.isRequired,

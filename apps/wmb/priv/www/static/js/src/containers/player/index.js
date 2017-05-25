@@ -115,7 +115,7 @@ class PlayerContainer extends Component {
     render() {
         return (
             <AppBar fixed style = {{ height: '75px' }} >
-                <div style = {{ display: 'flex', width: '100%', margin: '0 10%', flexWrap: 'wrap', justifyContent: 'space-around', alignContent: 'flex-around' }}>
+                <div style = {{ display: 'flex', width: '100%', flexWrap: 'wrap', justifyContent: 'space-around', alignContent: 'flex-around' }}>
                     <div style = {{ width: '30%', display: 'flex' }}>
                         { this.activeTrackInfo }
                         {/* { this.menuButton }*/}
@@ -135,7 +135,7 @@ class PlayerContainer extends Component {
                         style = {{ margin: 'auto 0', color: '#FFEA00' }}
                         onClick = {this.handleNextTrackClick}
                     />
-                    <div style = {{ width: '25%', display: 'flex' }}>
+                    <div style = {{ width: '15%', display: 'flex' }}>
                         <IconButton
                             icon  = {this.getVolumeIcon}
                             style = {{ margin: 'auto 0', color: '#FFEA00' }}

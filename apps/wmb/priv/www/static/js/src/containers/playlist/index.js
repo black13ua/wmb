@@ -7,7 +7,7 @@ import CleanPlaylistDialog from '../../view/playlist/clean-playlist-dialog';
 
 import PlaylistView from '../../view/playlist/playlist-view';
 import PlaylistTrackContainer from './track';
-import { getSelectedTrackIds, getRepeatPlaylistStatus } from '../../selectors';
+import { getSelectedTrackIds, getRepeatPlaylistStatus, getActiveTrackId } from '../../selectors';
 import { clearPlaylist, shufflePlaylist, repeatPlaylist } from '../../actions/index';
 
 
@@ -83,11 +83,12 @@ class PlaylistContainer extends Component {
     }
 
     get playlistTracks() {
-        const { selectedTrackIds } = this.props;
+        const { selectedTrackIds, activeTrackId } = this.props;
         if (_.isEmpty(selectedTrackIds)) return null;
 
         const list = selectedTrackIds.map(trackId =>
             <PlaylistTrackContainer
+                active   = {trackId === activeTrackId}
                 key      = {trackId}
                 trackId  = {trackId}
             />
@@ -106,6 +107,7 @@ class PlaylistContainer extends Component {
 }
 
 PlaylistContainer.propTypes = {
+    activeTrackId   : PropTypes.number.isRequired,
     clearPlaylist   : PropTypes.func.isRequired,
     repeat          : PropTypes.bool.isRequired,
     repeatPlaylist  : PropTypes.func.isRequired,
@@ -116,6 +118,7 @@ PlaylistContainer.propTypes = {
 const mapStateToProps = createStructuredSelector({
     selectedTrackIds: getSelectedTrackIds,
     repeat          : getRepeatPlaylistStatus,
+    activeTrackId   : getActiveTrackId,
 });
 
 const mapDispatchToProps = dispatch => ({

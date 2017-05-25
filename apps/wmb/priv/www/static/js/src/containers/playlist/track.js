@@ -28,12 +28,13 @@ class PlaylistTrackContainer extends Component {
     }
 
     render() {
-        const { trackData } = this.props;
+        const { trackData, active } = this.props;
         if (_.isEmpty(trackData)) return null;
 
         return (
             <PlaylistTrackView
                 {...trackData}
+                active   = {active}
                 onPlay   = {this.handleSelectTrackClick}
                 onDelete = {this.handleDeleteTrackClick}
             />
@@ -43,6 +44,7 @@ class PlaylistTrackContainer extends Component {
 
 
 PlaylistTrackContainer.propTypes = {
+    active              : PropTypes.bool.isRequired,
     deletePreviousPlayer: PropTypes.func.isRequired,
     playTrack           : PropTypes.func.isRequired,
     selectTrack         : PropTypes.func.isRequired,

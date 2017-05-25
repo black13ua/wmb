@@ -117,7 +117,7 @@ function* watchTrackEnd() {
             yield put({ type: REMOVE_PREVIOUS_PLAYER });
             const activeTrack = yield select(getActiveTrackId);
             if (activeTrack) {
-                const selectedTracks = yield select(getSelectedTrackIds);
+                let selectedTracks = yield select(getSelectedTrackIds);
                 const activeIndex = _.indexOf(selectedTracks, activeTrack);
                 let nextActiveIndex;
                 if (activeIndex === selectedTracks.length - 1) {
@@ -125,13 +125,15 @@ function* watchTrackEnd() {
                     if (autoload) {
                         yield put(fetchRandomTracks()); // load more random tracks
                         yield take(RECEIVE_RANDOM_TRACKS); // wating for random tracks
+                        selectedTracks = yield select(getSelectedTrackIds);
                         nextActiveIndex = activeIndex + 1; // continue to playing
-                    }
-                    const repeating = yield select(getRepeatPlaylistStatus);
-                    if (repeating) {
-                        nextActiveIndex = 0;
                     } else {
-                        throw new Error('Playlist is over, check out repeat button.');
+                        const repeating = yield select(getRepeatPlaylistStatus);
+                        if (repeating) {
+                            nextActiveIndex = 0;
+                        } else {
+                            throw new Error('Playlist is over, check out repeat button.');
+                        }
                     }
                 } else {
                     nextActiveIndex = activeIndex + 1;
