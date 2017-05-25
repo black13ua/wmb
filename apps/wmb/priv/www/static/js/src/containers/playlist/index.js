@@ -8,7 +8,7 @@ import CleanPlaylistDialog from '../../view/playlist/clean-playlist-dialog';
 import PlaylistView from '../../view/playlist/playlist-view';
 import PlaylistTrackContainer from './track';
 import { getSelectedTrackIds } from '../../selectors';
-import { clearPlaylist } from '../../actions/index';
+import { clearPlaylist, shufflePlaylist, repeatPlaylist } from '../../actions/index';
 
 
 // import debugRender from 'react-render-debugger';
@@ -22,6 +22,18 @@ class PlaylistContainer extends Component {
         event.preventDefault();
         event.stopPropagation();
         this.setState({ activeDialog: !this.state.activeDialog });
+    }
+
+    handleShufflePlaylist = (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        this.props.shufflePlaylist();
+    }
+
+    handleRepeatPlaylist = (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        this.props.repeatPlaylist();
     }
 
     handleAgreeClick = (event) => {
@@ -40,12 +52,23 @@ class PlaylistContainer extends Component {
         const { selectedTrackIds } = this.props;
         if (_.isEmpty(selectedTrackIds)) return null;
         return (
-            <IconButton
-                icon    = "delete"
-                style   = {{ position: 'absolute', backgroundColor: 'deepskyblue', right: '10px', top: '5px' }}
-                onClick = {this.handleClearPlaylist}
-
-            />
+            <div style = {{ display: 'flex', width: '100%', flexWrap: 'wrap', justifyContent: 'flex-end', alignContent: 'flex-around' }} >
+                <IconButton
+                    icon    = "cached"
+                    style   = {{ backgroundColor: '#FFCA28', margin: '0 5px' }}
+                    onClick = {this.handleRepeatPlaylist}
+                />
+                <IconButton
+                    icon    = "shuffle"
+                    style   = {{ backgroundColor: '#FFCA28', margin: '0 5px' }}
+                    onClick = {this.handleShufflePlaylist}
+                />
+                <IconButton
+                    icon    = "clear"
+                    style   = {{ backgroundColor: '#FFCA28', margin: '0 5px' }}
+                    onClick = {this.handleClearPlaylist}
+                />
+            </div>
         );
     }
 
@@ -84,7 +107,9 @@ class PlaylistContainer extends Component {
 
 PlaylistContainer.propTypes = {
     clearPlaylist   : PropTypes.func.isRequired,
+    repeatPlaylist  : PropTypes.func.isRequired,
     selectedTrackIds: PropTypes.arrayOf(PropTypes.number),
+    shufflePlaylist : PropTypes.func.isRequired,
 };
 
 const mapStateToProps = createStructuredSelector({
@@ -92,7 +117,9 @@ const mapStateToProps = createStructuredSelector({
 });
 
 const mapDispatchToProps = dispatch => ({
-    clearPlaylist: () => dispatch(clearPlaylist()),
+    clearPlaylist  : () => dispatch(clearPlaylist()),
+    shufflePlaylist: () => dispatch(shufflePlaylist()),
+    repeatPlaylist : () => dispatch(repeatPlaylist()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(PlaylistContainer);

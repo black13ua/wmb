@@ -4,11 +4,8 @@ import { List, ListItem } from 'react-toolbox';
 const PlaylistView = ({ children, button }) =>
     <section className="playlist--wrapper" style={{ margin: '70px 0 30px', padding: '10px' }}>
         <List selectable ripple>
-            <ListItem
-                caption='Playlist'
-            >
-                { button }
-            </ListItem>
+            { button }
+            <ListItem caption='Playlist' />
             { children }
         </List>
     </section>;

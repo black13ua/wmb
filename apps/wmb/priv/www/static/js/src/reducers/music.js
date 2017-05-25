@@ -8,7 +8,6 @@ import {
     RECEIVE_ALBUMS_BY_ARTIST,
     SELECT_TRACK,
     SELECT_ALBUM,
-    CLEAR_PLAYLIST,
     CLEAR_WARNING,
     SET_WARNING,
     RECEIVE_ERROR,
@@ -16,6 +15,9 @@ import {
     SET_CURRENT_PAGE,
     FETCHING,
     SET_ACTIVE_TRACK,
+    CLEAR_PLAYLIST,
+    REPEAT_PLAYLIST,
+    SHUFFLE_PLAYLIST,
 } from '../constants/action-types';
 
 
@@ -49,6 +51,7 @@ const initialState = Immutable({
         warningMessage: '',
         maxPage       : 100,
         activeTrack   : 0,
+        repeatPlaylist: true,
     },
 });
 
@@ -127,6 +130,17 @@ export default createReducer(initialState, {
         const { error } = action.payload;
         return state
             .setIn(['viewState', 'warningMessage'], error);
+    },
+
+    [REPEAT_PLAYLIST](state) {
+        return state
+            .setIn(['viewState', 'repeatPlaylist'], !state.viewState.repeatPlaylist);
+    },
+
+    [SHUFFLE_PLAYLIST](state) {
+        const shuffled = _.shuffle(state.viewState.selected.tracks);
+        return state
+            .setIn(['viewState', 'selected', 'tracks'], shuffled);
     },
 
     [SELECT_TRACK](state, action) {

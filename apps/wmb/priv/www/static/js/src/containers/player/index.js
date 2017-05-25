@@ -34,6 +34,10 @@ class PlayerContainer extends Component {
         };
     }
 
+    componentWillUnmount() {
+        // need to save volume
+    }
+
     get getVolumeIcon() {
         if (this.props.volume === 0) {
             return 'volume_off';
@@ -46,12 +50,12 @@ class PlayerContainer extends Component {
 
     get activeTrackInfo() {
         if (_.isEmpty(this.props.activeTrack)) return null;
-        const { title, active, album, artist, genre, date, cover } = this.props.activeTrack;
+        const { title, artist, cover } = this.props.activeTrack;
         return (
             <CardTitle
                 avatar   = {encodeURI(cover)}
-                subtitle = {album}
-                title    = {artist}
+                subtitle = {artist}
+                title    = {title}
             />
         );
     }

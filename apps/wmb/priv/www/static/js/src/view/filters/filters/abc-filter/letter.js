@@ -12,7 +12,7 @@ const LetterView = ({ onClick, children, letter, artistCount, active }) => {
                 >
                     <div>
                         <Avatar
-                            style = {{ backgroundColor: active ? 'deeppink' : 'grey' }}
+                            style = {{ backgroundColor: active ? '#FFEA00' : 'grey', color: active ? 'grey' : 'black' }}
                             title = {letter}
                         />
                     </div>

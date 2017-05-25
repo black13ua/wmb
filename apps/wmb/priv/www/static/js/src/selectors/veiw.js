@@ -23,6 +23,11 @@ export const getActiveTrackId = createSelector(
     state => state.viewState.activeTrack
 );
 
+export const getRepeatPlaylistStatus = createSelector(
+    musicSelector,
+    state => state.viewState.repeatPlaylist
+);
+
 export const getActiveTrackData = createSelector(
     [getTracksData, getActiveTrackId],
     (tracksData, activeTrackId) => _.get(tracksData, activeTrackId, {})

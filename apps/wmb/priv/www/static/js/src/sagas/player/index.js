@@ -31,6 +31,7 @@ import {
     makeSelectTrackDatabyId,
     getIsRandomChecked,
     getPlayerVolume,
+    getRepeatPlaylistStatus,
 } from '../../selectors';
 // ******************************************************************************/
 // ******************************* WATCHERS *************************************/
@@ -117,15 +118,18 @@ function* watchTrackEnd() {
             if (activeTrack) {
                 const selectedTracks = yield select(getSelectedTrackIds);
                 const activeIndex = _.indexOf(selectedTracks, activeTrack);
-                console.warn(activeTrack, selectedTracks, activeIndex);
                 const autoload = yield select(getIsRandomChecked);
                 if ((activeIndex === selectedTracks.length - 2) && autoload) {
                     yield put(fetchRandomTracks()); // load more random tracks
                 }
                 let nextActiveIndex;
                 if (activeIndex === selectedTracks.length - 1) {
-                    console.warn('what to do? playlist is over!');
-                    nextActiveIndex = 0;
+                    const repeating = yield select(getRepeatPlaylistStatus);
+                    if (repeating) {
+                        nextActiveIndex = 0;
+                    } else {
+                        throw new Error('Playlist is over, check out repeat button.');
+                    }
                 } else {
                     nextActiveIndex = activeIndex + 1;
                 }
@@ -152,8 +156,12 @@ function* watchPrevTrack() {
                 const activeIndex = _.indexOf(selectedTracks, activeTrack);
                 let nextActiveIndex;
                 if (activeIndex === 0) {
-                    console.warn('what to do? playlist is over!');
-                    nextActiveIndex = selectedTracks.length - 1;
+                    const repeating = yield select(getRepeatPlaylistStatus);
+                    if (repeating) {
+                        nextActiveIndex = selectedTracks.length - 1;
+                    } else {
+                        throw new Error('Playlist is over, check out repeat button.');
+                    }
                 } else {
                     nextActiveIndex = activeIndex - 1;
                 }
