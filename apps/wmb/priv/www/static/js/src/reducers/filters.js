@@ -11,7 +11,6 @@ import {
     RANDOM_NUMBER_CHANGE,
 } from '../constants/action-types';
 
-import { RANDOM_NUMBER } from '../constants/constants';
 
 const initialState = Immutable({
     data: {
@@ -21,7 +20,7 @@ const initialState = Immutable({
             dates : [],
         },
         artistsByLetter: {},
-        randomNumber   : RANDOM_NUMBER,
+        randomNumber   : 15,
     },
     viewState: {
         filtersCurrentValue: {

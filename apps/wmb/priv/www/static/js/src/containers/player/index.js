@@ -2,13 +2,11 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { AppBar, IconButton, CardTitle } from 'react-toolbox';
-import YellowProgressBar from '../custom/yellow-progress-bar';
+import ProgressBar from './progress-bar';
 import YellowSlider from '../custom/yellow-slider';
 import MenuTest from './active-track-menu';
 
 import {
-    getPlayerBuffer,
-    getPlayerProgress,
     getPlayerIsPlaying,
     getPlayerVolume,
     getActiveTrackData,
@@ -154,14 +152,7 @@ class PlayerContainer extends Component {
                         </div>
                     </div>
                 </div>
-                <div style = {{ width: '100%', position: 'fixed', left: 0, top: '60px' }} >
-                    <YellowProgressBar
-                        multicolor
-                        buffer = {this.props.buffer}
-                        mode   = "determinate"
-                        value  = {this.props.progress}
-                    />
-                </div>
+                <ProgressBar />
             </AppBar>
         );
     }
@@ -171,11 +162,9 @@ PlayerContainer.propTypes = {
     activeTrack   : PropTypes.object,
     askIfPlaign   : PropTypes.func.isRequired,
     askVolume     : PropTypes.func.isRequired,
-    buffer        : PropTypes.number,
     nextTrack     : PropTypes.func.isRequired,
-    playing       : PropTypes.number,
+    playing       : PropTypes.bool,
     prevTrack     : PropTypes.func.isRequired,
-    progress      : PropTypes.number,
     setStoreVolume: PropTypes.func.isRequired,
     toggleTrack   : PropTypes.func.isRequired,
     volume        : PropTypes.number,
@@ -183,8 +172,6 @@ PlayerContainer.propTypes = {
 };
 
 const mapStateToProps = createStructuredSelector({
-    buffer     : getPlayerBuffer,
-    progress   : getPlayerProgress,
     playing    : getPlayerIsPlaying,
     volume     : getPlayerVolume,
     activeTrack: getActiveTrackData,

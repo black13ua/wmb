@@ -172,7 +172,8 @@ export default createReducer(initialState, {
 
     [RECEIVE_RANDOM_TRACKS](state, action) {
         const { tracks } = action.payload;
-        const normalizedTracks = getNormalizedTracks(tracks);
+        const uniqTracks = _.uniqBy(tracks, 'trackId'); // sometimes they are not uniq
+        const normalizedTracks = getNormalizedTracks(uniqTracks);
         const newSelectedTrackIds = state.viewState.selected.tracks.concat(normalizedTracks.ids);
         return state
             .merge({
@@ -182,13 +183,7 @@ export default createReducer(initialState, {
                     },
                 },
             }, { deep: true })
-            .merge({
-                viewState: {
-                    selected: {
-                        tracks: newSelectedTrackIds,
-                    },
-                },
-            }, { deep: true })
+            .setIn(['viewState', 'selected', 'tracks'], newSelectedTrackIds)
             .setIn(['viewState', 'fetching', 'random'], false);
     },
 });

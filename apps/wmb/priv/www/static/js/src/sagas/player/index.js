@@ -13,6 +13,7 @@ import {
     NEXT_TRACK,
     PREV_TRACK,
     RECEIVE_PLAYER_ERROR,
+    RECEIVE_RANDOM_TRACKS,
 } from '../../constants/action-types';
 
 import {
@@ -118,12 +119,14 @@ function* watchTrackEnd() {
             if (activeTrack) {
                 const selectedTracks = yield select(getSelectedTrackIds);
                 const activeIndex = _.indexOf(selectedTracks, activeTrack);
-                const autoload = yield select(getIsRandomChecked);
-                if ((activeIndex === selectedTracks.length - 2) && autoload) {
-                    yield put(fetchRandomTracks()); // load more random tracks
-                }
                 let nextActiveIndex;
                 if (activeIndex === selectedTracks.length - 1) {
+                    const autoload = yield select(getIsRandomChecked);
+                    if (autoload) {
+                        yield put(fetchRandomTracks()); // load more random tracks
+                        yield take(RECEIVE_RANDOM_TRACKS); // wating for random tracks
+                        nextActiveIndex = activeIndex + 1; // continue to playing
+                    }
                     const repeating = yield select(getRepeatPlaylistStatus);
                     if (repeating) {
                         nextActiveIndex = 0;

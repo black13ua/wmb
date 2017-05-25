@@ -7,7 +7,7 @@ import CleanPlaylistDialog from '../../view/playlist/clean-playlist-dialog';
 
 import PlaylistView from '../../view/playlist/playlist-view';
 import PlaylistTrackContainer from './track';
-import { getSelectedTrackIds } from '../../selectors';
+import { getSelectedTrackIds, getRepeatPlaylistStatus } from '../../selectors';
 import { clearPlaylist, shufflePlaylist, repeatPlaylist } from '../../actions/index';
 
 
@@ -49,13 +49,13 @@ class PlaylistContainer extends Component {
     ];
 
     get removeButton() {
-        const { selectedTrackIds } = this.props;
+        const { selectedTrackIds, repeat } = this.props;
         if (_.isEmpty(selectedTrackIds)) return null;
         return (
             <div style = {{ display: 'flex', width: '100%', flexWrap: 'wrap', justifyContent: 'flex-end', alignContent: 'flex-around' }} >
                 <IconButton
                     icon    = "cached"
-                    style   = {{ backgroundColor: '#FFCA28', margin: '0 5px' }}
+                    style   = {{ backgroundColor: repeat ? '#FFCA28' : 'grey', margin: '0 5px' }}
                     onClick = {this.handleRepeatPlaylist}
                 />
                 <IconButton
@@ -107,6 +107,7 @@ class PlaylistContainer extends Component {
 
 PlaylistContainer.propTypes = {
     clearPlaylist   : PropTypes.func.isRequired,
+    repeat          : PropTypes.bool.isRequired,
     repeatPlaylist  : PropTypes.func.isRequired,
     selectedTrackIds: PropTypes.arrayOf(PropTypes.number),
     shufflePlaylist : PropTypes.func.isRequired,
@@ -114,6 +115,7 @@ PlaylistContainer.propTypes = {
 
 const mapStateToProps = createStructuredSelector({
     selectedTrackIds: getSelectedTrackIds,
+    repeat          : getRepeatPlaylistStatus,
 });
 
 const mapDispatchToProps = dispatch => ({
