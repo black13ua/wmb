@@ -6,6 +6,8 @@ import ProgressBar from './progress-bar';
 import YellowSlider from '../custom/yellow-slider';
 import MenuTest from './active-track-menu';
 
+import { setVolumeToLocalStorage } from '../../utils/local-storage';
+
 import {
     getPlayerIsPlaying,
     getPlayerVolume,
@@ -30,10 +32,6 @@ class PlayerContainer extends Component {
         this.state = {
             previousVolume: 0,
         };
-    }
-
-    componentWillUnmount() {
-        // need to save volume
     }
 
     get getVolumeIcon() {

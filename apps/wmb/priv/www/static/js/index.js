@@ -6,8 +6,7 @@ import { Provider } from 'react-redux';
 import { AppContainer } from 'react-hot-loader';
 import App from './src/containers/app';
 import store from './src/store/store';
-
-// import { createPlayer } from './src/player';
+import { setVolumeToLocalStorage } from './src/utils/local-storage';
 
 require('../sass/main.scss'); // eslint-disable-line
 
@@ -27,9 +26,9 @@ const Render = (Component) => {
 Render(App);
 if (module.hot) module.hot.accept('./src/containers/app', () => Render(App));
 
-// const AV = require('av');
-// require('mp3');
-// require('flac.js');
-// document.addEventListener('DOMContentLoaded', () => {
-//     window.playerAPI = createPlayer();
-// });
+function helper() {
+    const currentVolume = _.get(store.getState(), ['player', 'volume'], 50);
+    setVolumeToLocalStorage(currentVolume);
+}
+
+window.addEventListener('beforeunload', helper);
