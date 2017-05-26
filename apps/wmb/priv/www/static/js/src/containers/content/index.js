@@ -34,22 +34,22 @@ class ContentContainer extends Component {
     mainSpinner = () =>
         <div style = {{ position: 'fixed', top: '50%', left: '50%' }}>
             <ProgressBar
-                type = 'circular'
-                mode = 'indeterminate'
                 multicolor
+                mode = "indeterminate"
+                type = "circular"
             />
         </div>;
 
     get warningMessage() {
         return (
             <Snackbar
-                action    = 'Dismiss'
+                action    = "Dismiss"
                 active    = {this.props.warning}
                 label     = {this.props.warning}
                 timeout   = {3000}
+                type      = "warning"
                 onClick   = {this.handleSnackbarTimeout}
                 onTimeout = {this.handleSnackbarTimeout}
-                type      = 'warning'
             />
         );
     }
@@ -68,6 +68,7 @@ class ContentContainer extends Component {
 
 ContentContainer.propTypes = {
     albumIds         : PropTypes.arrayOf(PropTypes.number),
+    clearWarningState: PropTypes.func.isRequired,
     fetchAlbumsByPage: PropTypes.func.isRequired,
     fetching         : PropTypes.object.isRequired,
     pages            : PropTypes.object.isRequired,

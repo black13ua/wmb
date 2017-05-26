@@ -6,10 +6,11 @@ const FiltersView = ({ children }) =>
     <div>
         <List ripple>
             <ListDivider />
-            <ListSubHeader caption='Filters' />
+            <ListSubHeader caption="Filters" />
             { children }
         </List>
     </div>;
+
 
 FiltersView.propTypes = {
     children: PropTypes.node.isRequired,

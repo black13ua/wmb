@@ -3,7 +3,7 @@ import { List } from 'react-toolbox';
 
 
 const FIltersMenuView = ({ children }) =>
-    <aside style={{ marginTop: '100px' }}>
+    <aside style={{ marginTop: '70px' }}>
         <List>
             { children }
         </List>

@@ -39,7 +39,7 @@ class PlaylistTrackView extends Component {
                 onMouseLeave = {this.handleHover.bind(this, false)}
             >
                 <Avatar image={encodeURI(cover)} />
-                <span>{ `${title} - ${artist}` }</span>
+                <span style = {{ color: active ? 'black' : '' }}>{ `${title} - ${artist}` }</span>
             </Chip>
         );
     }
