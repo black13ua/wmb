@@ -1,7 +1,5 @@
 -module(data_merger).
 -export([
-    del_tracks_by_statemap/1,
-    del_track_by_trackid/1,
     get_all_dates/0,
     get_all_genres/0,
     get_all_letters/0,
@@ -228,7 +226,8 @@ get_artists_by_letterid(LetterID) ->
     ArtistsFlat = ets:match(?ETS_ABC, {{LetterID, '_'}, '$1'}),
     ArtistsSorted = lists:flatten(lists:usort(ArtistsFlat)),
     Fun = fun(X) ->
-              [[ArtistID]|_] = ets:match(?ETS_ARTISTS, {'_', {X, '$1'}}),
+              %[[ArtistID]|_] = ets:match(?ETS_ARTISTS, {'_', {X, '$1'}}),
+              {[[ArtistID]], _} = ets:match(?ETS_ARTISTS, {'_', {X, '$1'}}, 1),
               [ArtistID, X]
           end,
     Artists = lists:map(Fun, ArtistsSorted),
@@ -282,37 +281,4 @@ get_all_genres() ->
 get_all_dates() ->
     Dates = lists:usort(lists:flatten(ets:match(?ETS_ALBUMS, {'_', {'_', {date, '$1'}, '_', '_', '_', '_'}}))),
     {ok, Dates}.
-
-%%% DEL Tracks from ETS by tracksMap from State wmb_librarian (if Dir moved or removed)
--spec del_tracks_by_statemap(map()) ->
-    {ok, empty} | {ok, cleaned}.
-del_tracks_by_statemap(Map) when map_size(Map) == 0 ->
-    {ok, empty};
-del_tracks_by_statemap(Map) ->
-    Files = maps:keys(Map),
-    Fun = fun(File, Acc) ->
-              FileMap = maps:get(File, Map),
-              TrackID = maps:get(track_id, FileMap),
-              {ok, AlbumID} = del_track_by_trackid({track_id, TrackID}),
-              [AlbumID|Acc]
-          end,
-    AlbumIDList = lists:usort(lists:foldl(Fun, [], Files)),
-    io:format("AlbumIDList: ~p~n", [AlbumIDList]),
-    {ok, cleaned}.
-
--spec del_track_by_trackid({track_id, integer()}) ->
-    {ok, {album_id, integer()}}.
-del_track_by_trackid({track_id, ID}) ->
-    TrackID = {track_id, ID},
-    io:format("TrackID: ~p~n", [TrackID]),
-    [{_, {AlbumID, {file, _File}, Title, PathID}}] = ets:lookup(?ETS_TRACKS, TrackID),
-    DeletedTrack = ets:delete(?ETS_TRACKS, TrackID),
-    {{album, Album}, {date, Date}, {tracks, TrackIDList}, PathIDTuple, GenreID, CoverID} = ets:lookup_element(?ETS_ALBUMS, AlbumID, 2),
-    NewTrackIDList = lists:delete(ID, TrackIDList),
-    DeletedAlb = ets:update_element(?ETS_ALBUMS, AlbumID, {2, {{album, Album}, {date, Date}, {tracks, NewTrackIDList}, PathIDTuple, GenreID, CoverID}}),
-    {ok, PathTuple} = get_path_by_pathid(PathID),
-    [{_, {AlbumTuple, DateTuple, _AlbumTrackIDList, _, _GenreID, _CoverID}}] = ets:lookup(?ETS_ALBUMS, AlbumID),
-    [{AlbumID, {AlbumArtist, _}}] = ets:lookup(?ETS_ARTISTS, AlbumID),
-    io:format("del_track: ~p~n", [[TrackID, Title, AlbumID, AlbumTuple, PathTuple, DateTuple, AlbumArtist, {tracks, TrackIDList}, DeletedTrack, DeletedAlb]]),
-    {ok, AlbumID}.
 

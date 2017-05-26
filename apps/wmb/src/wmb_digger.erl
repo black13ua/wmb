@@ -11,6 +11,7 @@
 
 %% Exported Functions
 -export([parse_file/1, parse_file/2]).
+-export([del_tracks_by_statemap/1, del_track_by_trackid/1]).
 -export([find_album_cover/1, find_album_cover/2]).
 -export([get_album_id/2, get_path_id/2]).
 
@@ -65,6 +66,40 @@ parse_file(fullpath, FilePathFull) ->
             ets:insert_new(?ETS_ERRORS, {{file, FilePathFull}, {error, Error}})
     end.
 
+%%% DEL Tracks from ETS by tracksMap from State wmb_librarian (if Dir moved or removed)
+-spec del_tracks_by_statemap(map()) ->
+    {ok, empty} | {ok, cleaned}.
+del_tracks_by_statemap(Map) when map_size(Map) == 0 ->
+    {ok, empty};
+del_tracks_by_statemap(Map) ->
+    Files = maps:keys(Map),
+    Fun = fun(File, Acc) ->
+              FileMap = maps:get(File, Map),
+              TrackID = maps:get(track_id, FileMap),
+              {ok, AlbumID} = del_track_by_trackid({track_id, TrackID}),
+              [AlbumID|Acc]
+          end,
+    AlbumIDList = lists:usort(lists:foldl(Fun, [], Files)),
+    io:format("AlbumIDList: ~p~n", [AlbumIDList]),
+    {ok, cleaned}.
+
+%%% DEL Track from ETS by TrackID
+-spec del_track_by_trackid({track_id, integer()}) ->
+    {ok, {album_id, integer()}}.
+del_track_by_trackid({track_id, ID}) ->
+    TrackID = {track_id, ID},
+    io:format("TrackID: ~p~n", [TrackID]),
+    [{_, {AlbumID, {file, _File}, Title, PathID}}] = ets:lookup(?ETS_TRACKS, TrackID),
+    DeletedTrack = ets:delete(?ETS_TRACKS, TrackID),
+    {{album, Album}, {date, Date}, {tracks, TrackIDList}, PathIDTuple, GenreID, CoverID} = ets:lookup_element(?ETS_ALBUMS, AlbumID, 2),
+    NewTrackIDList = lists:delete(ID, TrackIDList),
+    DeletedAlb = ets:update_element(?ETS_ALBUMS, AlbumID, {2, {{album, Album}, {date, Date}, {tracks, NewTrackIDList}, PathIDTuple, GenreID, CoverID}}),
+    {ok, PathTuple} = data_merger:get_path_by_pathid(PathID),
+    [{_, {AlbumTuple, DateTuple, _AlbumTrackIDList, _, _GenreID, _CoverID}}] = ets:lookup(?ETS_ALBUMS, AlbumID),
+    [{AlbumID, {AlbumArtist, _}}] = ets:lookup(?ETS_ARTISTS, AlbumID),
+    io:format("del_track: ~p~n", [[TrackID, Title, AlbumID, AlbumTuple, PathTuple, DateTuple, AlbumArtist, {tracks, TrackIDList}, DeletedTrack, DeletedAlb]]),
+    {ok, AlbumID}.
+
 %%%===================================================================
 %%% Internal functions
 %%%===================================================================
@@ -96,7 +131,7 @@ add_to_ets(File, FileID3Tags) ->
             [LetterByte|_] = unicode:characters_to_list(AlbumArtist),
             LetterBin = unicode:characters_to_binary([LetterByte]),
             LetterID = get_letter_id(LetterBin),
-            ets:insert_new(?ETS_ABC, {{{letter_id, LetterID}, {letter, LetterBin}}, {artist, AlbumArtist}});
+            ets:insert(?ETS_ABC, {{{letter_id, LetterID}, {letter, LetterBin}}, {artist, AlbumArtist}});
             %%%io:format("Letters is: ~p~n", [[LetterByte, LetterBin]]);
         ExistedAlbumID ->
             {{album, Album}, {date, Date}, {tracks, TrackIDList}, PathIDTuple, GenreTuple, CoverTuple} = ets:lookup_element(?ETS_ALBUMS, {album_id, ExistedAlbumID}, 2),
