@@ -1,8 +1,16 @@
 import React, { PropTypes } from 'react';
 
+const contentStyles = {
+    display       : 'flex',
+    flexWrap      : 'wrap',
+    justifyContent: 'space-around',
+    alignContent  : 'space-around',
+    paddingBottom : '45px',
+};
+
 
 const MainView = ({ children }) =>
-    <article style = {{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-around', alignContent: 'space-around' }}>
+    <article style = {contentStyles}>
         { children }
     </article>;
 

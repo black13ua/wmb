@@ -38,13 +38,16 @@ class LetterContainer extends Component {
                 />
             );
         }
-        const list = this.props.artists.map(artistObj =>
-            <ArtistContainer
-                key      = {artistObj.artistId}
-                isActive = {artistObj.artistId === this.props.activeArtist}
-                {...artistObj}
-            />
-        );
+        const list = _(this.props.artists)
+            .sortBy('artist')
+            .map(artistObj =>
+                <ArtistContainer
+                    isActive = {artistObj.artistId === this.props.activeArtist}
+                    key      = {artistObj.artistId}
+                    {...artistObj}
+                />
+            )
+            .value();
         return <div>{ list }</div>;
     }
 

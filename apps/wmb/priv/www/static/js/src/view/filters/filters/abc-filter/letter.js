@@ -2,28 +2,26 @@ import React, { PropTypes } from 'react';
 // import classnames from 'classnames';
 import { ListItem, Avatar } from 'react-toolbox';
 
-const LetterView = ({ onClick, children, letter, artistCount, active }) => {
-    return (
-        <div>
-            <div style = {{ display: 'flex', justifyContent: 'space-around', width: '100%' }} >
-                <ListItem
-                    rightIcon={active ? 'keyboard_arrow_down' : 'keyboard_arrow_right'}
-                    onClick = {onClick}
-                >
-                    <div>
-                        <Avatar
-                            style = {{ backgroundColor: active ? '#FFEA00' : 'grey', color: active ? 'grey' : 'black' }}
-                            title = {letter}
-                        />
-                    </div>
-                </ListItem>
-            </div>
-            <div>
-                { children }
-            </div>
+const LetterView = ({ onClick, children, letter, artistCount, active }) =>
+    <div>
+        <div style = {{ display: 'flex', justifyContent: 'space-around', width: '100%' }} >
+            <ListItem
+                rightIcon={active ? 'keyboard_arrow_down' : 'keyboard_arrow_right'}
+                onClick = {onClick}
+            >
+                <div>
+                    <Avatar
+                        style = {{ backgroundColor: active ? '#FFCA28' : 'grey', color: active ? 'black' : '' }}
+                        title = {letter}
+                    />
+                </div>
+            </ListItem>
         </div>
-    );
-};
+        <div>
+            { children }
+        </div>
+    </div>;
+
 
 LetterView.propTypes = {
     active     : PropTypes.bool,
