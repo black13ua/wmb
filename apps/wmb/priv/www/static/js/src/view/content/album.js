@@ -17,6 +17,7 @@ const AlbumView = ({ handleUnfold, folded, onClick, children, album, artist, cov
                 />
                 <CardMedia
                     aspectRatio = {'square'}
+                    style = {{ width: '300px', margin: 'auto' }}
                 >
                     <img src={encodeURI(cover)} alt={album} />
                 </CardMedia>

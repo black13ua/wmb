@@ -1,4 +1,5 @@
 import { delay } from 'redux-saga';
+import { isNil } from 'lodash';
 import { put, fork, take, call, cancel, select } from 'redux-saga/effects';
 import createPlayerChannel from './player-event-emiter';
 import { getVolumeFromLocalStorage } from '../../utils/local-storage';
@@ -69,7 +70,7 @@ function* generateActionsFromPlayerMessage(playerChannel) {
 
 function* watchPlayTrack() {
     const localStorageVolume = yield call(getVolumeFromLocalStorage);
-    if (localStorageVolume) {
+    if (!isNil(localStorageVolume)) {
         yield put(setStoreProperty('volume', localStorageVolume));
     }
     while (true) {

@@ -27,7 +27,7 @@ Render(App);
 if (module.hot) module.hot.accept('./src/containers/app', () => Render(App));
 
 function helper() {
-    const currentVolume = _.get(store.getState(), ['player', 'volume'], 50);
+    const currentVolume = _.get(store.getState(), ['player', 'volume'], null);
     setVolumeToLocalStorage(currentVolume);
 }
 
