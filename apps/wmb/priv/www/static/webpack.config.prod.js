@@ -3,6 +3,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path              = require('path');
 
+const reactToolboxColorVariables = require('./sass/custom-theme-css');
 
 const config = {
     context: __dirname,
@@ -49,6 +50,42 @@ const config = {
                 use : ExtractTextPlugin.extract({
                     fallback: 'style-loader',
                     use     : ['css-loader', 'sass-loader'],
+                }),
+            },
+            {
+                test: /\.css/,
+                use : ExtractTextPlugin.extract({
+                    fallback: 'style-loader',
+                    use     : [
+                        {
+                            loader : 'css-loader',
+                            options: {
+                                modules       : true,
+                                sourceMap     : true,
+                                importLoaders : 1,
+                                localIdentName: '[name]--[local]--[hash:base64:8]',
+                            },
+                        },
+                        {
+                            loader : 'postcss-loader',
+                            options: {
+                                plugins: [
+                                /* eslint-disable global-require */
+                                    require('postcss-cssnext')({
+                                        features: {
+                                            customProperties: {
+                                                variables: reactToolboxColorVariables,
+                                            },
+                                        },
+                                    }),
+                                /* optional - see next section */
+                                    require('postcss-modules-values'),
+                                /* eslint-enable global-require */
+                                ],
+                            },
+                        },
+                    // 'postcss-loader', // has separate config, see postcss.config.js nearby
+                    ],
                 }),
             },
         ],
