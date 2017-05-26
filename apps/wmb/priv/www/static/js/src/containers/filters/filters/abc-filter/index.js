@@ -31,19 +31,23 @@ class AbcFilterContainer extends Component {
         if (_.isEmpty(this.props.filterOptions)) {
             return (
                 <ProgressBar
-                    type='circular'
-                    mode='indeterminate'
                     multicolor
+                    mode = "indeterminate"
+                    type = "circular"
                 />
             );
         }
-        const list = this.props.filterOptions.map(letterObj =>
-            <LetterContainer
-                key      = {letterObj.letterId}
-                letter   = {letterObj.letter}
-                letterId = {letterObj.letterId}
-            />
-        );
+        const list = _(this.props.filterOptions)
+            .sortBy('letter')
+            .map(letterObj =>
+                <LetterContainer
+                    key      = {letterObj.letterId}
+                    letter   = {letterObj.letter}
+                    letterId = {letterObj.letterId}
+                />
+            )
+            .value();
+
         return <div>{ list }</div>;
     }
 
