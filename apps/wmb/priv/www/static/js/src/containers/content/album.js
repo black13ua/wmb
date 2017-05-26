@@ -6,7 +6,11 @@ import AlbumView from '../../view/content/album';
 import TrackContainer from './track';
 
 import { selectAlbum } from '../../actions';
-import { makeSelectAlbumDatabyId, getSelectedTrackIds } from '../../selectors';
+import {
+    makeSelectAlbumDatabyId,
+    getSelectedTrackIds,
+    getActiveTrackId,
+} from '../../selectors';
 
 // import debugRender from 'react-render-debugger';
 // @debugRender
@@ -29,11 +33,12 @@ class AlbumContainer extends Component {
 
     get trackList() {
         if (this.state.folded) return null;
-        const { albumId, albumData, selectedTrackIds } = this.props;
+        const { albumId, albumData, selectedTrackIds, activeTrackId } = this.props;
         if (_.isEmpty(albumData.trackIds)) return null;
 
         const list = albumData.trackIds.map(trackId =>
             <TrackContainer
+                active   = {trackId === activeTrackId}
                 albumId  = {albumId}
                 key      = {trackId}
                 selected = {_.includes(selectedTrackIds, trackId)}
@@ -67,6 +72,7 @@ class AlbumContainer extends Component {
 
 
 AlbumContainer.propTypes = {
+    activeTrackId   : PropTypes.number.isRequired,
     albumData       : PropTypes.object,
     albumId         : PropTypes.number.isRequired,
     selectAlbum     : PropTypes.func.isRequired,
@@ -80,6 +86,7 @@ const makeMapStateToProps = () => {
     return createStructuredSelector({
         albumData       : selectAlbumDatabyId,
         selectedTrackIds: getSelectedTrackIds,
+        activeTrackId   : getActiveTrackId,
     });
 };
 
