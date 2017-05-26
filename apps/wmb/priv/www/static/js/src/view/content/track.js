@@ -13,7 +13,7 @@ const TrackView = ({ onPlayClick, onSelectClick, title, selected, active }) =>
             style   = {{ background: selected ? 'black' : 'grey' }}
             onClick = {onSelectClick}
         />
-        <span>{title}</span>
+        <span style = {{ color: active ? 'black' : '' }}>{title}</span>
     </Chip>;
 
 TrackView.propTypes = {
