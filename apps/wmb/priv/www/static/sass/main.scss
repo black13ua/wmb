@@ -1,10 +1,8 @@
-@import 'partial/player';
-
-@import 'partial/center';
-@import 'partial/filters';
-@import 'partial/playlist';
-
-
 html, body{
   height:100%;
+  margin: 0;
+  padding: 0;
+  button:focus {
+    outline: none;
+  }
 }

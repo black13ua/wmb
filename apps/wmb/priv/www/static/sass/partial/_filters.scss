@@ -3,6 +3,11 @@
     width: 20%;
     position: fixed;
     left: 0;
+    text-align: center;
+    margin-left: 5px;
+    .list-group {
+        margin-bottom: 0;
+    }
     .random {
         padding: 5px;
         text-align: center;
@@ -13,25 +18,72 @@
 
         }
     }
-    .filters{
-        text-align: center;
-        font-size: 24px;
-        padding: 5px;
-        & > div {
-            margin: 7px 0;
-            text-align: center;
+    section.filters{
+        .second--sub--menu {
+            margin-left: 30px;
+            list-style-type: none;
         }
-        .filters-head {
+        button.button--hover {
+            outline: none;
+            &:hover {
+                background: lightgoldenrodyellow;
+                color: #0275d8;
+            }
+            &.active {
+                i.fa {
+                    transform: scale(1.5);
+                }
+                &:hover {
+                    background: aqua;
+                }
+            }
+            span.badge {
+                background: grey;
+                margin-right: 5px;
+            }
+        }
+        i.fa {
+            position: absolute;
+            right: 15px;
+        }
+    //     text-align: center;
+    //     font-size: 24px;
+    //     padding: 5px;
+    //     & > article {
+    //         margin: 17px 0;
+    //         text-align: center;
+    //         h3 {
 
-        }
-        .filter-genres {
+    //         }
+    //         .sub--menu--header {
+    //             display: block;
+    //             &.active {
+    //                 background-color: deeppink;
+    //             }
+    //             b {
+    //                 margin-right: 10px;
+    //                 background-color: aqua;
+    //                 display: inline-block;
+    //                 width: 30px;
+    //                 height: 30px;
+    //                 border-radius: 15px;
+    //             }
+    //         }
+    //         ul.filter--options {
+    //             list-style-type: none;
+    //         }
+    //     }
+    //     .filters-head {
 
-        }
-        .filter-date {
+    //     }
+    //     .filter-genres {
 
-        }
-        .filter-name {
+    //     }
+    //     .filter-date {
 
-        }
+    //     }
+    //     .filter-name {
+
+    //     }
     }
 }
