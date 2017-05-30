@@ -11,9 +11,8 @@ const AlbumView = ({ handleUnfold, folded, onClick, children, album, artist, cov
         <section style={{ flex: '0 350px', padding: '1em 0' }}>
             <Card style={{ width: '350px', background: 'lightgrey' }}>
                 <CardTitle
-                    avatar   = {encodeURI(cover)}
                     title    = {artist}
-                    subtitle = {album}
+                    subtitle = {`${date} - ${album}`}
                 />
                 <CardMedia
                     aspectRatio = {'square'}
@@ -21,21 +20,23 @@ const AlbumView = ({ handleUnfold, folded, onClick, children, album, artist, cov
                 >
                     <img src={encodeURI(cover)} alt={album} />
                 </CardMedia>
-                <CardTitle
-                    title    = {genre}
-                    subtitle = {date}
-                />
-                <CardActions>
-                    {!selected
-                        ? (<Button
-                            raised
-                            primary
-                            label="Add album"
-                            onClick = {onClick}
-                        />)
-                        : (<YellowButton raised accent label="Remove album" onClick = {onClick} />)
-                    }
-                </CardActions>
+                <div style={{ position: 'relative', padding: '0 20px' }} >
+                    <CardTitle
+                        style={{ position: 'absolute', top: 0, right: '20px' }}
+                        title    = {genre}
+                    />
+                    <CardActions>
+                        {!selected
+                            ? (<Button
+                                raised
+                                primary
+                                label="Add album"
+                                onClick = {onClick}
+                            />)
+                            : (<YellowButton raised accent label="Remove album" onClick = {onClick} />)
+                        }
+                    </CardActions>
+                </div>
                 <List selectable ripple>
                     <ListItem
                         caption='Tracks'
