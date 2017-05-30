@@ -8,7 +8,7 @@ import CleanPlaylistDialog from '../../view/playlist/clean-playlist-dialog';
 import PlaylistView from '../../view/playlist/playlist-view';
 import PlaylistTrackContainer from './track';
 import { getSelectedTrackIds, getRepeatPlaylistStatus, getActiveTrackId } from '../../selectors';
-import { clearPlaylist, shufflePlaylist, repeatPlaylist } from '../../actions/index';
+import { clearPlaylist, shufflePlaylist, repeatPlaylist, fetchRandomTracks } from '../../actions/index';
 
 
 // import debugRender from 'react-render-debugger';
@@ -43,6 +43,12 @@ class PlaylistContainer extends Component {
         this.props.clearPlaylist();
     }
 
+    handleRandomAdd = (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        this.props.randomButtonClick();
+    }
+
     actions = [
         { label: 'Cancel', onClick: this.handleClearPlaylist },
         { label: 'Delete', onClick: this.handleAgreeClick },
@@ -53,6 +59,11 @@ class PlaylistContainer extends Component {
         if (_.isEmpty(selectedTrackIds)) return null;
         return (
             <div style = {{ display: 'flex', width: '100%', flexWrap: 'wrap', justifyContent: 'flex-end', alignContent: 'flex-around' }} >
+                <IconButton
+                    icon    = "check_circle"
+                    style   = {{ backgroundColor: '#FFCA28', margin: '0 5px' }}
+                    onClick = {this.handleRandomAdd}
+                />
                 <IconButton
                     icon    = "cached"
                     style   = {{ backgroundColor: repeat ? '#FFCA28' : 'grey', margin: '0 5px' }}
@@ -107,12 +118,13 @@ class PlaylistContainer extends Component {
 }
 
 PlaylistContainer.propTypes = {
-    activeTrackId   : PropTypes.number.isRequired,
-    clearPlaylist   : PropTypes.func.isRequired,
-    repeat          : PropTypes.bool.isRequired,
-    repeatPlaylist  : PropTypes.func.isRequired,
-    selectedTrackIds: PropTypes.arrayOf(PropTypes.number),
-    shufflePlaylist : PropTypes.func.isRequired,
+    activeTrackId    : PropTypes.number.isRequired,
+    clearPlaylist    : PropTypes.func.isRequired,
+    randomButtonClick: PropTypes.func.isRequired,
+    repeat           : PropTypes.bool.isRequired,
+    repeatPlaylist   : PropTypes.func.isRequired,
+    selectedTrackIds : PropTypes.arrayOf(PropTypes.number),
+    shufflePlaylist  : PropTypes.func.isRequired,
 };
 
 const mapStateToProps = createStructuredSelector({
@@ -122,9 +134,10 @@ const mapStateToProps = createStructuredSelector({
 });
 
 const mapDispatchToProps = dispatch => ({
-    clearPlaylist  : () => dispatch(clearPlaylist()),
-    shufflePlaylist: () => dispatch(shufflePlaylist()),
-    repeatPlaylist : () => dispatch(repeatPlaylist()),
+    clearPlaylist    : () => dispatch(clearPlaylist()),
+    shufflePlaylist  : () => dispatch(shufflePlaylist()),
+    repeatPlaylist   : () => dispatch(repeatPlaylist()),
+    randomButtonClick: () => dispatch(fetchRandomTracks()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(PlaylistContainer);
