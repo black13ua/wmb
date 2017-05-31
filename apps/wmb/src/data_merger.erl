@@ -153,7 +153,8 @@ get_albums_by_date_tuple(DateTuple) ->
     {ok, [proplists:proplist()]}.
 get_random_tracks(N) ->
     TracksCount = ets:info(?ETS_TRACKS, size),
-    {ok, TracksListRandom} = get_random_tracks(N, crypto:rand_uniform(1, TracksCount), TracksCount, []),
+    %{ok, TracksListRandom} = get_random_tracks(N, crypto:rand_uniform(1, TracksCount), TracksCount, []),
+    {ok, TracksListRandom} = get_random_tracks(N, rand:uniform(TracksCount), TracksCount, []),
     {ok, TracksListRandom}.
 
 -spec get_random_tracks(integer(), integer(), integer(), list()) ->
@@ -163,7 +164,8 @@ get_random_tracks(0, _RandomID, _MaxID, Acc) ->
 get_random_tracks(N, RandomID, MaxID, Acc) ->
     {ok, TrackJson} = get_track_by_trackid({track_id, RandomID}),
     io:format("RandomID: ~p~n", [[RandomID, ?MODULE]]),
-    get_random_tracks(N - 1, crypto:rand_uniform(1, MaxID), MaxID, [TrackJson|Acc]).
+    %get_random_tracks(N - 1, crypto:rand_uniform(1, MaxID), MaxID, [TrackJson|Acc]).
+    get_random_tracks(N - 1, rand:uniform(MaxID), MaxID, [TrackJson|Acc]).
 
 %%% Get Track by TrackID
 -spec get_track_by_trackid({track_id, integer()}) ->
