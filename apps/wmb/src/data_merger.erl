@@ -9,6 +9,7 @@
     get_albums_by_artistid/1,
     get_albums_by_genre_name/1, get_albums_by_genreid/1,
     get_albums_by_date/1, get_albums_by_date_tuple/1,
+    get_artist_by_albumid/1,
     get_artists_by_letterid/1,
     get_genre_by_genreid/1,
     get_path_by_pathid/1,
@@ -80,7 +81,7 @@ get_album_by_albumid(AlbumKey) ->
                             {tracks, list()}, {path_id, integer()}, {genre_id, bitstring()}, {cover_id, bitstring()}}) ->
     {ok, [proplists:proplist()]}.
 get_album_by_albumrow(AlbumID, {AlbumTuple, DateTuple, AlbumTrackIDList, PathID, GenreID, CoverID}) ->
-    [{_, {AlbumArtist, _}}] = ets:lookup(?ETS_ARTISTS, AlbumID),
+    {ok, AlbumArtist} = get_artist_by_albumid(AlbumID),
     {ok, Cover} = join_path_and_cover(PathID, CoverID),
     {ok, GenreTuple} = get_genre_by_genreid(GenreID),
     {ok, TracksList} = get_tracklist_for_web(AlbumID, AlbumTrackIDList),
@@ -152,7 +153,8 @@ get_albums_by_date_tuple(DateTuple) ->
     {ok, [proplists:proplist()]}.
 get_random_tracks(N) ->
     TracksCount = ets:info(?ETS_TRACKS, size),
-    {ok, TracksListRandom} = get_random_tracks(N, crypto:rand_uniform(1, TracksCount), TracksCount, []),
+    %{ok, TracksListRandom} = get_random_tracks(N, crypto:rand_uniform(1, TracksCount), TracksCount, []),
+    {ok, TracksListRandom} = get_random_tracks(N, rand:uniform(TracksCount), TracksCount, []),
     {ok, TracksListRandom}.
 
 -spec get_random_tracks(integer(), integer(), integer(), list()) ->
@@ -162,7 +164,8 @@ get_random_tracks(0, _RandomID, _MaxID, Acc) ->
 get_random_tracks(N, RandomID, MaxID, Acc) ->
     {ok, TrackJson} = get_track_by_trackid({track_id, RandomID}),
     io:format("RandomID: ~p~n", [[RandomID, ?MODULE]]),
-    get_random_tracks(N - 1, crypto:rand_uniform(1, MaxID), MaxID, [TrackJson|Acc]).
+    %get_random_tracks(N - 1, crypto:rand_uniform(1, MaxID), MaxID, [TrackJson|Acc]).
+    get_random_tracks(N - 1, rand:uniform(MaxID), MaxID, [TrackJson|Acc]).
 
 %%% Get Track by TrackID
 -spec get_track_by_trackid({track_id, integer()}) ->
@@ -172,7 +175,7 @@ get_track_by_trackid(TrackID) ->
     [{_, {AlbumTuple, DateTuple, _AlbumTrackIDList, _, GenreID, CoverID}}] = ets:lookup(?ETS_ALBUMS, AlbumID),
     {ok, {path, PathBin}} = get_path_by_pathid(PathID),
     {ok, GenreTuple} = get_genre_by_genreid(GenreID),
-    [{AlbumID, {AlbumArtist, _}}] = ets:lookup(?ETS_ARTISTS, AlbumID),
+    {ok, AlbumArtist} = get_artist_by_albumid(AlbumID),
     {ok, Cover} = join_path_and_cover(PathID, CoverID),
     UrlFile  = <<?PATH_STATIC_WEB/binary, PathBin/binary, <<"/">>/binary, File/binary>>,
     Res = [AlbumID, {file, UrlFile}, Cover, AlbumArtist, AlbumTuple, DateTuple, GenreTuple, Title, TrackID],
@@ -219,6 +222,13 @@ search_albums_by_phrase(N, EtsSkip, Q, Acc) ->
             end
     end.
 
+%%% Get Artist by AlbumID
+-spec get_artist_by_albumid({album_id, integer()}) ->
+    {ok, {artist, bitstring()}}.
+get_artist_by_albumid(AlbumID) ->
+    [{_, {AlbumArtist, _}}] = ets:lookup(?ETS_ARTISTS, AlbumID),
+    {ok, AlbumArtist}.
+
 %%% Get Artists by Letter ID
 -spec get_artists_by_letterid({letter_id, integer()}) ->
     {ok, []} | {ok, list()}.
@@ -249,8 +259,8 @@ search_artists_by_phrase(N, EtsSkip, Q, Acc) ->
         {error, _} ->
             {ok, Acc};
         {album_id, _ID} ->
-            [{AlbumID, {{artist, AlbumArtist}, _}}] = ets:lookup(?ETS_ARTISTS, AlbumID),
-            MatchResult = re:run(AlbumArtist, Q, [caseless, unicode]),
+            {ok, {artist, AlbumArtistBin}} = get_artist_by_albumid(AlbumID),
+            MatchResult = re:run(AlbumArtistBin, Q, [caseless, unicode]),
             case MatchResult of
                 {match, _} ->
                     {ok, Album} = get_album_by_albumid(AlbumID),
