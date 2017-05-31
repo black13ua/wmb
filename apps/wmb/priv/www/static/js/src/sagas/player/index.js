@@ -3,7 +3,7 @@ import { isNil } from 'lodash';
 import { put, fork, take, call, cancel, select } from 'redux-saga/effects';
 import createPlayerChannel from './player-event-emiter';
 import { getVolumeFromLocalStorage } from '../../utils/local-storage';
-
+import { customEncode } from '../../utils/custom-encode';
 import {
     PLAY_TRACK,
     STOP_TRACK,
@@ -58,7 +58,7 @@ function* watchSetPlayerProperty(player) {
 }
 
 function createPlayerFromUrl(url) {
-    return window.AV.Player.fromURL(encodeURI(url));
+    return window.AV.Player.fromURL(customEncode(url));
 }
 
 function* generateActionsFromPlayerMessage(playerChannel) {

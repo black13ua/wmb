@@ -98,8 +98,7 @@ function* routineSearchResults() {
     const search = yield select(getSearchValue);
     const { payload, error } = yield call(getDataFromApi, 'fetchDataBySearch', [search]);
     if (payload) {
-        console.log('%c dataBySearch', 'color: aqua', payload);
-        // yield put(receiveData(payload));
+        yield put(receiveAlbums(payload));
     } else {
         yield put(receiveError(error));
     }
@@ -108,7 +107,6 @@ function* routineSearchResults() {
 function* routineAbcFilterLetters(action) {
     const { letterId } = action.payload;
     const artistsByLetter = yield select(getArtistsByLetter, letterId);
-    console.warn(artistsByLetter);
     if (!artistsByLetter) {
         const { payload, error } = yield call(getDataFromApi, 'fetchArtistsByLetter', [letterId]);
         if (payload) {

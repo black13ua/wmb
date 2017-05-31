@@ -60,10 +60,7 @@ export function fetchDataByFilters(filters) {
 }
 
 export function fetchDataBySearch(search) {
-    return fetch(`${DATA_BY_SEARCH_URL}`, {
-        method: 'post',
-        body  : JSON.stringify({ search }),
-    })
+    return fetch(`${DATA_BY_SEARCH_URL}${search}`)
         .then(checkStatus)
         .then(res => res.json())
         .then(json => humps.camelizeKeys(json));

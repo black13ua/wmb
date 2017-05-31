@@ -1,6 +1,5 @@
 import React, { PropTypes } from 'react';
-// import Button from 'react-toolbox/lib/button/Button';
-// import buttonTheme from '../../../../sass/theme/button.scss';
+import { customEncode } from '../../utils/custom-encode';
 
 import { Card, CardTitle, CardMedia, Button, CardActions, List, ListItem } from 'react-toolbox';
 import YellowButton from '../../containers/custom/yellow-button';
@@ -18,7 +17,7 @@ const AlbumView = ({ handleUnfold, folded, onClick, children, album, artist, cov
                     aspectRatio = {'square'}
                     style = {{ width: '300px', margin: 'auto' }}
                 >
-                    <img src={encodeURI(cover)} alt={album} />
+                    <img src={customEncode(cover)} alt={album} />
                 </CardMedia>
                 <div style={{ position: 'relative', padding: '0 20px' }} >
                     <CardTitle

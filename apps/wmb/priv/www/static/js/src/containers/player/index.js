@@ -6,7 +6,8 @@ import ProgressBar from './progress-bar';
 import YellowSlider from '../custom/yellow-slider';
 import MenuTest from './active-track-menu';
 
-import { setVolumeToLocalStorage } from '../../utils/local-storage';
+
+import { customEncode } from '../../utils/custom-encode';
 
 import {
     getPlayerIsPlaying,
@@ -49,7 +50,7 @@ class PlayerContainer extends Component {
         const { title, artist, cover } = this.props.activeTrack;
         return (
             <CardTitle
-                avatar   = {encodeURI(cover)}
+                avatar   = {customEncode(cover)}
                 subtitle = {artist}
                 title    = {title}
             />
