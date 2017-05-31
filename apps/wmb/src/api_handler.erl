@@ -9,6 +9,8 @@
 
 -include("ets_names.hrl").
 
+-define(API_DEFAULT_ITEMS, 12).
+
 init(_Type, Req, []) ->
     {ok, Req, undefined}.
 
@@ -47,8 +49,8 @@ handle(Req, State) ->
             Res = jsx:encode(Genres);
         <<"page">> ->
             APIidAtom = binary_to_integer(APIid),
-            SkipAlbums = (APIidAtom * 10) - 10,
-            {ok, Albums} = data_merger:get_albums(tpl, SkipAlbums, 10),
+            SkipAlbums = (APIidAtom * ?API_DEFAULT_ITEMS) - ?API_DEFAULT_ITEMS,
+            {ok, Albums} = data_merger:get_albums(tpl, SkipAlbums, ?API_DEFAULT_ITEMS),
             io:format("Response from /api/page/item: ~p~n", [Albums]),
             Res = jsx:encode(Albums);
         <<"random">> ->
