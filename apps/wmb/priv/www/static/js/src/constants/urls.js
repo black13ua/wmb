@@ -12,4 +12,4 @@ export const ALBUMS_BY_ARTIST_URL  = '/api/artist/';
 
 // POST
 export const DATA_BY_FILTERS_URL   = '/api/albums_by_filter/';
-export const DATA_BY_SEARCH_URL    = '/api/albums_by_search/';
+export const DATA_BY_SEARCH_URL    = '/api/search/';
