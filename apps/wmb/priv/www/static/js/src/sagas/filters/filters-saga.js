@@ -19,6 +19,7 @@ import {
     setActiveArtistInAbcFilter,
     receiveArtistsByLetter,
     receiveAlbums,
+    saveSearchValue,
 } from '../../actions';
 
 import { getRandomNumber, getArtistsByLetter, getSearchValue } from '../../selectors';
@@ -98,7 +99,12 @@ function* routineSearchResults() {
     const search = yield select(getSearchValue);
     const { payload, error } = yield call(getDataFromApi, 'fetchDataBySearch', [search]);
     if (payload) {
-        yield put(receiveAlbums(payload));
+        if (_.isEmpty(payload)) {
+            yield put(receiveError('Nothing was found'));
+        } else {
+            yield put(receiveAlbums(payload));
+            yield put(saveSearchValue(''));
+        }
     } else {
         yield put(receiveError(error));
     }
