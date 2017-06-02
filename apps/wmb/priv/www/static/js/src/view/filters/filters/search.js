@@ -1,14 +1,15 @@
 import React, { PropTypes } from 'react';
-import { ListSubHeader, ListDivider, Input, Button } from 'react-toolbox';
-
+import { ListSubHeader, ListDivider, Button } from 'react-toolbox';
+import Input from 'react-toolbox/lib/input';
 
 const SearchView = ({ search, onSearchClick, onSearchChange }) =>
     <div>
         <ListDivider />
         <ListSubHeader caption="Search" />
-        <div>
+        <div style = {{ padding: '0 20px' }} >
             <Input
-                icon     = "search"
+                hint     = "Type artist or album"
+                maxLength= {20}
                 type     = "text"
                 value    = {search}
                 onChange = {onSearchChange}
