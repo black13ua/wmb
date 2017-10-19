@@ -36,10 +36,10 @@ class CommonFilterContainer extends Component {
             const optionName = _.isObject(option) ? option.genre : option;
             return (
                 <FilterItemView
-                    checked     = {includes(this.props.selectedValues, +optionId)}
+                    checked     = {includes(this.props.selectedValues, optionId)}
                     key         = {index}
                     name        = {optionName}
-                    id          = {+optionId}
+                    id          = {optionId}
                     onChange    = {this.handleFilterChange}
                 />
             );
