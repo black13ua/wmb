@@ -5,7 +5,7 @@ const config = {
     context: __dirname,
     cache  : true,
     entry  : {
-        vendors: [path.join(__dirname, 'vendors-src.js')],
+        vendors: [path.join(__dirname, '..', 'vendors-src.js')],
     },
     output: {
         path    : path.join(__dirname, 'js', 'dist', 'dll'),

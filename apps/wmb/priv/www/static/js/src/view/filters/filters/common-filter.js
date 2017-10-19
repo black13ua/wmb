@@ -18,7 +18,7 @@ const FilterView = ({ children, optionsLength, alias, onClick, activeClass }) =>
             rightIcon = {activeClass ? 'keyboard_arrow_down' : 'keyboard_arrow_right'}
             onClick   = {onClick}
         />
-        <div style = {{ textAlign: 'center' }}>
+        <div style = {{ marginLeft: '35px' }}>
             { children }
         </div>
     </div>;

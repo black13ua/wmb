@@ -3,7 +3,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path              = require('path');
 
-const reactToolboxColorVariables = require('./sass/custom-theme-css');
+const reactToolboxColorVariables = require('../sass/custom-theme-css');
 
 const config = {
     context: __dirname,
@@ -11,7 +11,7 @@ const config = {
 
     entry: {
         main: [
-            './js/index.js',
+            '../js/index.js',
         ],
         vendors: [
             'react',
@@ -24,7 +24,7 @@ const config = {
     },
 
     output: {
-        path         : path.resolve(__dirname, 'js', 'dist'),
+        path         : path.resolve(__dirname, '..', 'js', 'dist'),
         publicPath   : '/static/js/dist/',
         filename     : '[name].js',
         chunkFilename: '[id].chunk.js',
@@ -100,10 +100,12 @@ const config = {
         new webpack.optimize.UglifyJsPlugin({
             beautify: false,
             comments: false,
+            warnings: false,
             compress: {
                 warnings    : false,
                 drop_console: false,
             },
+            parallel: true,
         }),
         new webpack.optimize.CommonsChunkPlugin({
             names: ['vendors'],
@@ -117,8 +119,8 @@ const config = {
             __PRODUCTION__ : JSON.stringify(true),
         }),
         new HtmlWebpackPlugin({
-            filename: path.join(__dirname, './html/new.html'),
-            template: './html/new.template.html',
+            filename: path.join(__dirname, '../html/new.html'),
+            template: '../html/new.template.html',
             inject  : 'body',
             hash    : true,
         }),

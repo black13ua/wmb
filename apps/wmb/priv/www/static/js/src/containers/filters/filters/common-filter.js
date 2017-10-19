@@ -1,12 +1,13 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { ProgressBar } from 'react-toolbox';
+import { includes } from 'lodash';
 
 import FilterItemView from '../../../view/filters/filters/common-filter-item';
 import CommonFilterView from '../../../view/filters/filters/common-filter';
 
-import { fetchFilter, setFieldValueIO } from '../../../actions';
-import { getFilterDataByAlias, getFilterCurrentValueByAlias, getFetchingState } from '../../../selectors';
+import { fetchFilter, fetchAlbumsByFilters, setFieldValue } from '../../../actions';
+import { getFilterDataByAlias, getFilterSelectedValuesByAlias, getFetchingState } from '../../../selectors';
 
 
 // import debugRender from 'react-render-debugger';
@@ -24,8 +25,8 @@ class CommonFilterContainer extends Component {
         if (_.isEmpty(this.props.filterOptions)) {
             return (
                 <ProgressBar
-                    type='circular'
-                    mode='indeterminate'
+                    type="circular"
+                    mode="indeterminate"
                     multicolor
                 />
             );
@@ -35,21 +36,19 @@ class CommonFilterContainer extends Component {
             const optionName = _.isObject(option) ? option.genre : option;
             return (
                 <FilterItemView
-                    active      = {this.props.currentValue === optionName}
+                    checked     = {includes(this.props.selectedValues, +optionId)}
                     key         = {index}
                     name        = {optionName}
-                    onClick     = {this.handleFilterChange.bind(null, optionId)}
+                    id          = {+optionId}
+                    onChange    = {this.handleFilterChange}
                 />
             );
         });
         return <div>{ list }</div>;
     }
 
-    handleFilterChange = (value, event) => {
-        event.preventDefault();
-        event.stopPropagation();
-        if (value === this.props.currentValue) return null;
-        this.props.handleFilterChange(value);
+    handleFilterChange = (id, enable) => {
+        this.props.handleFilterChange(this.props.alias, id, enable);
     }
 
     handleSubMenuClick = (event) => {
@@ -78,22 +77,25 @@ class CommonFilterContainer extends Component {
 
 CommonFilterContainer.propTypes = {
     alias             : PropTypes.string.isRequired,
-    currentValue      : PropTypes.string,
     fetchFilterByAlias: PropTypes.func.isRequired,
+    fetching          : PropTypes.object.isRequired,
     filterOptions     : PropTypes.array,
     handleFilterChange: PropTypes.func.isRequired,
-    fetching          : PropTypes.object.isRequired,
+    selectedValues    : PropTypes.string,
 };
 
 const mapStateToProps = (state, props) => ({
-    filterOptions: getFilterDataByAlias(state, props),
-    currentValue : getFilterCurrentValueByAlias(state, props),
-    fetching     : getFetchingState(state),
+    filterOptions : getFilterDataByAlias(state, props),
+    selectedValues: getFilterSelectedValuesByAlias(state, props),
+    fetching      : getFetchingState(state),
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
     fetchFilterByAlias: ()    => dispatch(fetchFilter(ownProps.alias)),
-    handleFilterChange: value => dispatch(setFieldValueIO(ownProps.alias, value)),
+    handleFilterChange: (alias, value) => {
+        dispatch(setFieldValue(alias, value));
+        dispatch(fetchAlbumsByFilters());
+    },
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(CommonFilterContainer);
