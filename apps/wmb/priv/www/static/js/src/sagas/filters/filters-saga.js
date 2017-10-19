@@ -72,8 +72,7 @@ function* routineDataByFilter() {
     yield put(fetching('albums', true));
     const { payload, error } = yield call(getDataFromApi, 'fetchDataByFilters', [currentFilters]);
     if (payload) {
-        console.log('%c dataByFilters', 'color: aqua', payload);
-        // yield put(receiveData(payload));
+        yield put(receiveAlbums(payload));
     } else {
         yield put(receiveError(error));
     }
