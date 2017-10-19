@@ -1,17 +1,19 @@
 import React, { PropTypes } from 'react';
-import { ListItem } from 'react-toolbox';
+import { Checkbox } from 'react-toolbox';
 
 
-const FilterItemView = ({ onClick, name }) =>
-    <ListItem
-        caption = {name}
-        onClick = {onClick}
+const FilterItemView = ({ id, name, checked, onChange }) =>
+    <Checkbox
+        checked  = {checked}
+        label    = {name}
+        onChange = {onChange.bind(this, id, checked)}
     />;
 
 
 FilterItemView.propTypes = {
-    name   : PropTypes.string,
-    onClick: PropTypes.func.isRequired,
+    name    : PropTypes.string.isRequired,
+    checked : PropTypes.bool,
+    onChange: PropTypes.func.isRequired,
 };
 
 export default FilterItemView;

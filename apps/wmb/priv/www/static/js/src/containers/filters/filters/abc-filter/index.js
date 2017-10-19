@@ -4,8 +4,8 @@ import { ProgressBar } from 'react-toolbox';
 
 import CommonFilterView from '../../../../view/filters/filters/common-filter';
 import LetterContainer from './letter';
-import { fetchFilter, setFieldValueIO } from '../../../../actions';
-import { getFilterDataByAlias, getFilterCurrentValueByAlias } from '../../../../selectors';
+import { fetchFilter, fetchAlbumsByFilters } from '../../../../actions';
+import { getFilterDataByAlias, getFilterSelectedValuesByAlias } from '../../../../selectors';
 
 // import debugRender from 'react-render-debugger';
 // @debugRender
@@ -74,12 +74,12 @@ AbcFilterContainer.propTypes = {
 
 const mapStateToProps = (state, props) => ({
     filterOptions: getFilterDataByAlias(state, props),
-    currentValue : getFilterCurrentValueByAlias(state, props),
+    currentValue : getFilterSelectedValuesByAlias(state, props),
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
     fetchFilterByAlias: ()    => dispatch(fetchFilter(ownProps.alias)),
-    handleFilterChange: event => dispatch(setFieldValueIO(ownProps.alias, event.target.value)),
+    handleFilterChange: event => dispatch(fetchAlbumsByFilters(ownProps.alias, event.target.value)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(AbcFilterContainer);

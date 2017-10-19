@@ -32,7 +32,7 @@ class ContentContainer extends Component {
     }
 
     mainSpinner = () =>
-        <div style = {{ position: 'fixed', top: '50%', left: '50%' }}>
+        <div style = {{ position: 'fixed', top: '50%', left: '50%', zIndex: 999 }}>
             <ProgressBar
                 multicolor
                 mode = "indeterminate"
@@ -55,9 +55,9 @@ class ContentContainer extends Component {
     }
 
     render() {
-        if (this.props.fetching.albums) return this.mainSpinner();
         return (
             <ContentView>
+                { this.props.fetching.albums && this.mainSpinner() }
                 { this.albumsList }
                 { this.warningMessage }
             </ContentView>

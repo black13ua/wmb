@@ -1,4 +1,5 @@
 import { createSelector } from 'reselect';
+import { get } from 'lodash';
 
 const filterSelector = state => state.filters;
 const getAlias = (state, props) => props.alias;
@@ -7,17 +8,22 @@ const getLetterId = (state, props) => props.letterId;
 
 export const getFilterDataByAlias = createSelector(
     [filterSelector, getAlias],
-    (state, alias) => state.data.filters[alias]
+    (state, alias) => get(state, ['data', 'filters', alias])
 );
 
 export const getFilters = createSelector(
     filterSelector,
-    state => state.data.filters
+    state => get(state, ['data', 'filters'])
 );
 
-export const getFilterCurrentValueByAlias = createSelector(
+export const getFilterSelectedValuesByAlias = createSelector(
     [filterSelector, getAlias],
-    (state, alias) => state.viewState.filtersCurrentValue[alias]
+    (state, alias) => get(state, ['viewState', 'filtersCurrentValue', alias])
+);
+
+export const getFilterSelectedValues = createSelector(
+    [filterSelector],
+    state => get(state, ['viewState', 'filtersCurrentValue'])
 );
 
 export const getSearchValue = createSelector(

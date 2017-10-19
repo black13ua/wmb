@@ -104,13 +104,13 @@
       }
     },
     "build:prod": {
-      "command": "webpack --config webpack.config.prod.js --progress --colors",
+      "command": "webpack --config ./webpack/webpack.config.prod.js --progress --colors",
       "env": {
         "NODE_ENV": "production"
       }
     },
     "build:dll": {
-      "command": "webpack --config webpack.config.dll.js --progress --color",
+      "command": "webpack --config ./webpack/webpack.config.dll.js --progress --color",
       "env": {
         "NODE_ENV": "development"
       }
