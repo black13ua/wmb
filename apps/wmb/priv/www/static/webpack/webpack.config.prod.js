@@ -100,10 +100,12 @@ const config = {
         new webpack.optimize.UglifyJsPlugin({
             beautify: false,
             comments: false,
+            warnings: false,
             compress: {
                 warnings    : false,
                 drop_console: false,
             },
+            parallel: true,
         }),
         new webpack.optimize.CommonsChunkPlugin({
             names: ['vendors'],

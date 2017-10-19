@@ -98,13 +98,13 @@
   },
   "betterScripts": {
     "start": {
-      "command": "node ./dev-server.js --progress --colors",
+      "command": "node ./dev-server.js --progress --colors ",
       "env": {
         "NODE_ENV": "development"
       }
     },
     "build:prod": {
-      "command": "webpack --config ./webpack/webpack.config.prod.js --progress --colors",
+      "command": "webpack --config ./webpack/webpack.config.prod.js --progress --colors --hide-modules",
       "env": {
         "NODE_ENV": "production"
       }
