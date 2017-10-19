@@ -14,15 +14,20 @@ import {
     // receiveFilters,
     receiveFilter,
     receiveRandomTracks,
-    setFieldValue,
     receiveError,
     setActiveArtistInAbcFilter,
     receiveArtistsByLetter,
     receiveAlbums,
     saveSearchValue,
+    fetching,
 } from '../../actions';
 
-import { getRandomNumber, getArtistsByLetter, getSearchValue } from '../../selectors';
+import {
+    getRandomNumber,
+    getArtistsByLetter,
+    getSearchValue,
+    getFilterSelectedValues,
+} from '../../selectors';
 
 const filtersApiMethods = {
     abc   : 'fetchAbcFilter',
@@ -62,17 +67,16 @@ function getDataFromApi(apiMethod, args = []) {
 //     }
 // }
 
-function* routineDataByFilter(action) {
-    const { alias, value } = action.payload;
-    yield put(setFieldValue(alias, value));
-    const currentFilters = yield select(state => state.filters.viewState.filtersCurrentValue.asMutable());
+function* routineDataByFilter() {
+    const currentFilters = yield select(getFilterSelectedValues);
+    yield put(fetching('albums', true));
     const { payload, error } = yield call(getDataFromApi, 'fetchDataByFilters', [currentFilters]);
     if (payload) {
-        console.log('%c dataByFilters', 'color: aqua', payload);
-        // yield put(receiveData(payload));
+        yield put(receiveAlbums(payload));
     } else {
         yield put(receiveError(error));
     }
+    yield put(fetching('albums', false));
 }
 
 function* routineRandomButton() {
@@ -125,6 +129,7 @@ function* routineAbcFilterLetters(action) {
 
 function* routineAbcFilterArtist(action) {
     const { artistId } = action.payload;
+    yield put(fetching('albums', true));
     const { payload, error } = yield call(getDataFromApi, 'fetchAlbumsByArtist', [artistId]);
     if (payload) {
         yield put(setActiveArtistInAbcFilter(artistId));
@@ -132,6 +137,7 @@ function* routineAbcFilterArtist(action) {
     } else {
         yield put(receiveError(error));
     }
+    yield put(fetching('albums', false));
 }
 
 

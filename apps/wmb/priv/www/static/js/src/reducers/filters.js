@@ -1,4 +1,5 @@
 import Immutable from 'seamless-immutable';
+import { get, includes } from 'lodash';
 
 import createReducer  from '../utils/createReducer';
 import {
@@ -24,9 +25,8 @@ const initialState = Immutable({
     },
     viewState: {
         filtersCurrentValue: {
-            abc   : '',
-            genres: '',
-            dates : '',
+            genres: [],
+            dates : [],
         },
         activeArtistId : -1,
         search         : '',
@@ -56,13 +56,12 @@ export default createReducer(initialState, {
 
     [SET_FIELD_VALUE](state, action) {
         const { alias, value } = action.payload;
-        return state.merge({
-            viewState: {
-                filtersCurrentValue: {
-                    [alias]: value,
-                },
-            },
-        }, { deep: true });
+        const fields = get(state, ['viewState', 'filtersCurrentValue', alias], []);
+        const enable = !includes(fields, value);
+        const newFilterFileds = enable
+            ? fields.concat(value)
+            : fields.filter(element => element !== value);
+        return state.setIn(['viewState', 'filtersCurrentValue', alias], newFilterFileds);
     },
 
     [RANDOM_CHECKER_TOGGLE](state) {

@@ -49,7 +49,7 @@ protocol.get(options, (res, req) => {
 });
 
 const app = express();
-const config = require('./webpack.config.js');
+const config = require('./webpack/webpack.config.js');
 const compiler = webpack(config);
 
 

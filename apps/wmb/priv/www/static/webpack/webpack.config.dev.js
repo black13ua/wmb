@@ -5,7 +5,7 @@ const args              = require('minimist')(process.argv);
 
 const reduxLogger       = args.rlg;
 
-const reactToolboxColorVariables = require('./sass/custom-theme-css');
+const reactToolboxColorVariables = require('../sass/custom-theme-css');
 
 const config = {
     context: __dirname,
@@ -16,12 +16,12 @@ const config = {
         main: [
             'webpack-hot-middleware/client',
             'react-hot-loader/patch',
-            './js/index.js',
+            '../js/index.js',
         ],
     },
 
     output: {
-        path         : path.resolve(__dirname, 'js', 'dist'),
+        path         : path.resolve(__dirname, '..', 'js', 'dist'),
         publicPath   : '/assets/',
         filename     : '[name].js',
         chunkFilename: '[id].chunk.js',
@@ -112,7 +112,7 @@ const config = {
     plugins: [
         new webpack.DllReferencePlugin({
             context : '.',
-            manifest: require('./js/dist/dll/vendors-manifest.json'), // eslint-disable-line
+            manifest: require('../js/dist/dll/vendors-manifest.json'), // eslint-disable-line
         }),
         new webpack.HotModuleReplacementPlugin(),
         new webpack.ProvidePlugin({
