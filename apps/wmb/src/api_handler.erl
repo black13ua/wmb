@@ -67,8 +67,10 @@ handle(Req, State) ->
             Res = jsx:encode(Track2Web);
         <<"albums_by_filter">> ->
             {ok, Body, _Req2} = cowboy_req:body(Req),
-            Res = <<"POST BODY Request">>,
-            io:format("We Here! ~p~n", [Body]);
+            Filters = jsx:decode(Body),
+            {ok, Albums} = data_merger:get_albums_by_filters(Filters),
+            io:format("Response from /api/filters: ~p~n", [Albums]),
+            Res = jsx:encode(Albums);
         _ ->
             Res = <<"API Request Not Found">>
     end,
