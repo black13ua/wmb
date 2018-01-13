@@ -9,7 +9,7 @@
     get_albums_by_artistid/1,
     get_albums_by_genre_name/1, get_albums_by_genreid/1,
     get_albums_by_date/1, get_albums_by_date_tuple/1,
-    get_albums_by_filter/1,
+    get_albums_by_filter/2,
     get_albums_by_filters/1,
     get_artist_by_albumid/1,
     get_artists_by_letterid/1,
@@ -298,24 +298,26 @@ get_all_dates() ->
 get_albums_by_filters(Filters) ->
 io:format("We Here! ~p~n", [Filters]),
 Dates = proplists:get_value(<<"dates">>, Filters), 
-_Genres = proplists:get_value(<<"genres">>, Filters), 
-case Dates of
-    <<>> ->
-        {ok, []};
-    _ ->
-        data_merger:get_albums_by_date_tuple({date, Dates})
-end.
+Genres = proplists:get_value(<<"genres">>, Filters), 
+{ok, AlbumIDList} = get_albums_by_filter(Dates, Genres),
+get_albums_by_albumidlist(AlbumIDList, []).
 
-get_albums_by_filter(Filters) ->
-    Fun = fun(X, Acc) ->
-              case X of
-                  {<<"dates">>, Dates} ->
-                      io:format("Dates is: ~p~n", [Dates]);
-                  {<<"genres">>, Genres} ->
-                      io:format("Genres is: ~p~n", [Genres]);
-                  _ ->
-                      io:format("Unknown Filter! ~p~n", [X])
+get_albums_by_filter(DatesList, GenresList) ->
+    Fun = fun({{album_id, A}, {_, {date, D}, _, _, {genre_id, G}, _}}, Acc) ->
+              io:format("X is: ~p~n", [[A, D, G]]),
+              case lists:member(D, DatesList) of
+                  true ->
+                      case lists:member(G, GenresList) of
+                          true ->
+                              [[{album_id, A}]|Acc];
+                          false ->
+                              Acc
+                      end;
+                  false ->
+                      Acc
               end
           end,
-    Y = lists:foldl(Fun, [], Filters),
-    io:format("Y is: ~p~n", [Y]).
+    Y = ets:foldl(Fun, [], ?ETS_ALBUMS),
+    io:format("Y is: ~p~n", [Y]),
+    {ok, Y}.
+
