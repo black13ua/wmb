@@ -103,19 +103,14 @@ join_path_and_cover(PathID, CoverID) ->
 -spec get_tracklist_for_web({album_id, integer()}, {tracks, list()}) ->
     {ok, []} | {ok, [proplists:proplist()]} | {error, atom()}.
 get_tracklist_for_web(_AlbumID, {tracks, TracksList}) ->
-    case TracksList of
-        [] ->
-            {ok, []};
-        _ ->
-            Fun = fun(X) ->
-                      [{_, {_, {file, File}, {title, Title}, {path_id, PathID}}}] = ets:lookup(?ETS_TRACKS, {track_id, X}),
-                      {ok, {path, Path}} = get_path_by_pathid({path_id, PathID}),
-                      FullPath = <<?PATH_STATIC_WEB/binary, Path/binary, <<"/">>/binary, File/binary>>,
-                      [{file, FullPath}, {title, Title}, {track_id, X}]
-                  end,
-            TracksListWithPath = lists:map(Fun, TracksList),
-            {ok, TracksListWithPath}
-    end.
+    Fun = fun(X) ->
+              [{_, {_, {file, File}, {title, Title}, {path_id, PathID}}}] = ets:lookup(?ETS_TRACKS, {track_id, X}),
+              {ok, {path, Path}} = get_path_by_pathid({path_id, PathID}),
+              FullPath = <<?PATH_STATIC_WEB/binary, Path/binary, <<"/">>/binary, File/binary>>,
+              [{file, FullPath}, {title, Title}, {track_id, X}]
+          end,
+    TracksListWithPath = [Fun(Track) || Track <- TracksList],
+    {ok, TracksListWithPath}.
 
 %% Get AlbumList by ArtistID
 -spec get_albums_by_artistid({artist_id, integer()}) ->
