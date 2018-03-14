@@ -81,7 +81,7 @@ get_album_by_albumid(AlbumKey) ->
     get_album_by_albumrow(AlbumKey, AlbumValue).
 
 -spec get_album_by_albumrow({album_id, integer()}, {{album, bitstring()}, {date, bitstring()},
-                            {tracks, list()}, {path_id, integer()}, {genre_id, bitstring()}, {cover_id, bitstring()}}) ->
+                            {tracks, list()}, {path_id, integer()}, {genre_id, integer()}, {cover_id, integer()}}) ->
     {ok, [proplists:proplist()]}.
 get_album_by_albumrow(AlbumID, {AlbumTuple, DateTuple, AlbumTrackIDList, PathID, GenreID, CoverID}) ->
     {ok, AlbumArtist} = get_artist_by_albumid(AlbumID),
