@@ -1,6 +1,5 @@
 -module(data_merger).
 -export([
-    test3/0, test5/0,
     get_all_dates/0,
     get_all_genres/0,
     get_all_letters/0,
@@ -297,34 +296,32 @@ get_all_dates() ->
     {ok, Dates}.
 
 %%% Get Albums by Filters
+-spec get_albums_by_filters(Filters :: proplists:proplist()) ->
+    {ok, []} | {ok, [proplists:proplist()]}.
 get_albums_by_filters(Filters) ->
-io:format("We Here! ~p~n", [Filters]),
-Dates = proplists:get_value(<<"dates">>, Filters), 
-Genres = proplists:get_value(<<"genres">>, Filters), 
-{ok, FiltersMS} = generate_ms_for_filters(Dates, Genres),
-List = ets:select(?ETS_ALBUMS, FiltersMS),
-io:format("list! ~p~n", [List]),
-{ok, AlbumIDList} = get_albums_by_filter(Dates, Genres),
-io:format("IDlist! ~p~n", [AlbumIDList]),
-get_albums_by_albumidlist(AlbumIDList, []).
+    io:format("We Here! ~p~n", [Filters]),
+    Dates = proplists:get_value(<<"dates">>, Filters), 
+    Genres = proplists:get_value(<<"genres">>, Filters), 
+    {ok, FiltersMS} = generate_ms_for_filters(Dates, Genres),
+    List = ets:select(?ETS_ALBUMS, FiltersMS),
+    io:format("list! ~p~n", [List]),
+    {ok, AlbumIDList} = get_albums_by_filter(Dates, Genres),
+    io:format("IDlist! ~p~n", [AlbumIDList]),
+    get_albums_by_albumidlist(AlbumIDList, []).
 
 get_albums_by_filters_v2(Filters) ->
-io:format("We Here! ~p~n", [Filters]),
-Dates = proplists:get_value(<<"dates">>, Filters), 
-Genres = proplists:get_value(<<"genres">>, Filters), 
-get_albums_by_filters_v2(Dates, Genres).
+    io:format("We Here! ~p~n", [Filters]),
+    Dates = proplists:get_value(<<"dates">>, Filters), 
+    Genres = proplists:get_value(<<"genres">>, Filters), 
+    get_albums_by_filters_v2(Dates, Genres).
 
 -spec get_albums_by_filters_v2(Dates::list(), Genres::list()) ->
     {ok, [proplists:proplist()]}.
-get_albums_by_filters_v2(Dates, []) ->
-    Dates;
-get_albums_by_filters_v2([], Genres) ->
-    Genres;
 get_albums_by_filters_v2(Dates, Genres) ->
-{ok, FiltersMS} = generate_ms_for_filters(Dates, Genres),
-List = ets:select(?ETS_ALBUMS, FiltersMS),
-io:format("list! ~p~n", [List]),
-get_albums_by_albumidlist([[{album_id, AID}] || AID <- List], []).
+    {ok, FiltersMS} = generate_ms_for_filters(Dates, Genres),
+    List = ets:select(?ETS_ALBUMS, FiltersMS),
+    io:format("list! ~p~n", [List]),
+    get_albums_by_albumidlist([[{album_id, AID}] || AID <- List], []).
 
 -spec get_albums_by_filter(DatesList::list(), GenresList::list()) ->
     {ok, [proplists:proplist()]}.
@@ -347,20 +344,16 @@ get_albums_by_filter(DatesList, GenresList) ->
     %io:format("Y is: ~p~n", [Y]),
     {ok, Y}.
 
-test3() ->
-%%    DList = [<<"1990">>, <<"2002">>, <<"2005">>]
-%%    GList = [1,2,5]
-    MS = ets:fun2ms(fun({{album_id, A}, {'_', {date, D}, '_', '_', {genre_id, G}, '_'}}) when G == 1 orelse G == 2 orelse G == 5, D == <<"1990">> orelse D == <<"2002">> orelse D == <<"2005">> -> A end),
-    ets:select(?ETS_ALBUMS, MS).
-
-test5() ->
-%%    DList = [<<"1968">>, <<"1985">>, <<"1992">>, <<"2000">>, <<"1975">>]
-%%    GList = [2,7,8,1,11]
-    MS = ets:fun2ms(fun({{album_id, A}, {'_', {date, D}, '_', '_', {genre_id, G}, '_'}}) when G == 2 orelse G == 7 orelse G == 8 orelse G == 1 orelse G == 11, D == <<"1968">> orelse D == <<"1985">> orelse D == <<"1992">> orelse D == <<"2000">> orelse D == <<"1975">> -> A end),
-    ets:select(?ETS_ALBUMS, MS).
-
--spec generate_ms_for_filters(LD::list(), LG::list()) ->
-    {ok, [proplists:proplist()]}.
+-spec generate_ms_for_filters(LD :: list(), LG :: list()) ->
+    {ok, proplists:proplist()}.
+generate_ms_for_filters([], LG) ->
+    LG_Expr = [{'==','$3', G} || G <- LG],
+    TG_Expr = list_to_tuple(['orelse'|LG_Expr]),
+    {ok, [{{{album_id,'$1'}, {'_',{date,'$2'},'_','_',{genre_id,'$3'},'_'}}, [TG_Expr], ['$1']}]};
+generate_ms_for_filters(LD, []) ->
+    LD_Expr = [{'==','$2', D} || D <- LD],
+    TD_Expr = list_to_tuple(['orelse'|LD_Expr]),
+    {ok, [{{{album_id,'$1'}, {'_',{date,'$2'},'_','_',{genre_id,'$3'},'_'}}, [TD_Expr], ['$1']}]};
 generate_ms_for_filters(LD, LG) ->
     LG_Expr = [{'==','$3', G} || G <- LG],
     LD_Expr = [{'==','$2', D} || D <- LD],

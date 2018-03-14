@@ -31,3 +31,17 @@ TC
       {title,<<"La Tristesse Durera (Scream To A Sigh)">>},
       {track_id,9361}]}}
 9>
+
+
+MS:
+test3() ->
+%%    DList = [<<"1990">>, <<"2002">>, <<"2005">>]
+%%    GList = [1,2,5]
+    MS = ets:fun2ms(fun({{album_id, A}, {'_', {date, D}, '_', '_', {genre_id, G}, '_'}}) when G == 1 orelse G == 2 orelse G == 5, D == <<"1990">> orelse D == <<"2002">> orelse D == <<"2005">> -> A end),
+    ets:select(?ETS_ALBUMS, MS).
+
+test5() ->
+%%    DList = [<<"1968">>, <<"1985">>, <<"1992">>, <<"2000">>, <<"1975">>]
+%%    GList = [2,7,8,1,11]
+    MS = ets:fun2ms(fun({{album_id, A}, {'_', {date, D}, '_', '_', {genre_id, G}, '_'}}) when G == 2 orelse G == 7 orelse G == 8 orelse G == 1 orelse G == 11, D == <<"1968">> orelse D == <<"1985">> orelse D == <<"1992">> orelse D == <<"2000">> orelse D == <<"1975">> -> A end),
+    ets:select(?ETS_ALBUMS, MS).

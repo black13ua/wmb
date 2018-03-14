@@ -68,7 +68,7 @@ handle(Req, State) ->
         <<"albums_by_filter">> ->
             {ok, Body, _Req2} = cowboy_req:body(Req),
             Filters = jsx:decode(Body),
-            {ok, Albums} = data_merger:get_albums_by_filters(Filters),
+            {ok, Albums} = data_merger:get_albums_by_filters_v2(Filters),
             io:format("Response from /api/filters: ~p~n", [Albums]),
             Res = jsx:encode(Albums);
         _ ->
