@@ -305,13 +305,15 @@ get_albums_by_filters(Filters) ->
     get_albums_by_albumidlist(AlbumIDList, []).
 
 get_albums_by_filters_v2(Filters) ->
-    io:format("We Here! ~p~n", [Filters]),
+    io:format("Filters v2: ~p~n", [Filters]),
     Dates = proplists:get_value(<<"dates">>, Filters), 
     Genres = proplists:get_value(<<"genres">>, Filters), 
     get_albums_by_filters_v2(Dates, Genres).
 
 -spec get_albums_by_filters_v2(Dates::list(), Genres::list()) ->
     {ok, [proplists:proplist()]}.
+get_albums_by_filters_v2([], []) ->
+    get_albums(tpl);
 get_albums_by_filters_v2(Dates, Genres) ->
     {ok, FiltersMS} = generate_ms_for_filters(Dates, Genres),
     List = ets:select(?ETS_ALBUMS, FiltersMS),
