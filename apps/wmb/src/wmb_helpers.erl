@@ -1,5 +1,11 @@
 -module(wmb_helpers).
--export([ceiling/1, get_rel_path_by_dirname/1, skip_ets_elements/2, split_path_and_filename/1]).
+-export([
+    ceiling/1,
+    get_rel_path_by_dirname/1,
+    skip_ets_elements/2,
+    split_path_and_filename/1,
+    test_timing/1
+]).
 
 
 %%%%
@@ -65,3 +71,10 @@ get_rel_path_by_dirname(Dir) ->
     SRL = length(filename:split(Root)),
     RFileList = lists:sublist(FPathList, SRL+1, SLL+1),
     {ok, unicode:characters_to_binary(filename:join(RFileList))}.
+
+-spec test_timing(C :: integer()) ->
+    integer().
+test_timing(C) ->
+    Result = [begin {T,_R} = timer:tc(data_merger, get_album_by_albumid, [{album_id, X}]), T end  || X <- lists:seq(1, C)],
+    lists:sum(Result)/C.
+
