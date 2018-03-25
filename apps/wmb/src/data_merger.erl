@@ -95,7 +95,7 @@ get_album_by_albumrow(AlbumID, {AlbumTuple, DateTuple, AlbumTrackIDList, PathID,
     {ok, {cover, bitstring()}}.
 join_path_and_cover(PathID, CoverID) ->
     {ok, {path, Path}} = get_path_by_pathid(PathID),
-    [{_, {cover, Cover}}] = ets:lookup(?ETS_COVERS, CoverID),
+    {cover, Cover} = ets:lookup_element(?ETS_COVERS, CoverID, 2),
     UrlCover = <<?PATH_STATIC_WEB/binary, Path/binary, <<"/">>/binary, Cover/binary>>,
     io:format("Cover is: ~p~n", [UrlCover]),
     {ok, {cover, UrlCover}}.
@@ -183,14 +183,14 @@ get_track_by_trackid(TrackID) ->
 -spec get_genre_by_genreid({genre_id, integer()}) ->
     {ok, {genre, bitstring()}}.
 get_genre_by_genreid(GenreID) ->
-    [{GenreID, GenreTuple}] = ets:lookup(?ETS_GENRES, GenreID),
+    GenreTuple = ets:lookup_element(?ETS_GENRES, GenreID, 2),
     {ok, GenreTuple}.
 
 %%% Get Path by PathID
 -spec get_path_by_pathid({path_id, integer()}) ->
     {ok, {path, bitstring()}}.
 get_path_by_pathid(PathID) ->
-    [{PathID, {{path, AlbumPathBin}, _}}] = ets:lookup(?ETS_PATHS, PathID),
+    {{path, AlbumPathBin}, _} = ets:lookup_element(?ETS_PATHS, PathID, 2),
     {ok, {path, AlbumPathBin}}.
 
 %%% Search Albums by Phrase
@@ -224,7 +224,7 @@ search_albums_by_phrase(N, EtsSkip, Q, Acc) ->
 -spec get_artist_by_albumid({album_id, integer()}) ->
     {ok, {artist, bitstring()}}.
 get_artist_by_albumid(AlbumID) ->
-    [{_, {AlbumArtist, _}}] = ets:lookup(?ETS_ARTISTS, AlbumID),
+    [{AlbumArtist, _}] = ets:lookup_element(?ETS_ARTISTS, AlbumID, 2),
     {ok, AlbumArtist}.
 
 %%% Get Artists by Letter ID
