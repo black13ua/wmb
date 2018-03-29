@@ -27,10 +27,13 @@ start(_StartType, _StartArgs) ->
             {"/static/[...]", cowboy_static, {priv_dir, wmb, "www/static"}}
         ]}
     ]),
-    {ok, _} = cowboy:start_http(http, 100, [{ip, {0,0,0,0}}, {port, 8080}], [
-        {env, [{dispatch, Dispatch}]}
-    ]),
-    %%
+    {ok, _} = cowboy:start_clear(http, [{ip, {0,0,0,0}}, {port, 8080}], #{
+        env => #{dispatch => Dispatch}
+    }),
+%% Deprecated in Cowboy 2.2.2
+%%    {ok, _} = cowboy:start_http(http, 100, [{ip, {0,0,0,0}}, {port, 8080}], [
+%%        {env, [{dispatch, Dispatch}]}
+%%    ]),
     Res = wmb_sup:start_link(),
     {ok, _} = supervisor:start_child(wmb_librarian_sup, [FilesRoot]),
     Res.

@@ -3,19 +3,15 @@
 %% @doc API handler
 -module(api_handler).
 
--export([init/3]).
--export([handle/2]).
+-export([init/2]).
 -export([terminate/3]).
 
 -include("ets_names.hrl").
 
 -define(API_DEFAULT_ITEMS, 12).
 
-init(_Type, Req, []) ->
-    {ok, Req, undefined}.
-
-handle(Req, State) ->
-    {Path, _Req1} = cowboy_req:path(Req),
+init(Req, Opts) ->
+    Path = cowboy_req:path(Req),
     [_, _, APIType, APIid] = binary:split(Path, [<<"/">>], [global]),
     io:format("Path Elements: ~p~n", [[APIType, APIid]]),
     case APIType of
@@ -66,7 +62,7 @@ handle(Req, State) ->
             io:format("Response from /api/tracks/id: ~p~n", [Track2Web]),
             Res = jsx:encode(Track2Web);
         <<"albums_by_filter">> ->
-            {ok, Body, _Req2} = cowboy_req:body(Req),
+            {ok, Body, _Req2} = cowboy_req:read_body(Req),
             Filters = jsx:decode(Body),
             {ok, Albums} = data_merger:get_albums_by_filters_v2(Filters),
             io:format("Response from /api/filters: ~p~n", [Albums]),
@@ -74,13 +70,10 @@ handle(Req, State) ->
         _ ->
             Res = <<"API Request Not Found">>
     end,
+    Req3 = cowboy_req:reply(200, #{
+               <<"content-type">> => <<"application/json">>},
+               Res, Req),
+    {ok, Req3, Opts}.
 
-    {ok, Req3} = cowboy_req:reply(
-               200,
-               [{<<"content-type">>, <<"application/json">>}],
-                   Res,
-               Req),
-    {ok, Req3, State}.
-
-terminate(_Reason, _Req, _State) ->
+terminate(_Reason, _Req, _Opts) ->
 	ok.
